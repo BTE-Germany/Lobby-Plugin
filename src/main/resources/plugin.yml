@@ -1,0 +1,6 @@
+name: Lobby
+version: '${project.version}'
+main: dev.nachwahl.lobby.Lobby
+api-version: 1.18
+authors: [ Nachwahl ]
+website: https://bte-germany.de
