@@ -44,8 +44,7 @@ public class PrivacyGUI {
                 .asGuiItem(event -> {
                     try {
                         this.lobby.getDatabase().executeInsert("INSERT INTO privacy (minecraftUUID) VALUES (?)", player.getUniqueId().toString());
-                        this.gui.close(player);
-                        LanguageGUI languageGUI = new LanguageGUI(this.lobby);
+                        LanguageGUI languageGUI = new LanguageGUI(this.lobby, player);
                         languageGUI.getGui().open(player);
                     }
                     catch (SQLException exception) {
@@ -60,7 +59,7 @@ public class PrivacyGUI {
                             "<gray>You have to accept the privacy policy.</gray>\n" +
                             "<gray>Du musst der Datenschutzerklärung zustimmen.</gray>"));
                 }));
-        this.gui.getFiller().fill(ItemBuilder.from(Material.BLACK_STAINED_GLASS_PANE).name(Component.text("")).asGuiItem());
+        this.gui.getFiller().fill(ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.text("")).asGuiItem());
     }
 
     public Gui getGui() {

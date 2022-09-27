@@ -29,9 +29,7 @@ public class InventoryClose implements Listener {
                         "<gray>You have to accept the privacy policy.</gray>\n" +
                         "<gray>Du musst der Datenschutzerklärung zustimmen.</gray>"));
             }
-            if (event.getView().title().toString().contains("Sprache")) {
 
-            }
 
         }
     }

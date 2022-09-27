@@ -1,26 +1,27 @@
 package dev.nachwahl.lobby.utils.language;
 
-import co.aikar.idb.DbRow;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import dev.nachwahl.lobby.Lobby;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.entity.Player;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 
 public class LanguageAPI {
+    public static final Language DEFAULT = Language.ENGLISH;
     private final Lobby lobby;
     private final HashMap<Language, HashMap<String, String>> messages = new HashMap<>();
     private final Cache<UUID, Language> languageCache = CacheBuilder.newBuilder()
@@ -31,29 +32,56 @@ public class LanguageAPI {
     public LanguageAPI(Lobby lobby) {
         this.lobby = lobby;
 
+        File languageFilesFolder = new File(this.lobby.getDataFolder(), "languageFiles");
+
+        if (!languageFilesFolder.exists()) {
+            this.lobby.getLogger().info("Creating not existing language folder: " + languageFilesFolder.getAbsolutePath());
+            languageFilesFolder.mkdirs();
+        } else {
+            this.lobby.getLogger().info("Found existing language folder: " + languageFilesFolder.getAbsolutePath());
+        }
+
         for (Language language : Language.values()) {
             this.messages.put(language, new HashMap<>());
 
             Properties properties = new Properties();
-            InputStream stream = Lobby.class.getClassLoader().getResourceAsStream("lang_" + language.getLang() + ".properties");
+            File languageFile = new File(languageFilesFolder, "lang_" + language.getLang() + ".properties");
+            InputStream stream;
+
+            if (!languageFile.exists()) {
+                stream = Lobby.class.getClassLoader().getResourceAsStream("lang_" + language.getLang() + ".properties");
+            } else {
+                stream = new FileInputStream(languageFile);
+            }
+
+            if (stream == null) {
+                this.lobby.getLogger().severe("Stream for language file of " + language.getLang() + " null!");
+                continue;
+            }
+
             properties.load(new InputStreamReader(stream, StandardCharsets.UTF_8));
             this.lobby.getLogger().info("Loading language file: " + "lang_" + language.getLang() + ".properties");
             properties.forEach((key, message) -> this.messages.get(language).put((String) key, (String) message));
         }
     }
 
-    private String getMessage(Language language, String messageKey) {
-        return this.messages.get(language).get(messageKey);
+    public Component getMessage(Language language, String messageKey, TagResolver... placeholders) {
+        if (this.messages.get(language).containsKey(messageKey)) {
+            return this.lobby.getMiniMessage().deserialize(this.messages.get(language).get(messageKey), placeholders);
+        } else if (this.messages.get(DEFAULT).containsKey(messageKey)) {
+            return this.lobby.getMiniMessage().deserialize(this.messages.get(DEFAULT).get(messageKey), placeholders);
+        } else {
+            return Component.text("Missing translation: " + messageKey);
+        }
     }
 
-    public void sendMessageToPlayer(Player player, String messageKey, TagResolver... placeholders) {
+    public void getLanguage(Player player, Consumer<Language> languageCallback) {
         Language cached = this.languageCache.getIfPresent(player.getUniqueId());
         if (cached != null) {
-            player.sendMessage(this.lobby.getMiniMessage().deserialize(getMessage(cached, messageKey), placeholders));
+            languageCallback.accept(cached);
             return;
         }
-
-        this.lobby.getDatabase().getFirstRowAsync("SELECT * FROM languages WHERE minecraftUUID = ?", player)
+        this.lobby.getDatabase().getFirstRowAsync("SELECT * FROM languages WHERE minecraftUUID = ?", player.getUniqueId().toString())
                 .thenAccept(dbRow -> {
                     Language language;
                     String selectedLanguage = dbRow.getString("language");
@@ -65,40 +93,42 @@ public class LanguageAPI {
                         } catch (IllegalArgumentException e) {
                             language = Language.ENGLISH;
                         }
-
-                        player.sendMessage(this.lobby.getMiniMessage().deserialize(getMessage(language, messageKey), placeholders));
+                        languageCallback.accept(language);
                     }
                 });
     }
 
+    public void getMessage(Player player, Consumer<Component> callback, String messageKey, TagResolver... placeholders) {
+        getLanguage(player, language -> callback.accept(getMessage(language, messageKey, placeholders)));
+    }
+
+    public void sendMessageToPlayer(Player player, String messageKey, TagResolver... placeholders) {
+        getMessage(player, player::sendMessage, messageKey, placeholders);
+    }
+
     public Language getLanguage(Player player) {
         Language language = this.languageCache.getIfPresent(player.getUniqueId());
-        if(language == null) {
+        if (language == null) {
             language = Language.ENGLISH;
         }
         return language;
     }
 
     public void setLanguage(Language language, Player player) {
-        try {
-            DbRow row = this.lobby.getDatabase().getFirstRow("SELECT * FROM languages WHERE minecraftUUID = ?", player.getUniqueId().toString());
+        this.lobby.getDatabase().getFirstRowAsync("SELECT * FROM languages WHERE minecraftUUID = ?", player.getUniqueId().toString()).thenAccept(row -> {
             if (row == null) {
                 this.lobby.getDatabase().executeUpdateAsync("INSERT INTO languages (minecraftUUID, language) VALUES (?, ?)", player.getUniqueId().toString(), language.getLang()).thenAccept(integer -> {
                     this.languageCache.put(player.getUniqueId(), language);
                     this.sendMessageToPlayer(player, "languageChanged");
+                    this.lobby.getHotbarItems().setHotbarItems(player);
                 });
             } else {
                 this.lobby.getDatabase().executeUpdateAsync("UPDATE languages SET language = ? WHERE minecraftUUID = ?", language.getLang(), player.getUniqueId().toString()).thenAccept(integer -> {
                     this.languageCache.put(player.getUniqueId(), language);
                     this.sendMessageToPlayer(player, "languageChanged");
+                    this.lobby.getHotbarItems().setHotbarItems(player);
                 });
             }
-
-
-        } catch (SQLException exception) {
-            exception.printStackTrace();
-        }
-
-
+        });
     }
 }
