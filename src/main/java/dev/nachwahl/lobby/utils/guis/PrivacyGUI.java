@@ -33,9 +33,9 @@ public class PrivacyGUI {
                 .name(mm.deserialize("<color:#a3ceff><u>Datenschutzerklärung</u> </color><dark_gray>-</dark_gray> <color:#a3ceff><u>Privacy policy</u></color>"))
                 .lore(
                         mm.deserialize("<gray>Durch das akzeptieren erklärst du dich </gray>"),
-                        mm.deserialize("<gray>mit unserer Datenschutzerkärung einverstanden.</gray>"),
+                        mm.deserialize("<gray>mit unserer Datenschutzerkärung und den AGB einverstanden.</gray>"),
                         Component.text(""),
-                        mm.deserialize("<gray>By accepting, you agree with our privacy policy.</gray>"),
+                        mm.deserialize("<gray>By accepting, you agree with our privacy policy and terms and conditions.</gray>"),
                         Component.text(""),
                         mm.deserialize("<gray><i>https://buildthe.earth/privacy</i></gray>")).asGuiItem());
 
@@ -44,8 +44,7 @@ public class PrivacyGUI {
                 .asGuiItem(event -> {
                     try {
                         this.lobby.getDatabase().executeInsert("INSERT INTO privacy (minecraftUUID) VALUES (?)", player.getUniqueId().toString());
-                        LanguageGUI languageGUI = new LanguageGUI(this.lobby, player);
-                        languageGUI.getGui().open(player);
+                        new LanguageGUI(this.lobby, player);
                     }
                     catch (SQLException exception) {
                         exception.printStackTrace();

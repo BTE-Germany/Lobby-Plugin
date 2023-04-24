@@ -5,3 +5,5 @@ mysql:
   username: root
   password: ""
 prefix: "<aqua><b>BTEG</b></aqua> <dark_gray>»</dark_gray>"
+server:
+  Plot: Plot-1

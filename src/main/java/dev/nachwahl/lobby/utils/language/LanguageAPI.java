@@ -83,6 +83,11 @@ public class LanguageAPI {
         }
         this.lobby.getDatabase().getFirstRowAsync("SELECT * FROM languages WHERE minecraftUUID = ?", player.getUniqueId().toString())
                 .thenAccept(dbRow -> {
+                    if(dbRow == null) {
+                        languageCallback.accept(Language.ENGLISH);
+                        return;
+                    }
+
                     Language language;
                     String selectedLanguage = dbRow.getString("language");
 
@@ -94,6 +99,8 @@ public class LanguageAPI {
                             language = Language.ENGLISH;
                         }
                         languageCallback.accept(language);
+                    } else {
+                        languageCallback.accept(Language.ENGLISH);
                     }
                 });
     }
