@@ -36,6 +36,8 @@ public class AccountGUI {
                     }));
 
 
+            // Player Visibility
+
             this.gui.setItem(3, 2,
                     ItemBuilder.from(Material.TINTED_GLASS).name(
                             this.lobby.getLanguageAPI().getMessage(language, "account.players.name")).asGuiItem()
@@ -68,16 +70,50 @@ public class AccountGUI {
                                 }));
             });
 
+            // Language Item
+
+            this.gui.setItem(3,4,ItemBuilder.skull().texture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOThkYWExZTNlZDk0ZmYzZTMzZTFkNGM2ZTQzZjAyNGM0N2Q3OGE1N2JhNGQzOGU3NWU3YzkyNjQxMDYifX19").name(this.lobby.getLanguageAPI().getMessage(language,"account.language.name")).asGuiItem());
+
             SkullBuilder languageItem = ItemBuilder.skull().texture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWU3ODk5YjQ4MDY4NTg2OTdlMjgzZjA4NGQ5MTczZmU0ODc4ODY0NTM3NzQ2MjZiMjRiZDhjZmVjYzc3YjNmIn19fQ==");
             if (this.lobby.getLanguageAPI().getLanguage(player).equals(Language.ENGLISH)) {
                 languageItem = ItemBuilder.skull().texture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGNhYzk3NzRkYTEyMTcyNDg1MzJjZTE0N2Y3ODMxZjY3YTEyZmRjY2ExY2YwY2I0YjM4NDhkZTZiYzk0YjQifX19");
             }
-            this.gui.setItem(2, 8,
+            this.gui.setItem(4, 4,
                     languageItem
-                            .name(this.lobby.getLanguageAPI().getMessage(language, "account.language.name"))
+                            .name(this.lobby.getLanguageAPI().getMessage(language, "language"))
                             .asGuiItem(event -> {
                                 new LanguageGUI(lobby, player);
                             }));
+
+            // Real Time
+
+
+            this.gui.setItem(3, 6,
+                    ItemBuilder.from(Material.CLOCK).name(
+                            this.lobby.getLanguageAPI().getMessage(language, "account.realtime.name")).asGuiItem()
+            );
+
+            this.lobby.getUserSettingsAPI().getBooleanSetting(player, "realTime", (setting) -> {
+                this.gui.setItem(4, 6,
+                        ItemBuilder.skull().texture(setting ? HEAD_ON : HEAD_OFF)
+                                .name(this.lobby.getLanguageAPI().getMessage(language, setting ? "account.on" : "account.off"))
+                                .asGuiItem(event -> {
+                                    this.lobby.getUserSettingsAPI().toggleSetting(player, "realTime", (i) -> {
+                                        this.lobby.getUserSettingsAPI().getBooleanSetting(player, "realTime", (newSetting) -> {
+                                            this.gui.updateItem(4, 6, ItemBuilder.skull().texture(newSetting ? HEAD_ON : HEAD_OFF).name(this.lobby.getLanguageAPI().getMessage(language, newSetting ? "account.on" : "account.off")).build());
+
+                                            Bukkit.getOnlinePlayers().forEach((p) -> {
+                                                if (!newSetting) {
+                                                    player.resetPlayerTime();
+                                                } else {
+                                                    player.setPlayerTime(lobby.getRealTime().getTime(),false);
+                                                }
+                                            });
+
+                                        });
+                                    });
+                                }));
+            });
 
             this.gui.getFiller().fill(ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());
             Bukkit.getScheduler().runTask(this.lobby, () -> this.gui.open(player));

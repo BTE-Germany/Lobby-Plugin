@@ -5,5 +5,8 @@ mysql:
   username: root
   password: ""
 prefix: "<aqua><b>BTEG</b></aqua> <dark_gray>»</dark_gray>"
+time:
+  timezone: "Europe/Berlin"
+  updateInterval: 60
 server:
   Plot: Plot-1

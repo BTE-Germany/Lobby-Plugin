@@ -12,10 +12,7 @@ import dev.nachwahl.lobby.events.InventoryClose;
 import dev.nachwahl.lobby.events.ItemClick;
 import dev.nachwahl.lobby.events.PlayerEvents;
 import dev.nachwahl.lobby.storage.Database;
-import dev.nachwahl.lobby.utils.BungeeConnector;
-import dev.nachwahl.lobby.utils.HotbarItems;
-import dev.nachwahl.lobby.utils.LocationAPI;
-import dev.nachwahl.lobby.utils.UserSettingsAPI;
+import dev.nachwahl.lobby.utils.*;
 import dev.nachwahl.lobby.utils.language.LanguageAPI;
 import lombok.Getter;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -33,6 +30,7 @@ import java.util.ArrayList;
 
 @Getter
 public final class Lobby extends JavaPlugin implements PluginMessageListener {
+    @Getter
     private static Lobby instance;
     private PaperCommandManager manager;
     private Database database;
@@ -42,6 +40,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
     private LocationAPI locationAPI;
     private UserSettingsAPI userSettingsAPI;
     private BungeeConnector bungeeConnector;
+    private RealTime realTime;
     private final ArrayList<Player> editModePlayers = new ArrayList<>();
 
     @Override
@@ -75,6 +74,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         this.locationAPI = new LocationAPI(this);
         this.locationAPI = new LocationAPI(this);
         this.userSettingsAPI = new UserSettingsAPI(this);
+        this.realTime = new RealTime(this.getConfig().getString("time.timezone"),this.getConfig().getInt("time.updateInterval"),Bukkit.getWorld("world"));
 
         this.bungeeConnector = new BungeeConnector(this);
 

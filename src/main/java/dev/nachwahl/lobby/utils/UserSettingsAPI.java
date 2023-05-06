@@ -59,6 +59,16 @@ public class UserSettingsAPI {
         });
     }
 
+    public void setSettingIfNotExistant(Player player, String key, String value, Consumer<Integer> callback) {
+        getSetting(player,key,(r) -> {
+            if(r==null) {
+                setSetting(player,key,value,callback);
+            } else {
+                callback.accept(null);
+            }
+        });
+    }
+
     public void getSetting(Player player, String key, Consumer<String> callback) {
         try {
             String cache = settingsCache.getIfPresent(new UserSetting(player.getUniqueId(), key));
@@ -66,7 +76,7 @@ public class UserSettingsAPI {
             if (cache == null) {
                 this.lobby.getDatabase().getFirstRowAsync("SELECT * FROM playersettings WHERE uuid = ? AND `key` = ?", player.getUniqueId().toString(), key).thenAccept(dbRow -> {
                     if (dbRow == null) {
-                        callback.accept(dbRow.getString("value"));
+                        callback.accept(null);
                     } else {
                         settingsCache.put(new UserSetting(player.getUniqueId(), key), dbRow.getString("value"));
                         callback.accept(dbRow.getString("value"));
@@ -106,7 +116,8 @@ public class UserSettingsAPI {
     }
 
     public void setDefaultSettings(Player player) {
-        this.setSetting(player, "playerVisibility", "1", (i) -> {});
+        this.setSettingIfNotExistant(player, "playerVisibility", "1", (i) -> {});
+        this.setSettingIfNotExistant(player, "realTime", "1", (i) -> {});
     }
 
 

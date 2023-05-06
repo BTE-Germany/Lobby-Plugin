@@ -46,9 +46,9 @@ public class PlayerEvents implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         DbRow user = this.lobby.getDatabase().getFirstRow("SELECT * FROM privacy WHERE minecraftUUID = ?", player.getUniqueId().toString());
+        this.lobby.getUserSettingsAPI().setDefaultSettings(player);
         if (user == null) {
             System.out.println("asd");
-            this.lobby.getUserSettingsAPI().setDefaultSettings(player);
             new PrivacyGUI(player, this.lobby).getGui().open(player);
         } else {
         this.lobby.getHotbarItems().setHotbarItems(player);
