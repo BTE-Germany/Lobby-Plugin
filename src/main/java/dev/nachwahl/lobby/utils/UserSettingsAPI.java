@@ -118,6 +118,7 @@ public class UserSettingsAPI {
     public void setDefaultSettings(Player player) {
         this.setSettingIfNotExistant(player, "playerVisibility", "1", (i) -> {});
         this.setSettingIfNotExistant(player, "realTime", "1", (i) -> {});
+        this.setSettingIfNotExistant(player, "playerPickup", "1", (i) -> {});
     }
 
 

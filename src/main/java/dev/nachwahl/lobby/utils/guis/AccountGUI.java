@@ -31,7 +31,7 @@ public class AccountGUI {
                     .create();
 
             this.gui.setItem(1, 5, ItemBuilder.skull().owner(Bukkit.getOfflinePlayer(player.getUniqueId()))
-                    .name(this.lobby.getLanguageAPI().getMessage(language, "account.skull.name"))
+                    .name(this.lobby.getLanguageAPI().getMessage(language, "account.skull.name",Placeholder.parsed("name",player.getName())))
                     .asGuiItem(event -> {
                     }));
 
@@ -87,7 +87,6 @@ public class AccountGUI {
 
             // Real Time
 
-
             this.gui.setItem(3, 6,
                     ItemBuilder.from(Material.CLOCK).name(
                             this.lobby.getLanguageAPI().getMessage(language, "account.realtime.name")).asGuiItem()
@@ -115,8 +114,30 @@ public class AccountGUI {
                                 }));
             });
 
+            // Pickup Item
+
+            this.gui.setItem(3, 8,
+                    ItemBuilder.from(Material.PLAYER_HEAD).name(
+                            this.lobby.getLanguageAPI().getMessage(language, "account.pickup.name")).asGuiItem()
+            );
+
+            this.lobby.getUserSettingsAPI().getBooleanSetting(player, "playerPickup", (setting) -> {
+                this.gui.setItem(4, 8,
+                        ItemBuilder.skull().texture(setting ? HEAD_ON : HEAD_OFF)
+                                .name(this.lobby.getLanguageAPI().getMessage(language, setting ? "account.on" : "account.off"))
+                                .asGuiItem(event -> {
+                                    this.lobby.getUserSettingsAPI().toggleSetting(player, "playerPickup", (i) -> {
+                                        this.lobby.getUserSettingsAPI().getBooleanSetting(player, "playerPickup", (newSetting) -> {
+                                            this.gui.updateItem(4, 8, ItemBuilder.skull().texture(newSetting ? HEAD_ON : HEAD_OFF).name(this.lobby.getLanguageAPI().getMessage(language, newSetting ? "account.on" : "account.off")).build());
+                                        });
+                                    });
+                                }));
+            });
+
             this.gui.getFiller().fill(ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());
             Bukkit.getScheduler().runTask(this.lobby, () -> this.gui.open(player));
+
+
 
         });
     }
