@@ -63,9 +63,8 @@ public class PlayerEvents implements Listener {
         player.setFoodLevel(20);
         player.setHealth(20);
         this.lobby.getLocationAPI().teleportToLocation(player, "spawn", false);
-        if(player.hasPermission("lobby.fly")) {
-            player.setAllowFlight(true);
-        }
+
+        player.setAllowFlight(true);
 
         this.lobby.getUserSettingsAPI().getBooleanSetting(player,"playerVisibility",(value) -> {
             if(!value) {

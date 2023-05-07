@@ -6,10 +6,7 @@ import com.google.common.io.ByteStreams;
 import dev.nachwahl.lobby.commands.LanguageCommand;
 import dev.nachwahl.lobby.commands.LobbyManageCommand;
 import dev.nachwahl.lobby.commands.LocationCommand;
-import dev.nachwahl.lobby.events.EnvironmentEvents;
-import dev.nachwahl.lobby.events.InventoryClose;
-import dev.nachwahl.lobby.events.ItemClick;
-import dev.nachwahl.lobby.events.PlayerEvents;
+import dev.nachwahl.lobby.events.*;
 import dev.nachwahl.lobby.storage.Database;
 import dev.nachwahl.lobby.utils.*;
 import dev.nachwahl.lobby.utils.language.LanguageAPI;
@@ -59,6 +56,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         Bukkit.getPluginManager().registerEvents(new InventoryClose(this), this);
         Bukkit.getPluginManager().registerEvents(new ItemClick(this), this);
         Bukkit.getPluginManager().registerEvents(new EnvironmentEvents(this), this);
+        Bukkit.getPluginManager().registerEvents(new DoubleJumpEvent(this), this);
 
         this.miniMessage = MiniMessage.builder()
                 .tags(TagResolver.builder()

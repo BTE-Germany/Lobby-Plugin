@@ -36,10 +36,8 @@ public class LobbyManageCommand extends BaseCommand {
            this.lobby.getLanguageAPI().sendMessageToPlayer(player, "manage.editMode.disable");
            this.lobby.getHotbarItems().setHotbarItems(player);
             player.setGameMode(GameMode.ADVENTURE);
-            if(player.hasPermission("lobby.fly")) {
-                player.setAllowFlight(true);
-            }
-        player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+            player.setAllowFlight(true);
+            player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
         } else {
             this.lobby.getEditModePlayers().add(player);
             this.lobby.getLanguageAPI().sendMessageToPlayer(player, "manage.editMode.enable");
