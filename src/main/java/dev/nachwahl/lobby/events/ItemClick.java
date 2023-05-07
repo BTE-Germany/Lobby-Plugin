@@ -5,6 +5,7 @@ import dev.nachwahl.lobby.utils.guis.AccountGUI;
 import dev.nachwahl.lobby.utils.guis.NavigatorGUI;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -37,9 +38,8 @@ public class ItemClick implements Listener {
                 }
             });
         }
-
-        if(event.getAction() == Action.LEFT_CLICK_AIR) {
-            if(player.getPassengers().size()==1) {
+        if(event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
+            if(player.getPassengers().size()>=1) {
                 Player passenger = (Player)  player.getPassengers().get(0);
                 player.removePassenger(passenger);
 
@@ -47,8 +47,6 @@ public class ItemClick implements Listener {
                 passenger.setVelocity(v);
             }
         }
-
-
     }
 
     @EventHandler
@@ -59,7 +57,7 @@ public class ItemClick implements Listener {
             Lobby.getInstance().getUserSettingsAPI().getBooleanSetting(passenger,"playerPickup",(result) -> {
                 if(!result)
                     return;
-                player.addPassenger(passenger);
+                Bukkit.getScheduler().runTask(Lobby.getInstance(),() -> player.addPassenger(passenger));
             });
         }
     }
