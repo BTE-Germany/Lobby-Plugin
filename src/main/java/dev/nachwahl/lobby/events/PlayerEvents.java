@@ -68,7 +68,7 @@ public class PlayerEvents implements Listener {
         }
 
         this.lobby.getUserSettingsAPI().getBooleanSetting(player,"playerVisibility",(value) -> {
-            if(value==false) {
+            if(!value) {
                 Bukkit.getOnlinePlayers().forEach((p) -> player.hidePlayer(this.lobby,p));
             }
         });}

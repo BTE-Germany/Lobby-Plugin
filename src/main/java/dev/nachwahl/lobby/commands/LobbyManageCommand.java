@@ -14,7 +14,7 @@ import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@CommandAlias("lobbymanage|managelobby|ml")
+@CommandAlias("lobbymanage|managelobby|ml|lm")
 public class LobbyManageCommand extends BaseCommand {
     @Dependency
     private Lobby lobby;
@@ -36,6 +36,9 @@ public class LobbyManageCommand extends BaseCommand {
            this.lobby.getLanguageAPI().sendMessageToPlayer(player, "manage.editMode.disable");
            this.lobby.getHotbarItems().setHotbarItems(player);
             player.setGameMode(GameMode.ADVENTURE);
+            if(player.hasPermission("lobby.fly")) {
+                player.setAllowFlight(true);
+            }
         player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
         } else {
             this.lobby.getEditModePlayers().add(player);
