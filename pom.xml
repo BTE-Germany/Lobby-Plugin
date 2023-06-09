@@ -120,6 +120,10 @@
             <id>repo</id>
             <url>https://repo.mattstudios.me/artifactory/public/</url>
         </repository>
+        <repository>
+            <id>jitpack</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -158,6 +162,12 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.24</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.plan-player-analytics</groupId>
+            <artifactId>Plan</artifactId>
+            <version>5.5.2391</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

@@ -4,3 +4,5 @@ main: dev.nachwahl.lobby.Lobby
 api-version: 1.19
 authors: [ Nachwahl,Nudlsupp ]
 website: https://bte-germany.de
+softdepend:
+  - Plan

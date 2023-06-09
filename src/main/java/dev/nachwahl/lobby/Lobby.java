@@ -10,6 +10,8 @@ import dev.nachwahl.lobby.events.*;
 import dev.nachwahl.lobby.storage.Database;
 import dev.nachwahl.lobby.utils.*;
 import dev.nachwahl.lobby.utils.language.LanguageAPI;
+import dev.nachwahl.lobby.utils.plan.PlanIntegration;
+import dev.nachwahl.lobby.utils.plan.QueryAPIAccessor;
 import lombok.Getter;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -21,6 +23,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Getter
 public final class Lobby extends JavaPlugin implements PluginMessageListener {
@@ -37,6 +40,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
     private UserSettingsAPI userSettingsAPI;
     private BungeeConnector bungeeConnector;
     private RealTime realTime;
+    private QueryAPIAccessor planQuery;
 
     @Override
     public void onEnable() {
@@ -71,6 +75,14 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         this.locationAPI = new LocationAPI(this);
         this.userSettingsAPI = new UserSettingsAPI(this);
         this.realTime = new RealTime(this.getConfig().getString("time.timezone"), this.getConfig().getInt("time.updateInterval"), Bukkit.getWorld("world"));
+
+        try {
+            Optional<QueryAPIAccessor> optionalQueryAPIAccessor = new PlanIntegration().hookIntoPlan();
+            planQuery = optionalQueryAPIAccessor.get();
+        } catch (Exception e) {
+            Bukkit.getLogger().info("Plan ist nicht installiert.");
+            Bukkit.getPluginManager().disablePlugin(this);
+        }
 
         this.bungeeConnector = new BungeeConnector(this);
 
