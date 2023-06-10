@@ -6,12 +6,14 @@ import com.google.common.io.ByteStreams;
 import dev.nachwahl.lobby.commands.LanguageCommand;
 import dev.nachwahl.lobby.commands.LobbyManageCommand;
 import dev.nachwahl.lobby.commands.LocationCommand;
+import dev.nachwahl.lobby.commands.VanishCommand;
 import dev.nachwahl.lobby.events.*;
 import dev.nachwahl.lobby.storage.Database;
 import dev.nachwahl.lobby.utils.*;
 import dev.nachwahl.lobby.utils.language.LanguageAPI;
 import dev.nachwahl.lobby.utils.plan.PlanIntegration;
 import dev.nachwahl.lobby.utils.plan.QueryAPIAccessor;
+import dev.nachwahl.lobby.utils.plan.user.User;
 import lombok.Getter;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -24,6 +26,7 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Getter
 public final class Lobby extends JavaPlugin implements PluginMessageListener {
@@ -41,6 +44,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
     private BungeeConnector bungeeConnector;
     private RealTime realTime;
     private QueryAPIAccessor planQuery;
+    private Vanish vanish;
 
     @Override
     public void onEnable() {
@@ -55,6 +59,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         this.manager.registerCommand(new LanguageCommand());
         this.manager.registerCommand(new LobbyManageCommand());
         this.manager.registerCommand(new LocationCommand());
+        this.manager.registerCommand(new VanishCommand());
 
         Bukkit.getPluginManager().registerEvents(new PlayerEvents(this), this);
         Bukkit.getPluginManager().registerEvents(new InventoryClose(this), this);
@@ -75,6 +80,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         this.locationAPI = new LocationAPI(this);
         this.userSettingsAPI = new UserSettingsAPI(this);
         this.realTime = new RealTime(this.getConfig().getString("time.timezone"), this.getConfig().getInt("time.updateInterval"), Bukkit.getWorld("world"));
+        this.vanish = new Vanish();
 
         try {
             Optional<QueryAPIAccessor> optionalQueryAPIAccessor = new PlanIntegration().hookIntoPlan();
@@ -83,6 +89,17 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
             Bukkit.getLogger().info("Plan ist nicht installiert.");
             Bukkit.getPluginManager().disablePlugin(this);
         }
+
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+        System.out.println("Testing: Top Playtime:");
+        for(User user:planQuery.getTopPlaytimeOnAllServers(TimeUnit.DAYS.toMillis(30L),0)) {
+            System.out.println(user.getPlayer()+": "+user.getPlaytime());
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
 
         this.bungeeConnector = new BungeeConnector(this);
 

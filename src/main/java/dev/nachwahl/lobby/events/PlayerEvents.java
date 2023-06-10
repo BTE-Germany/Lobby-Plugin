@@ -76,6 +76,7 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
         event.quitMessage(Component.empty());
+        Lobby.getInstance().getVanish().remove(event.getPlayer());
     }
 
     @EventHandler
