@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 
 
 public class LanguageAPI {
-    public static final Language DEFAULT = Language.ENGLISH;
+    public static final Language DEFAULT = Language.GERMAN;
     private final Lobby lobby;
     private final HashMap<Language, HashMap<String, String>> messages = new HashMap<>();
     private final Cache<UUID, Language> languageCache = CacheBuilder.newBuilder()
