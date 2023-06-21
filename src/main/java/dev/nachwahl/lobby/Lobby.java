@@ -3,11 +3,15 @@ package dev.nachwahl.lobby;
 import co.aikar.commands.PaperCommandManager;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
-import dev.nachwahl.lobby.commands.LanguageCommand;
-import dev.nachwahl.lobby.commands.LobbyManageCommand;
-import dev.nachwahl.lobby.commands.LocationCommand;
-import dev.nachwahl.lobby.commands.VanishCommand;
+import dev.nachwahl.lobby.commands.*;
 import dev.nachwahl.lobby.events.*;
+import dev.nachwahl.lobby.quests.ArenaManager;
+import dev.nachwahl.lobby.quests.PoolManager;
+import dev.nachwahl.lobby.quests.QuestManager;
+import dev.nachwahl.lobby.quests.listener.BlockBreakListener;
+import dev.nachwahl.lobby.quests.listener.BlockPlaceEvent;
+import dev.nachwahl.lobby.quests.listener.InteractListener;
+import dev.nachwahl.lobby.quests.listener.JoinListener;
 import dev.nachwahl.lobby.storage.Database;
 import dev.nachwahl.lobby.utils.*;
 import dev.nachwahl.lobby.utils.language.LanguageAPI;
@@ -21,6 +25,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
@@ -46,6 +51,10 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
     private QueryAPIAccessor planQuery;
     private Vanish vanish;
 
+    private QuestManager questManager;
+    private PoolManager poolManager;
+    private ArenaManager arenaManager;
+
     @Override
     public void onEnable() {
         instance = this;
@@ -56,16 +65,12 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         Bukkit.getLogger().info("Das Lobby Plugin wurde aktiviert.");
         this.manager = new PaperCommandManager(this);
 
-        this.manager.registerCommand(new LanguageCommand());
-        this.manager.registerCommand(new LobbyManageCommand());
-        this.manager.registerCommand(new LocationCommand());
-        this.manager.registerCommand(new VanishCommand());
+        questManager = new QuestManager();
+        poolManager = new PoolManager();
+        arenaManager = new ArenaManager();
 
-        Bukkit.getPluginManager().registerEvents(new PlayerEvents(this), this);
-        Bukkit.getPluginManager().registerEvents(new InventoryClose(this), this);
-        Bukkit.getPluginManager().registerEvents(new ItemClick(this), this);
-        Bukkit.getPluginManager().registerEvents(new EnvironmentEvents(this), this);
-        Bukkit.getPluginManager().registerEvents(new DoubleJumpEvent(this), this);
+        registerListeners();
+        registerCommand();
 
         this.miniMessage = MiniMessage.builder()
                 .tags(TagResolver.builder()
@@ -107,6 +112,9 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
 
 
+        questManager.setPools();
+
+
     }
 
     @Override
@@ -116,6 +124,34 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         this.getServer().getMessenger().unregisterOutgoingPluginChannel(this);
         this.getServer().getMessenger().unregisterIncomingPluginChannel(this);
     }
+
+    public void registerListeners(){
+        PluginManager pluginManager = Bukkit.getPluginManager();
+        pluginManager.registerEvents(new PlayerEvents(this), this);
+        pluginManager.registerEvents(new InventoryClose(this), this);
+        pluginManager.registerEvents(new ItemClick(this), this);
+        pluginManager.registerEvents(new EnvironmentEvents(this), this);
+        pluginManager.registerEvents(new DoubleJumpEvent(this), this);
+
+        //Quests
+
+        pluginManager.registerEvents(new JoinListener(), this);
+        pluginManager.registerEvents(new BlockBreakListener(), this);
+        pluginManager.registerEvents(new InteractListener(), this);
+        pluginManager.registerEvents(new BlockPlaceEvent(), this);
+
+    }
+
+    public void registerCommand(){
+        this.manager.registerCommand(new LanguageCommand());
+        this.manager.registerCommand(new LobbyManageCommand());
+        this.manager.registerCommand(new LocationCommand());
+        this.manager.registerCommand(new VanishCommand());
+        //Objects.requireNonNull(getCommand("quest")).setExecutor(new Quests());
+        this.manager.registerCommand(new QuestsCommand());
+    }
+
+
 
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] message) {
