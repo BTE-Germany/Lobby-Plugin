@@ -27,27 +27,34 @@ public class QuestsCommand extends BaseCommand {
     public boolean onCommand(CommandSender sender, String[] args) {
         if(sender instanceof Player){
             Player player = (Player) sender;
-            if(args[0].equals("mine")){
-                Quest quest = Lobby.getInstance().getPoolManager().getFreeQuest(QuestType.MINE);
-                if(quest != null){
-                    if(quest instanceof MineQuest){
-                        MineQuest mineQuest = (MineQuest) quest;
-                        mineQuest.startQuest(player);
+            if(Lobby.getInstance().getQuestManager().getQuestFromPlayer(player) != null){
+                player.sendMessage("Du bist bereits in einer Quest!");
+                return false;
+            }else{
+                Quest quest;
+                if(args[0].equals("mine")){
+                    quest = Lobby.getInstance().getPoolManager().getFreeQuest(QuestType.MINE);
+                    if(quest != null){
+                        if(quest instanceof MineQuest){
+                            MineQuest mineQuest = (MineQuest) quest;
+                            mineQuest.startQuest(player);
+                        }
+                    }else{
+                        player.sendMessage(MineQuest.prefix + "Konnte kein freies Spiel finden, Du wurdest der Warteschlange hinzugefügt.");
                     }
-                }else{
-                    player.sendMessage(MineQuest.prefix + "Konnte kein freies Spiel finden, Du wurdest der Warteschlange hinzugefügt.");
-                }
-            }else if(args[0].equals("car")){
-                Quest quest = Lobby.getInstance().getPoolManager().getFreeQuest(QuestType.CAR);
-                if(quest != null){
-                    if(quest instanceof CarQuest){
-                        CarQuest carQuest = (CarQuest) quest;
-                        carQuest.startQuest(player);
+                }else if(args[0].equals("car")){
+                    quest = Lobby.getInstance().getPoolManager().getFreeQuest(QuestType.CAR);
+                    if(quest != null){
+                        if(quest instanceof CarQuest){
+                            CarQuest carQuest = (CarQuest) quest;
+                            carQuest.startQuest(player);
+                        }
+                    }else{
+                        player.sendMessage(MineQuest.prefix + "Konnte kein freies Spiel finden, Du wurdest der Warteschlange hinzugefügt.");
                     }
-                }else{
-                    player.sendMessage(MineQuest.prefix + "Konnte kein freies Spiel finden, Du wurdest der Warteschlange hinzugefügt.");
                 }
             }
+
             return false;
         }else{
             sender.sendMessage("Du musst ein Spieler sein, um diesen Befehl ausführen zu können.");
