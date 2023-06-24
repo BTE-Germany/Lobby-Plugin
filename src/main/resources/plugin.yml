@@ -6,3 +6,5 @@ authors: [ Nachwahl,Nudlsupp ]
 website: https://bte-germany.de
 softdepend:
   - Plan
+depend:
+  - HolographicDisplays

@@ -128,12 +128,14 @@ public class LanguageAPI {
                     this.languageCache.put(player.getUniqueId(), language);
                     this.sendMessageToPlayer(player, "languageChanged");
                     this.lobby.getHotbarItems().setHotbarItems(player);
+                    this.lobby.getHologramAPI().showHolograms(player,language);
                 });
             } else {
                 this.lobby.getDatabase().executeUpdateAsync("UPDATE languages SET language = ? WHERE minecraftUUID = ?", language.getLang(), player.getUniqueId().toString()).thenAccept(integer -> {
                     this.languageCache.put(player.getUniqueId(), language);
                     this.sendMessageToPlayer(player, "languageChanged");
                     this.lobby.getHotbarItems().setHotbarItems(player);
+                    this.lobby.getHologramAPI().showHolograms(player,language);
                 });
             }
         });
