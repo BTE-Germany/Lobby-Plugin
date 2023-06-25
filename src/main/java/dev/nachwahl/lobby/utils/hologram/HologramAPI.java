@@ -4,6 +4,7 @@ import dev.nachwahl.lobby.Lobby;
 import dev.nachwahl.lobby.utils.language.Language;
 import lombok.Getter;
 import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
+import me.filoghost.holographicdisplays.api.Position;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -56,7 +57,7 @@ public class HologramAPI {
 
             if(world == null) return;
 
-            holograms.add(new Hologram(world.getBlockAt(Integer.parseInt(location[1]), Integer.parseInt(location[2]), Integer.parseInt(location[3])).getLocation(), englishText, germanText));
+            holograms.add(new Hologram(Position.of(world,Double.parseDouble(location[1]),Double.parseDouble(location[2]),Double.parseDouble(location[3])), englishText, germanText));
         }
     }
 
