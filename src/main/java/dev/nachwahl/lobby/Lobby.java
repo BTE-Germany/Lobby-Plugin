@@ -136,6 +136,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         pluginManager.registerEvents(new ItemClick(this), this);
         pluginManager.registerEvents(new EnvironmentEvents(this), this);
         pluginManager.registerEvents(new DoubleJumpEvent(this), this);
+        pluginManager.registerEvents(new MiniGameBlockInteractEvent(), this);
 
         //Quests
 
@@ -153,6 +154,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         this.manager.registerCommand(new VanishCommand());
         //Objects.requireNonNull(getCommand("quest")).setExecutor(new Quests());
         this.manager.registerCommand(new QuestsCommand());
+        this.manager.registerCommand(new RegisterMiniGameBlockCommand());
     }
 
 

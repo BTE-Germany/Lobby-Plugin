@@ -40,8 +40,8 @@ public class LocationAPI {
                 if (dbRow == null) {
                     callback.accept(new Location(this.lobby.getServer().getWorlds().get(0), 0, 0, 0));
                 } else {
-                    locationCache.put(name, parseLocation(dbRow.get("location")));
-                    callback.accept(parseLocation(dbRow.get("location")));
+                    locationCache.put(name, parseLocation((String) dbRow.get("location")));
+                    callback.accept(parseLocation((String) dbRow.get("location")));
                 }
             });
         } else {
@@ -96,5 +96,11 @@ public class LocationAPI {
         return loc;
     }
 
+    public String parseLocation(Location location) {
+        return parseLocation(location, ";");
+    }
 
+    public String parseLocation(Location location, String splitter) {
+        return location.getWorld().getName()+splitter+location.getBlockX()+splitter+location.getBlockY()+splitter+location.getBlockZ();
+    }
 }
