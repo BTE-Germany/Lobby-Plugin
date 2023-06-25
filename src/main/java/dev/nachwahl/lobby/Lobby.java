@@ -52,6 +52,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
     private QueryAPIAccessor planQuery;
     private Vanish vanish;
     private HologramAPI hologramAPI;
+    private MiniGameBlockUtil miniGameBlockUtil;
 
     private QuestManager questManager;
     private PoolManager poolManager;
@@ -90,6 +91,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         this.vanish = new Vanish();
         this.hologramAPI = new HologramAPI(this);
         this.hologramAPI.loadData();
+        this.miniGameBlockUtil = new MiniGameBlockUtil(this);
 
         try {
             Optional<QueryAPIAccessor> optionalQueryAPIAccessor = new PlanIntegration().hookIntoPlan();
