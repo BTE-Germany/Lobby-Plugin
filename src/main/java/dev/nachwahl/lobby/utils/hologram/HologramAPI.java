@@ -1,0 +1,108 @@
+package dev.nachwahl.lobby.utils.hologram;
+
+import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.utils.language.Language;
+import lombok.Getter;
+import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Objects;
+
+
+public class HologramAPI {
+
+
+    @Getter
+    private HolographicDisplaysAPI api;
+    private FileConfiguration dataFile;
+
+    @Getter
+    private ArrayList<Hologram> holograms;
+
+    private final Lobby plugin;
+
+    public HologramAPI(Lobby plugin) {
+        this.plugin = plugin;
+        if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
+            api = HolographicDisplaysAPI.get(plugin);
+            holograms = new ArrayList<>();
+        }
+    }
+
+    public void loadData() {
+        if(holograms.size()>0) clearHolograms();
+
+        File file = new File(plugin.getDataFolder() + File.separator + "holograms.yml");
+        if (!file.exists()) {
+            file = createFile();
+        }
+        dataFile = YamlConfiguration.loadConfiguration(file);
+        ConfigurationSection sec = dataFile.getConfigurationSection("holograms");
+
+        assert sec != null;
+        for (String key : sec.getKeys(false)) {
+            String[] location = dataFile.getString("holograms." + key + ".location").split("/");
+            String[] englishText = dataFile.getString("holograms." + key + ".english").split(";");
+            String[] germanText = dataFile.getString("holograms."+ key + ".german").split(";");
+            World world = Bukkit.getWorld(location[0]);
+
+            if(world == null) return;
+
+            holograms.add(new Hologram(world.getBlockAt(Integer.parseInt(location[1]), Integer.parseInt(location[2]), Integer.parseInt(location[3])).getLocation(), englishText, germanText));
+        }
+    }
+
+    private void saveFile() throws IOException {
+        File file = new File(plugin.getDataFolder() + File.separator + "holograms.yml");
+        dataFile.save(file);
+        dataFile = YamlConfiguration.loadConfiguration(file);
+    }
+
+    private File createFile() {
+        File file = new File(plugin.getDataFolder() + File.separator + "holograms.yml");
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+                dataFile = YamlConfiguration.loadConfiguration(file);
+                dataFile.set("holograms.example.location", "world/10/100/10");
+                dataFile.set("holograms.example.english", "Test Hologram;");
+                dataFile.set("holograms.example.german", "Test Hologram in deutsch;");
+                saveFile();
+                return file;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    private void clearHolograms() {
+        for(Hologram hologram: holograms) {
+            hologram.delete();
+        }
+        holograms = new ArrayList<>();
+    }
+
+    public void showHolograms(Player player) {
+        showHolograms(player,Lobby.getInstance().getLanguageAPI().getLanguage(player));
+    }
+    public void showHolograms(Player player, Language language) {
+        for(Hologram hologram: holograms) {
+            hologram.setPlayer(player,language);
+        }
+    }
+
+    public void hideHolograms(Player player) {
+        for(Hologram hologram: holograms) {
+            hologram.removePlayer(player);
+        }
+    }
+}

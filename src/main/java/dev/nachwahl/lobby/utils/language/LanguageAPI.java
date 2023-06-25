@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 
 
 public class LanguageAPI {
-    public static final Language DEFAULT = Language.ENGLISH;
+    public static final Language DEFAULT = Language.GERMAN;
     private final Lobby lobby;
     private final HashMap<Language, HashMap<String, String>> messages = new HashMap<>();
     private final Cache<UUID, Language> languageCache = CacheBuilder.newBuilder()
@@ -128,12 +128,14 @@ public class LanguageAPI {
                     this.languageCache.put(player.getUniqueId(), language);
                     this.sendMessageToPlayer(player, "languageChanged");
                     this.lobby.getHotbarItems().setHotbarItems(player);
+                    this.lobby.getHologramAPI().showHolograms(player,language);
                 });
             } else {
                 this.lobby.getDatabase().executeUpdateAsync("UPDATE languages SET language = ? WHERE minecraftUUID = ?", language.getLang(), player.getUniqueId().toString()).thenAccept(integer -> {
                     this.languageCache.put(player.getUniqueId(), language);
                     this.sendMessageToPlayer(player, "languageChanged");
                     this.lobby.getHotbarItems().setHotbarItems(player);
+                    this.lobby.getHologramAPI().showHolograms(player,language);
                 });
             }
         });

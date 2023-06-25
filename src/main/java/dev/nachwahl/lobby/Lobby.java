@@ -14,6 +14,7 @@ import dev.nachwahl.lobby.quests.listener.InteractListener;
 import dev.nachwahl.lobby.quests.listener.JoinListener;
 import dev.nachwahl.lobby.storage.Database;
 import dev.nachwahl.lobby.utils.*;
+import dev.nachwahl.lobby.utils.hologram.HologramAPI;
 import dev.nachwahl.lobby.utils.language.LanguageAPI;
 import dev.nachwahl.lobby.utils.plan.PlanIntegration;
 import dev.nachwahl.lobby.utils.plan.QueryAPIAccessor;
@@ -50,6 +51,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
     private RealTime realTime;
     private QueryAPIAccessor planQuery;
     private Vanish vanish;
+    private HologramAPI hologramAPI;
 
     private QuestManager questManager;
     private PoolManager poolManager;
@@ -86,6 +88,8 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         this.userSettingsAPI = new UserSettingsAPI(this);
         this.realTime = new RealTime(this.getConfig().getString("time.timezone"), this.getConfig().getInt("time.updateInterval"), Bukkit.getWorld("world"));
         this.vanish = new Vanish();
+        this.hologramAPI = new HologramAPI(this);
+        this.hologramAPI.loadData();
 
         try {
             Optional<QueryAPIAccessor> optionalQueryAPIAccessor = new PlanIntegration().hookIntoPlan();

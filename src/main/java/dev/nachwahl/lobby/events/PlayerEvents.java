@@ -48,7 +48,6 @@ public class PlayerEvents implements Listener {
         DbRow user = this.lobby.getDatabase().getFirstRow("SELECT * FROM privacy WHERE minecraftUUID = ?", player.getUniqueId().toString());
         this.lobby.getUserSettingsAPI().setDefaultSettings(player);
         if (user == null) {
-            System.out.println("asd");
             new PrivacyGUI(player, this.lobby).getGui().open(player);
         } else {
         this.lobby.getHotbarItems().setHotbarItems(player);
@@ -58,6 +57,7 @@ public class PlayerEvents implements Listener {
                     this.lobby.getLanguageAPI().getMessage(language, "welcomeTitle"),
                     this.lobby.getLanguageAPI().getMessage(language, "welcomeSubtitle"));
             player.showTitle(title);
+            this.lobby.getHologramAPI().showHolograms(player,language);
         });
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
         player.setFoodLevel(20);
