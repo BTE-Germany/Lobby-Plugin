@@ -55,12 +55,12 @@ public class ItemClick implements Listener {
         if((event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_BLOCK) && Objects.equals(event.getHand(), EquipmentSlot.HAND)){
 
             Block block = event.getClickedBlock();
-            Location youtube = new Location(block.getWorld(),-5, 178, 10);
-            Location twitch = new Location(block.getWorld(),-3,178,9);
-            Location tiktok = new Location(block.getWorld(), 0, 178, 6);
-            Location instagram = new Location(block.getWorld(), 1, 178, 4);
-            Location website = new Location(block.getWorld(), -14, 178, 9);
-            Location discord = new Location(block.getWorld(), -18, 178, 5);
+            Location youtube = this.lobby.getLocationAPI().parseLocation(this.lobby.getConfig().getString("socials.youtube"));
+            Location twitch =this.lobby.getLocationAPI().parseLocation(this.lobby.getConfig().getString("socials.twitch"));
+            Location tiktok = this.lobby.getLocationAPI().parseLocation(this.lobby.getConfig().getString("socials.tiktok"));
+            Location instagram = this.lobby.getLocationAPI().parseLocation(this.lobby.getConfig().getString("socials.instagram"));
+            Location website = this.lobby.getLocationAPI().parseLocation(this.lobby.getConfig().getString("socials.website"));
+            Location discord =this.lobby.getLocationAPI().parseLocation(this.lobby.getConfig().getString("socials.discord"));
             Location location = block.getLocation();
 
             this.lobby.getLanguageAPI().getLanguage(player, language -> {
@@ -81,8 +81,8 @@ public class ItemClick implements Listener {
                     url = "https://www.instagram.com/btegermany/";
                     textComponent = this.lobby.getLanguageAPI().getMessage(language, "advertisement.checkOut", Placeholder.parsed("platform", "<red>Insta</red><light_purple>gram</light_purple>"));
                 } else if (location.equals(website)) {
-                    url = "https://buildtheearth.net/";
-                    textComponent = this.lobby.getLanguageAPI().getMessage(language, "advertisement.checkOut", Placeholder.parsed("platform", "<blue>BuildTheEarth.net Website</blue>"));
+                    url = "https://bte-germany.de/";
+                    textComponent = this.lobby.getLanguageAPI().getMessage(language, "advertisement.checkOut", Placeholder.parsed("platform", "<blue>bte-germany.de</blue>"));
                 } else if (location.equals(discord)) {
                     url = "https://discord.gg/GkSxGTYaAJ";
                     textComponent = this.lobby.getLanguageAPI().getMessage(language, "advertisement.checkOut", Placeholder.parsed("platform", "<gray>Discord</gray>"));

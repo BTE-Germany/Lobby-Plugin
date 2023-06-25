@@ -16,7 +16,7 @@ public class LocationAPI {
     private final Cache<String, Location> locationCache = CacheBuilder.newBuilder()
             .expireAfterWrite(5, TimeUnit.MINUTES)
             .build();
-    private Lobby lobby;
+    private final Lobby lobby;
 
     public LocationAPI(Lobby lobby) {
         this.lobby = lobby;
@@ -77,15 +77,23 @@ public class LocationAPI {
     }
 
     public Location parseLocation(String location) {
-        String[] splitLocation = location.split(";");
-        return new Location(
+        return parseLocation(location, ";");
+    }
+
+    public Location parseLocation(String location, String splitter) {
+        String[] splitLocation = location.split(splitter);
+        Location loc = new Location(
                 this.lobby.getServer().getWorld(splitLocation[0]),
                 Double.parseDouble(splitLocation[1]),
                 Double.parseDouble(splitLocation[2]),
-                Double.parseDouble(splitLocation[3]),
-                Float.parseFloat(splitLocation[4]),
-                Float.parseFloat(splitLocation[5])
+                Double.parseDouble(splitLocation[3])
         );
+        if (splitLocation.length >= 5) {
+            loc.setYaw(Float.parseFloat(splitLocation[4]));
+            loc.setPitch(Float.parseFloat(splitLocation[5]));
+        }
+
+        return loc;
     }
 
 
