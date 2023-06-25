@@ -75,6 +75,17 @@ public class LanguageAPI {
         }
     }
 
+    // TODO: add placeholder serialization
+    public String getMessageString(Language language, String messageKey) {
+        if (this.messages.get(language).containsKey(messageKey)) {
+            return this.messages.get(language).get(messageKey);
+        } else if (this.messages.get(DEFAULT).containsKey(messageKey)) {
+            return this.messages.get(DEFAULT).get(messageKey);
+        } else {
+            return "Missing translation: " + messageKey;
+        }
+    }
+
     public void getLanguage(Player player, Consumer<Language> languageCallback) {
         Language cached = this.languageCache.getIfPresent(player.getUniqueId());
         if (cached != null) {

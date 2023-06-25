@@ -4,6 +4,7 @@ import dev.nachwahl.lobby.Lobby;
 import dev.nachwahl.lobby.commands.RegisterMiniGameBlockCommand;
 import dev.nachwahl.lobby.utils.MiniGameBlockUtil;
 import me.filoghost.holographicdisplays.api.hologram.Hologram;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -30,6 +31,9 @@ public class MiniGameBlockInteractEvent implements Listener {
         Player p = e.getPlayer();
         Action action = e.getAction();
         Block block = e.getClickedBlock();
+        if(block == null) {
+            return;
+        }
         Location loc = block.getLocation();
 
         if (e.getHand() == EquipmentSlot.HAND) {
@@ -56,16 +60,18 @@ public class MiniGameBlockInteractEvent implements Listener {
 
                         for (Hologram h : Lobby.getInstance().getHologramAPI().getApi().getHolograms()) {
                             Location hloc = h.getPosition().toLocation();
-                            if (blockLoc.getBlock().getLocation().equals(hloc.getBlock().getLocation())) {
+                            if (blockLoc.getBlock().getLocation().getBlockX() == hloc.getBlock().getLocation().getBlockX() && blockLoc.getBlock().getLocation().getBlockZ() == hloc.getBlock().getLocation().getBlockZ()) {
                                 h.delete();
                             }
                         }
 
                     }
-                    MiniGameBlockUtil.setHoverText(existingGame);
+                    playerHashMap.remove(p);
+                    MiniGameBlockUtil.setGameTitleHoverTexts(existingGame);
+                }else {
+                    playerHashMap.put(p, gameName);
+                    play(gameName, loc);
                 }
-                playerHashMap.put(p,gameName);
-                play(gameName,block.getLocation());
                 e.setCancelled(true);
             }
         }
@@ -87,7 +93,6 @@ public class MiniGameBlockInteractEvent implements Listener {
 
         if(players.size() > 1) {
             MiniGameBlockUtil.deleteHologram(locHD);
-            MiniGameBlockUtil.setHoverText(game);
             Player p2 = players.get(1);
             p2.playSound(p2, Sound.ENTITY_EXPERIENCE_ORB_PICKUP,100,0);
             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "mbg force " + game+" "+ p1.getName() + " " + p2.getName());
@@ -96,18 +101,34 @@ public class MiniGameBlockInteractEvent implements Listener {
                     playerHashMap.remove(p);
                 }
             }
+            MiniGameBlockUtil.setGameTitleHoverText(game, locBlock);
         }else{
-
-            p1.sendMessage("§b§lBTEG §7» Warte auf 2. Mitspieler bei "+game+"...");
+            Lobby.getInstance().getLanguageAPI().getLanguage(p1, language -> {
+                Lobby.getInstance().getLanguageAPI().sendMessageToPlayer(p1, "minigame.queue", Placeholder.parsed("minigame", game));
+            });
             p1.playSound(p1, Sound.ENTITY_EXPERIENCE_ORB_PICKUP,100,0);
-            Hologram hologram = Lobby.getInstance().getHologramAPI().getApi().createHologram(locHD);
-            hologram.getLines().appendText("§aWarte auf");
-            hologram.getLines().appendText("§a2. Mitspieler bei");
-            hologram.getLines().appendText("§2§l"+game);
-            hologram.getLines().appendText("§a...");
+            setQueueHoverTexts(game);
 
         }
     }
 
+    private void setQueueHoverTexts(String game){
+
+        for (String s : Lobby.getInstance().getMiniGameBlockUtil().getList(game.toLowerCase())) {
+            Location blockLoc = Lobby.getInstance().getLocationAPI().parseLocation(s);
+            Location loc = new Location(blockLoc.getWorld(), blockLoc.getBlockX()+0.5, blockLoc.getBlockY()+3,blockLoc.getBlockZ()+0.5);
+            Hologram hologram = Lobby.getInstance().getHologramAPI().getApi().createHologram(loc);
+            for(Player player : Bukkit.getOnlinePlayers()) {
+                Lobby.getInstance().getLanguageAPI().getLanguage(player, language -> {
+                    String[] text = Lobby.getInstance().getLanguageAPI().getMessageString(language,"minigame.queue").replaceAll("<[^>]*>", "").split(" ");
+                    // TODO: ohne language api funktionierten die queue Hover texts. mit noch nicht
+                    hologram.getLines().appendText("§a" + text[0].replace(" ","") + " " + text[1]);
+                    hologram.getLines().appendText("§a" + text[2] + " " + text[3] + " " + text[4]);
+                    hologram.getLines().appendText("§2§l"+game);
+                    hologram.getLines().appendText("§a...");
+                });
+            }
+        }
+    }
 
 }

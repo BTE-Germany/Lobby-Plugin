@@ -11,10 +11,12 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MiniGameBlockUtil {
@@ -65,23 +67,21 @@ public class MiniGameBlockUtil {
         return null;
     }
 
-    public static void setHoverText(String game){
+    public static void setGameTitleHoverTexts(String game){
         for(String s : Lobby.getInstance().getMiniGameBlockUtil().getList(game.toLowerCase())) {
-            List<Double> loc = parse(s);
-            Location locHD = new Location(Bukkit.getWorld("lobby3"), loc.get(0)+0.5, loc.get(1)+3.5,loc.get(2)+0.5);
+            Location loc = Lobby.getInstance().getLocationAPI().parseLocation(s);
+            Location locHD = new Location(loc.getWorld(), loc.getBlockX()+0.5, loc.getBlockY()+3.5,loc.getBlockZ()+0.5);
             Hologram hologram = Lobby.getInstance().getHologramAPI().getApi().createHologram(locHD);
             hologram.getLines().appendText("§6§l"+game);
         }
     }
 
-    public static List<Double> parse(String location){
-        String[] locs = location.split(",");
-        List<Double> locs1 = new ArrayList<>();
-        for(String s : locs){
-            locs1.add(Double.parseDouble(s));
-        }
-        return locs1;
+    public static void setGameTitleHoverText(String game, Location loc){
+        Hologram hologram = Lobby.getInstance().getHologramAPI().getApi().createHologram(new Location(loc.getWorld(), loc.getX()+0.5, loc.getY()+3.5,loc.getZ()+0.5));
+        hologram.getLines().appendText("§6§l"+game);
     }
+
+
 
     public static void deleteHologram(Location locHD) {
         for (Hologram h : Lobby.getInstance().getHologramAPI().getApi().getHolograms()) {
@@ -90,6 +90,11 @@ public class MiniGameBlockUtil {
                 h.delete();
             }
         }
+    }
+
+    public static void reloadHolograms() {
+        String[] games = {"TicTacToe","Connect4","UNO","BattleShip","RockPaperScissors"};
+        for(String s : games) setGameTitleHoverTexts(s);
     }
 
 }
