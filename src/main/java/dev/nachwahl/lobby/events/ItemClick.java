@@ -41,7 +41,7 @@ public class ItemClick implements Listener {
 
 
             this.lobby.getLanguageAPI().getLanguage(player, language -> {
-                if(event.getItem() != null) {
+                if(event.getItem() != null && event.getItem().getItemMeta().displayName() != null) {
                     if(event.getItem().getItemMeta().displayName().equals(this.lobby.getLanguageAPI().getMessage(language, "navigator.itemName"))) {
                         new NavigatorGUI(this.lobby, player);
                     }

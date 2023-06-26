@@ -93,6 +93,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         this.hologramAPI = new HologramAPI(this);
         this.hologramAPI.loadData();
         this.miniGameBlockUtil = new MiniGameBlockUtil(this);
+        MiniGameBlockUtil.reloadHolograms();
 
         try {
             Optional<QueryAPIAccessor> optionalQueryAPIAccessor = new PlanIntegration().hookIntoPlan();

@@ -6,6 +6,7 @@ import lombok.Getter;
 import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
 import me.filoghost.holographicdisplays.api.Position;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -27,6 +28,8 @@ public class HologramAPI {
 
     @Getter
     private ArrayList<Hologram> holograms;
+    @Getter
+    private ArrayList<Hologram> customHolograms;
 
     private final Lobby plugin;
 
@@ -35,6 +38,7 @@ public class HologramAPI {
         if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
             api = HolographicDisplaysAPI.get(plugin);
             holograms = new ArrayList<>();
+            customHolograms = new ArrayList<>();
         }
     }
 
@@ -99,11 +103,30 @@ public class HologramAPI {
         for(Hologram hologram: holograms) {
             hologram.setPlayer(player,language);
         }
+        for(Hologram hologram: customHolograms) {
+            hologram.setPlayer(player,language);
+        }
     }
 
     public void hideHolograms(Player player) {
         for(Hologram hologram: holograms) {
             hologram.removePlayer(player);
+        }
+        for(Hologram hologram: customHolograms) {
+            hologram.removePlayer(player);
+        }
+    }
+
+    public void removeHologram(Position location) {
+        for(Hologram hologram: customHolograms) {
+            if(hologram.getLocation().equals(location)) hologram.delete();
+        }
+    }
+
+    public void addHologram(Hologram hologram) {
+        customHolograms.add(hologram);
+        for(Player player: Bukkit.getOnlinePlayers()) {
+            hologram.setPlayer(player,Lobby.getInstance().getLanguageAPI().getLanguage(player));
         }
     }
 }
