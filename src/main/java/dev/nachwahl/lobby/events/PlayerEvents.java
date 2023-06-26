@@ -89,6 +89,8 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onHunger(FoodLevelChangeEvent event) {
         event.setCancelled(true);
+        event.getEntity().setFoodLevel(20);
+        event.getEntity().setHealth(20);
     }
 
     @EventHandler

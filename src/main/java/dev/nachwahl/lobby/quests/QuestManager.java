@@ -3,8 +3,10 @@ package dev.nachwahl.lobby.quests;
 import dev.nachwahl.lobby.Lobby;
 import dev.nachwahl.lobby.quests.car.CarArena;
 import dev.nachwahl.lobby.quests.mine.MineArena;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,9 +51,13 @@ public class QuestManager {
         return null;
     }
 
-    public void setPools(){
+    public void setPools() throws SQLException {
         Pool pool = new Pool(QuestType.MINE);
-        MineArena mineArena = new MineArena(new Block(0, 100, 0, "world"), 32);
+        System.out.println("WTFFFFFFFF");
+        Location mineQuest0Location = Lobby.getInstance().getLocationAPI().getLocation("quests.mine.0");
+        System.out.println(mineQuest0Location);
+        Block block = new Block((int) mineQuest0Location.getX(), (int) mineQuest0Location.getY(), (int) mineQuest0Location.getZ(), mineQuest0Location.getWorld().getName());
+        MineArena mineArena = new MineArena(block, 32);
         mineArena.setArenaStatus(Arena.ArenaStatus.INITIALISING);
         long startTime = System.currentTimeMillis();
         mineArena.initNewVeinsMap();
@@ -72,11 +78,13 @@ public class QuestManager {
 
         Pool pool1 = new Pool(QuestType.CAR);
 
-        CarArena carArena = new CarArena(new Block(0, 150, 0, "world"), 64,
-                new Block(-9, 151, 22, "world"),
-                new Block(-9, 151, 13, "world"),
-                new Block(-9, 151, 4, "world"),
-                new Block(-9, 151, -5, "world"));
+        Location carQuest0Location = Lobby.getInstance().getLocationAPI().getLocation("quests.car.0");
+
+        CarArena carArena = new CarArena(new Block((int) carQuest0Location.getX(), (int) carQuest0Location.getY(), (int) carQuest0Location.getZ(), carQuest0Location.getWorld().getName()), 64,
+                new Block((int) carQuest0Location.getX()-9, (int) carQuest0Location.getY()+1, (int) carQuest0Location.getZ()+22, carQuest0Location.getWorld().getName()),
+                new Block((int) carQuest0Location.getX()-9, (int) carQuest0Location.getY()+1, (int) carQuest0Location.getZ()+13, carQuest0Location.getWorld().getName()),
+                new Block((int) carQuest0Location.getX()-9, (int) carQuest0Location.getY()+1, (int) carQuest0Location.getZ()+4, carQuest0Location.getWorld().getName()),
+                new Block((int) carQuest0Location.getX()-9, (int) carQuest0Location.getY()+1, (int) carQuest0Location.getZ()-5, carQuest0Location.getWorld().getName()));
 
         carArena.setArenaStatus(Arena.ArenaStatus.WAITING);
 
@@ -85,6 +93,7 @@ public class QuestManager {
         Lobby.getInstance().getPoolManager().addPool(pool1);
 
         Lobby.getInstance().getPoolManager().addPool(pool);
+
 
 
     }
