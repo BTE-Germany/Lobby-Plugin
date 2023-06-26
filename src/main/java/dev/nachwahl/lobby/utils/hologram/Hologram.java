@@ -66,11 +66,9 @@ public class Hologram {
         germanHologram.getVisibilitySettings().setGlobalVisibility(VisibilitySettings.Visibility.HIDDEN);
 
         for(String line: englishText) {
-            System.out.println(line);
             englishHologram.getLines().appendText((line.startsWith("§l")? ChatColor.BOLD:"")+line);
         }
         for(String line: germanText) {
-            System.out.println(line);
             germanHologram.getLines().appendText((line.startsWith("§l")? ChatColor.BOLD:"")+line);
         }
     }
