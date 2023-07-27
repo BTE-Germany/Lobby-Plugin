@@ -1,11 +1,10 @@
 package dev.nachwahl.lobby.quests.car;
 
 import dev.nachwahl.lobby.Lobby;
-import dev.nachwahl.lobby.quests.Arena;
-import dev.nachwahl.lobby.quests.Block;
-import dev.nachwahl.lobby.quests.Quest;
-import dev.nachwahl.lobby.quests.Timer;
+import dev.nachwahl.lobby.quests.*;
+import dev.nachwahl.lobby.quests.mine.MineQuest;
 import org.bukkit.*;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -74,6 +73,16 @@ public class CarQuest extends Quest {
         this.carArena.setArenaStatus(Arena.ArenaStatus.WAITING);
         this.carArena.setFree(true);
         Lobby.getInstance().getQuestManager().removeQuest(this);
+        Player player;
+        if((player = Queue.getNextPlayerInQueue(QuestType.MINE)) != null) {
+            Quest quest = Lobby.getInstance().getPoolManager().getFreeQuest(QuestType.MINE);
+            if (quest != null) {
+                if (quest instanceof CarQuest) {
+                    CarQuest carQuest = (CarQuest) quest;
+                    carQuest.startQuest(player);
+                }
+            }
+        }
     }
 
     public void nextStage(int car){
