@@ -1,14 +1,11 @@
 package dev.nachwahl.lobby.events;
 
 import dev.nachwahl.lobby.Lobby;
-import dev.nachwahl.lobby.utils.guis.AccountGUI;
-import dev.nachwahl.lobby.utils.guis.NavigatorGUI;
+import dev.nachwahl.lobby.guis.AccountGUI;
+import dev.nachwahl.lobby.guis.NavigatorGUI;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.*;
-import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -21,8 +18,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.util.Vector;
 
-import java.awt.*;
-import java.awt.TextComponent;
 import java.util.Objects;
 
 public class ItemClick implements Listener {

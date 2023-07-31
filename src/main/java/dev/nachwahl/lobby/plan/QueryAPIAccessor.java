@@ -1,14 +1,11 @@
-package dev.nachwahl.lobby.utils.plan;
+package dev.nachwahl.lobby.plan;
 
 import com.djrapitops.plan.query.QueryService;
-import dev.nachwahl.lobby.utils.plan.user.User;
+import dev.nachwahl.lobby.plan.user.User;
 import lombok.Getter;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class QueryAPIAccessor {
 

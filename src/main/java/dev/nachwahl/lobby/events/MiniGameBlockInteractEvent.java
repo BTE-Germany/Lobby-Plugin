@@ -2,7 +2,7 @@ package dev.nachwahl.lobby.events;
 
 import dev.nachwahl.lobby.Lobby;
 import dev.nachwahl.lobby.utils.MiniGameBlockUtil;
-import dev.nachwahl.lobby.utils.language.Language;
+import dev.nachwahl.lobby.language.Language;
 import me.filoghost.holographicdisplays.api.Position;
 import me.filoghost.holographicdisplays.api.hologram.Hologram;
 import net.kyori.adventure.text.Component;
@@ -146,7 +146,7 @@ public class MiniGameBlockInteractEvent implements Listener {
             String[] german = new String[]{germanString[0] + " " + germanString[1], germanString[2] + " " + germanString[3]};
             String[] english = new String[]{englishString[0] + " " + englishString[1], englishString[2] + " " + englishString[3]};
 
-            Lobby.getInstance().getHologramAPI().addHologram(new dev.nachwahl.lobby.utils.hologram.Hologram(loc, english, german));
+            Lobby.getInstance().getHologramAPI().addHologram(new dev.nachwahl.lobby.hologram.Hologram(loc, english, german));
         }
     }
 

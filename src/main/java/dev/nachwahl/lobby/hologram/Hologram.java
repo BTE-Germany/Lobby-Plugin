@@ -1,7 +1,7 @@
-package dev.nachwahl.lobby.utils.hologram;
+package dev.nachwahl.lobby.hologram;
 
 import dev.nachwahl.lobby.Lobby;
-import dev.nachwahl.lobby.utils.language.Language;
+import dev.nachwahl.lobby.language.Language;
 import lombok.Getter;
 import lombok.Setter;
 import me.filoghost.holographicdisplays.api.Position;

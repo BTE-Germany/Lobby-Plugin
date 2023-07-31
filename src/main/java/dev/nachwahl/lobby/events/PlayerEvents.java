@@ -1,14 +1,12 @@
 package dev.nachwahl.lobby.events;
 
 import co.aikar.idb.DbRow;
-import com.destroystokyo.paper.ParticleBuilder;
 import dev.nachwahl.lobby.Lobby;
-import dev.nachwahl.lobby.utils.guis.PrivacyGUI;
+import dev.nachwahl.lobby.guis.PrivacyGUI;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
-import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -19,12 +17,8 @@ import org.bukkit.event.entity.EntityDropItemEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-
-import java.time.Duration;
 
 public class PlayerEvents implements Listener {
 

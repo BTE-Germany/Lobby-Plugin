@@ -1,4 +1,4 @@
-package dev.nachwahl.lobby.utils.language;
+package dev.nachwahl.lobby.language;
 
 import lombok.Getter;
 

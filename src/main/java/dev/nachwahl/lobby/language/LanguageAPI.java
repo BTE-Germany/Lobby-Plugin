@@ -1,4 +1,4 @@
-package dev.nachwahl.lobby.utils.language;
+package dev.nachwahl.lobby.language;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;

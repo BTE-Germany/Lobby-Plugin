@@ -1,4 +1,4 @@
-package dev.nachwahl.lobby.utils.guis;
+package dev.nachwahl.lobby.guis;
 
 import dev.nachwahl.lobby.Lobby;
 import dev.triumphteam.gui.builder.item.ItemBuilder;

@@ -1,7 +1,7 @@
-package dev.nachwahl.lobby.utils.guis;
+package dev.nachwahl.lobby.guis;
 
 import dev.nachwahl.lobby.Lobby;
-import dev.nachwahl.lobby.utils.language.Language;
+import dev.nachwahl.lobby.language.Language;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.builder.item.SkullBuilder;
 import dev.triumphteam.gui.guis.Gui;
@@ -9,7 +9,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 public class AccountGUI {

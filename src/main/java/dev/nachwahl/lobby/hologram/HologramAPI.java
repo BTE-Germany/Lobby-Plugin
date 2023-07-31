@@ -1,12 +1,11 @@
-package dev.nachwahl.lobby.utils.hologram;
+package dev.nachwahl.lobby.hologram;
 
 import dev.nachwahl.lobby.Lobby;
-import dev.nachwahl.lobby.utils.language.Language;
+import dev.nachwahl.lobby.language.Language;
 import lombok.Getter;
 import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
 import me.filoghost.holographicdisplays.api.Position;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -16,7 +15,6 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Objects;
 
 
 public class HologramAPI {

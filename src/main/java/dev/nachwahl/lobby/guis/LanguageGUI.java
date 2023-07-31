@@ -1,10 +1,9 @@
-package dev.nachwahl.lobby.utils.guis;
+package dev.nachwahl.lobby.guis;
 
 import dev.nachwahl.lobby.Lobby;
-import dev.nachwahl.lobby.utils.language.Language;
+import dev.nachwahl.lobby.language.Language;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
-import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

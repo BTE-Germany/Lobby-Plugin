@@ -1,8 +1,7 @@
-package dev.nachwahl.lobby.utils.plan.user;
+package dev.nachwahl.lobby.plan.user;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.entity.Player;
 
 public class User implements Comparable<User>{
     @Getter @Setter

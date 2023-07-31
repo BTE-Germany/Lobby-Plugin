@@ -1,7 +1,7 @@
 package dev.nachwahl.lobby.utils;
 
 import dev.nachwahl.lobby.Lobby;
-import dev.nachwahl.lobby.utils.language.LanguageAPI;
+import dev.nachwahl.lobby.language.LanguageAPI;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;

@@ -1,4 +1,4 @@
-package dev.nachwahl.lobby.utils.plan;
+package dev.nachwahl.lobby.plan;
 import com.djrapitops.plan.capability.CapabilityService;
 import com.djrapitops.plan.query.QueryService;
 import org.bukkit.Bukkit;

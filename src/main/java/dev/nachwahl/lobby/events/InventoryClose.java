@@ -1,7 +1,6 @@
 package dev.nachwahl.lobby.events;
 
 import dev.nachwahl.lobby.Lobby;
-import dev.nachwahl.lobby.utils.guis.LanguageGUI;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

@@ -5,7 +5,7 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Dependency;
 import dev.nachwahl.lobby.Lobby;
-import dev.nachwahl.lobby.utils.guis.LanguageGUI;
+import dev.nachwahl.lobby.guis.LanguageGUI;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
