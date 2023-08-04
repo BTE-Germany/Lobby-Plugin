@@ -158,6 +158,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         //Objects.requireNonNull(getCommand("quest")).setExecutor(new Quests());
         this.manager.registerCommand(new QuestsCommand());
         this.manager.registerCommand(new RegisterMiniGameBlockCommand());
+        this.manager.registerCommand(new SpawnCommand());
     }
 
 
