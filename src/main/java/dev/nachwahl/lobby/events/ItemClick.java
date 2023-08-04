@@ -43,6 +43,10 @@ public class ItemClick implements Listener {
                     if(event.getItem().getItemMeta().displayName().equals(this.lobby.getLanguageAPI().getMessage(language, "account.itemName", Placeholder.parsed("name", player.getName())))) {
                         new AccountGUI(this.lobby, player);
                     }
+                    if(event.getItem().getItemMeta().displayName().equals(this.lobby.getLanguageAPI().getMessage(language, "manage.editMode"))) {
+
+                        Bukkit.getScheduler().runTask(lobby,() -> player.performCommand("lm edit"));
+                    }
                 }
             });
 
