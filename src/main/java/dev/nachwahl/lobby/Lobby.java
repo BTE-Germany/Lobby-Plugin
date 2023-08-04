@@ -30,6 +30,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -119,7 +120,11 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
 
 
-        questManager.setPools();
+        try {
+            questManager.setPools();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
 
     }

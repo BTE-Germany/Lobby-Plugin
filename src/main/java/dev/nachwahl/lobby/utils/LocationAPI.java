@@ -1,5 +1,6 @@
 package dev.nachwahl.lobby.utils;
 
+import co.aikar.idb.DbRow;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import dev.nachwahl.lobby.Lobby;
@@ -8,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -46,6 +48,21 @@ public class LocationAPI {
             });
         } else {
             callback.accept(cache);
+        }
+    }
+
+    public Location getLocation(String name) throws SQLException {
+        Location cache = locationCache.getIfPresent(name);
+        if(cache == null){
+            DbRow dbRow = this.lobby.getDatabase().getFirstRow("SELECT * FROM locations WHERE name = ?", name);
+                if (dbRow == null) {
+                    return new Location(this.lobby.getServer().getWorlds().get(0), 0, 0, 0);
+                } else {
+                    locationCache.put(name, parseLocation((String) dbRow.get("location")));
+                    return  parseLocation((String) dbRow.get("location"));
+                }
+        }else{
+            return cache;
         }
     }
 

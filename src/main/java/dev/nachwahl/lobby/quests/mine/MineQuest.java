@@ -1,10 +1,9 @@
 package dev.nachwahl.lobby.quests.mine;
 
 import dev.nachwahl.lobby.Lobby;
-import dev.nachwahl.lobby.quests.Arena;
-import dev.nachwahl.lobby.quests.Quest;
-import dev.nachwahl.lobby.quests.Timer;
+import dev.nachwahl.lobby.quests.*;
 import org.bukkit.*;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -107,5 +106,15 @@ public class MineQuest extends Quest {
         this.mineArena.setArenaStatus(Arena.ArenaStatus.WAITING);
         this.mineArena.setFree(true);
         Lobby.getInstance().getQuestManager().removeQuest(this);
+        Player player;
+        if((player = Queue.getNextPlayerInQueue(QuestType.MINE)) != null) {
+            Quest quest = Lobby.getInstance().getPoolManager().getFreeQuest(QuestType.MINE);
+            if (quest != null) {
+                if (quest instanceof MineQuest) {
+                    MineQuest mineQuest = (MineQuest) quest;
+                    mineQuest.startQuest(player);
+                }
+            }
+        }
     }
 }

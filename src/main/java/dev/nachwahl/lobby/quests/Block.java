@@ -52,4 +52,9 @@ public class Block {
     public boolean equalsBukkitBlockLocation(org.bukkit.block.Block block){
         return this.getX() == block.getX() && this.getY() == block.getY() && this.getZ() == block.getZ() && this.getWorld().equals(block.getWorld().getName());
     }
+
+    @Override
+    public String toString(){
+        return "x="+this.x+" y="+this.y+" z="+this.z+" ";
+    }
 }

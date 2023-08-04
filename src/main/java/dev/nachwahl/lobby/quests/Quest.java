@@ -70,6 +70,7 @@ public class Quest {
         this.playerContents = player.getInventory().getContents();
         this.startLocation = player.getLocation();
         player.getInventory().clear();
+        Lobby.getInstance().getEditModePlayers().add(player);
     }
 
     public void stopQuest(){
@@ -78,6 +79,7 @@ public class Quest {
         this.player.getInventory().setContents(playerContents);
         this.player.teleport(this.startLocation);
         Lobby.getInstance().getQuestManager().removeQuest(this);
+        Lobby.getInstance().getEditModePlayers().remove(player);
     }
 
     public void resetQuest(){

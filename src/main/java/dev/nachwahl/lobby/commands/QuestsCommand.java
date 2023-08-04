@@ -9,6 +9,7 @@ import co.aikar.commands.annotation.Dependency;
 import dev.nachwahl.lobby.Lobby;
 import dev.nachwahl.lobby.quests.Quest;
 import dev.nachwahl.lobby.quests.QuestType;
+import dev.nachwahl.lobby.quests.Queue;
 import dev.nachwahl.lobby.quests.car.CarQuest;
 import dev.nachwahl.lobby.quests.mine.MineQuest;
 import org.bukkit.command.Command;
@@ -22,7 +23,6 @@ public class QuestsCommand extends BaseCommand {
 
     @Dependency
     private Lobby lobby;
-    @CommandPermission("lobby.vanish")
     @Default
     public boolean onCommand(CommandSender sender, String[] args) {
         if(sender instanceof Player){
@@ -40,6 +40,7 @@ public class QuestsCommand extends BaseCommand {
                             mineQuest.startQuest(player);
                         }
                     }else{
+                        Queue.addPlayerToQueue(QuestType.MINE, player);
                         player.sendMessage(MineQuest.prefix + "Konnte kein freies Spiel finden, Du wurdest der Warteschlange hinzugefügt.");
                     }
                 }else if(args[0].equals("car")){
@@ -50,6 +51,7 @@ public class QuestsCommand extends BaseCommand {
                             carQuest.startQuest(player);
                         }
                     }else{
+                        Queue.addPlayerToQueue(QuestType.CAR, player);
                         player.sendMessage(MineQuest.prefix + "Konnte kein freies Spiel finden, Du wurdest der Warteschlange hinzugefügt.");
                     }
                 }
