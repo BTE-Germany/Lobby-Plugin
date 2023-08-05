@@ -165,6 +165,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         this.manager.registerCommand(new RegisterMiniGameBlockCommand());
         this.manager.registerCommand(new SpawnCommand());
         this.manager.registerCommand(new SettingsCommand());
+        this.manager.registerCommand(new GamemodeCommand());
     }
 
 

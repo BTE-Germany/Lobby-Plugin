@@ -7,6 +7,7 @@ import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -59,6 +60,7 @@ public class PlayerEvents implements Listener {
         this.lobby.getLocationAPI().teleportToLocation(player, "spawn", false);
 
         player.setAllowFlight(true);
+        player.setGameMode(GameMode.ADVENTURE);
 
         this.lobby.getUserSettingsAPI().getBooleanSetting(player,"playerVisibility",(value) -> {
             if(!value) {
