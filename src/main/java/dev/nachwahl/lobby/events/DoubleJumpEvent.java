@@ -24,21 +24,25 @@ public class DoubleJumpEvent implements Listener {
     public void onToggleFlight(PlayerToggleFlightEvent event) {
         Player player = event.getPlayer();
 
-        if(player.getGameMode() == GameMode.ADVENTURE||player.getGameMode() == GameMode.SURVIVAL) {
+        if (player.getGameMode() == GameMode.ADVENTURE || player.getGameMode() == GameMode.SURVIVAL) {
+
+
+            if (!player.getAllowFlight()) return;
+            if (player.getInventory().getChestplate() != null && player.getInventory().getChestplate().getType().equals(Material.ELYTRA))
+                return;
+
             event.setCancelled(true);
-
-            if(!player.getAllowFlight()) return;
-
             Vector v = player.getLocation().getDirection().multiply(2D).setY(2D);
             player.setVelocity(v);
             player.setAllowFlight(false);
+
         }
     }
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        if(player.getLocation().add(0, -1, 0).getBlock().getType()== Material.AIR)  return;
+        if (player.getLocation().add(0, -1, 0).getBlock().getType() == Material.AIR) return;
 
         player.setAllowFlight(true);
     }

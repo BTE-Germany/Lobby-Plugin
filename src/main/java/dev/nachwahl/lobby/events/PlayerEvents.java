@@ -3,12 +3,15 @@ package dev.nachwahl.lobby.events;
 import co.aikar.idb.DbRow;
 import dev.nachwahl.lobby.Lobby;
 import dev.nachwahl.lobby.guis.PrivacyGUI;
+import dev.triumphteam.gui.builder.item.ItemBuilder;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,7 +22,13 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
+
+import java.lang.management.ManagementFactory;
+import java.util.Objects;
 
 public class PlayerEvents implements Listener {
 
@@ -73,7 +82,7 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
         event.quitMessage(Component.empty());
-        Lobby.getInstance().getVanish().remove(event.getPlayer());
+        this.lobby.getVanish().remove(event.getPlayer());
     }
 
     @EventHandler
@@ -112,5 +121,22 @@ public class PlayerEvents implements Listener {
         } else {
             event.setCancelled(true);
         }
+    }
+
+    @EventHandler
+    public void onMove(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        if(player.getInventory().getChestplate()==null) return;
+        if(player.getLocation().getY()>150) {
+            if(player.getInventory().getChestplate().getType().equals(Material.ELYTRA)) return;
+            if(!this.lobby.getElytraPlayers().containsKey(player.getUniqueId()))
+                this.lobby.getElytraPlayers().put(player.getUniqueId(),player.getInventory().getChestplate());
+            player.getInventory().setChestplate(ItemBuilder.from(Material.ELYTRA).enchant(Enchantment.MENDING).build());
+            return;
+        };
+        if(player.getLocation().add(0,-1,0).getBlock().getType()==Material.AIR) return;
+        if(!this.lobby.getElytraPlayers().containsKey(player.getUniqueId())) return;
+        ItemStack item = this.lobby.getElytraPlayers().remove(player.getUniqueId());
+        player.getInventory().setChestplate(item);
     }
 }

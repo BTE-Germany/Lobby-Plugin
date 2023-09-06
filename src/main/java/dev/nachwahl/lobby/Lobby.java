@@ -27,13 +27,16 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Getter
@@ -42,6 +45,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
     @Getter
     private static Lobby instance;
     private final ArrayList<Player> editModePlayers = new ArrayList<>();
+    private final HashMap<UUID, ItemStack> elytraPlayers = new HashMap<>();
     private PaperCommandManager manager;
     private Database database;
     private MiniMessage miniMessage;
