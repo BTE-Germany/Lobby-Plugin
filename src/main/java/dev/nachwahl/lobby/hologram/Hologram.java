@@ -60,6 +60,7 @@ public class Hologram {
     }
 
     public void updateHolograms() {
+        delete();
         englishHologram = Lobby.getInstance().getHologramAPI().getApi().createHologram(location);
         germanHologram = Lobby.getInstance().getHologramAPI().getApi().createHologram(location);
         englishHologram.getVisibilitySettings().setGlobalVisibility(VisibilitySettings.Visibility.HIDDEN);
@@ -74,7 +75,23 @@ public class Hologram {
     }
 
     public void delete() {
-        englishHologram.delete();
-        germanHologram.delete();
+        if(englishHologram!=null){
+            englishHologram.delete();
+            englishHologram=null;
+        }
+        if(germanHologram!=null){
+            germanHologram.delete();
+            germanHologram=null;
+        }
+    }
+
+    public void setText(ArrayList<String> englishText, ArrayList<String> germanText) {
+        this.englishText = englishText;
+        this.germanText = germanText;
+
+        updateHolograms();
+    }
+    public void setText(String[] englishText, String[] germanText) {
+        setText(new ArrayList<>(Arrays.asList(englishText)), new ArrayList<>(Arrays.asList(germanText)));
     }
 }

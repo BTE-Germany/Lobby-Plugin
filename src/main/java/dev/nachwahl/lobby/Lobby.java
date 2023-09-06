@@ -5,6 +5,7 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 import dev.nachwahl.lobby.commands.*;
 import dev.nachwahl.lobby.events.*;
+import dev.nachwahl.lobby.leaderboards.LeaderboardManager;
 import dev.nachwahl.lobby.quests.ArenaManager;
 import dev.nachwahl.lobby.quests.PoolManager;
 import dev.nachwahl.lobby.quests.QuestManager;
@@ -54,6 +55,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
     private Vanish vanish;
     private HologramAPI hologramAPI;
     private MiniGameBlockUtil miniGameBlockUtil;
+    private LeaderboardManager leaderboardManager;
 
     private QuestManager questManager;
     private PoolManager poolManager;
@@ -94,6 +96,11 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         this.hologramAPI.loadData();
         this.miniGameBlockUtil = new MiniGameBlockUtil(this);
         MiniGameBlockUtil.reloadHolograms();
+        try {
+            this.leaderboardManager = new LeaderboardManager(this);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         try {
             Optional<QueryAPIAccessor> optionalQueryAPIAccessor = new PlanIntegration().hookIntoPlan();
@@ -102,17 +109,6 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
             Bukkit.getLogger().info("Plan ist nicht installiert.");
             Bukkit.getPluginManager().disablePlugin(this);
         }
-
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
-        System.out.println("Testing: Top Playtime:");
-        for(User user:planQuery.getTopPlaytimeOnAllServers(TimeUnit.DAYS.toMillis(30L),0)) {
-            System.out.println(user.getPlayer()+": "+user.getPlaytime());
-        }
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
 
         this.bungeeConnector = new BungeeConnector(this);
 

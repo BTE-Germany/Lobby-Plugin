@@ -59,6 +59,7 @@ public class PlayerEvents implements Listener {
         player.setHealth(20);
         this.lobby.getLocationAPI().teleportToLocation(player, "spawn", false);
 
+
         player.setAllowFlight(true);
         player.setGameMode(GameMode.ADVENTURE);
 
