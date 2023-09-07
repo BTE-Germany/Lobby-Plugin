@@ -18,7 +18,7 @@ public class GamemodeCommand extends BaseCommand {
     @Default
     @CommandPermission("lobby.manage.edit")
     @Syntax("<gamemode>")
-    @CommandCompletion("creative|adventure")
+    @CommandCompletion("creative|adventure|spectator")
     public void onGameModeCommand(CommandSender sender,String[] args) {
         Player player = (Player) sender;
 
@@ -29,9 +29,17 @@ public class GamemodeCommand extends BaseCommand {
                 this.lobby.getEditModePlayers().add(player);
                 this.lobby.getLanguageAPI().sendMessageToPlayer(player, "manage.editMode.enable");
                 player.getInventory().clear();
-                player.setGameMode(GameMode.CREATIVE);
-                player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
             }
+            player.setGameMode(GameMode.CREATIVE);
+            player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+        } else if(args[0].startsWith("s")) {
+            if (!this.lobby.getEditModePlayers().contains(player)) {
+                this.lobby.getEditModePlayers().add(player);
+                this.lobby.getLanguageAPI().sendMessageToPlayer(player, "manage.editMode.enable");
+                player.getInventory().clear();
+            }
+            player.setGameMode(GameMode.SPECTATOR);
+            player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
         } else {
             if (this.lobby.getEditModePlayers().contains(player)) {
                 this.lobby.getEditModePlayers().remove(player);
