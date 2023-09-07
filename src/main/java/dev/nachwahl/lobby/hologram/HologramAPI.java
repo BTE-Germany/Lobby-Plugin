@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class HologramAPI {
@@ -27,7 +28,7 @@ public class HologramAPI {
     @Getter
     private ArrayList<Hologram> holograms;
     @Getter
-    private ArrayList<Hologram> customHolograms;
+    private HashMap<String,Hologram> customHolograms;
 
     private final Lobby plugin;
 
@@ -36,7 +37,7 @@ public class HologramAPI {
         if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
             api = HolographicDisplaysAPI.get(plugin);
             holograms = new ArrayList<>();
-            customHolograms = new ArrayList<>();
+            customHolograms = new HashMap<>();
         }
     }
 
@@ -101,7 +102,7 @@ public class HologramAPI {
         for(Hologram hologram: holograms) {
             hologram.setPlayer(player,language);
         }
-        for(Hologram hologram: customHolograms) {
+        for(Hologram hologram: customHolograms.values()) {
             hologram.setPlayer(player,language);
         }
     }
@@ -110,21 +111,28 @@ public class HologramAPI {
         for(Hologram hologram: holograms) {
             hologram.removePlayer(player);
         }
-        for(Hologram hologram: customHolograms) {
+        for(Hologram hologram: customHolograms.values()) {
             hologram.removePlayer(player);
         }
     }
 
     public void removeHologram(Position location) {
-        for(Hologram hologram: customHolograms) {
+        for(Hologram hologram: customHolograms.values()) {
             if(hologram.getLocation().equals(location)) hologram.delete();
         }
     }
+    public void removeHologram(String id) {
+        customHolograms.get(id).delete();
+    }
 
-    public void addHologram(Hologram hologram) {
-        customHolograms.add(hologram);
+    public void addHologram(String id,Hologram hologram) {
+        customHolograms.put(id,hologram);
         for(Player player: Bukkit.getOnlinePlayers()) {
             hologram.setPlayer(player,Lobby.getInstance().getLanguageAPI().getLanguage(player));
         }
+    }
+
+    public Hologram getHologram(String id) {
+        return customHolograms.get(id);
     }
 }

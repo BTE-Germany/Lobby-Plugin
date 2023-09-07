@@ -21,9 +21,40 @@ public class User implements Comparable<User>{
     }
 
     public String getPlaytimeReadable() {
-       return String.format("%d h, %d m",
-                TimeUnit.MILLISECONDS.toHours(playtime),
-                TimeUnit.MILLISECONDS.toMinutes(playtime) - TimeUnit.MINUTES.toMinutes(TimeUnit.MILLISECONDS.toHours(playtime))
-        );
+        long pt = playtime;
+        if(pt<60000) {
+            return "<1min";
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        // Weeks
+        if (pt >= 604800000) {
+            int days = (int) (pt / 604800000);
+            sb.append(days).append("w ");
+            pt -= days * 604800000;
+        }
+        // Days
+        if (pt >= 86400000) {
+            int days = (int) (pt / 86400000);
+            sb.append(days).append("d ");
+            pt -= days * 86400000;
+        }
+
+        // Hours
+        if (pt >= 3600000) {
+            int hours = (int) (pt / 3600000);
+            sb.append(hours).append("h ");
+            pt -= hours * 3600000;
+        }
+
+        // Minutes
+        if (pt >= 60000) {
+            int minutes = (int) (pt / 60000);
+            sb.append(minutes).append("min ");
+            pt -= minutes * 60000;
+        }
+
+        return sb.toString();
     }
 }

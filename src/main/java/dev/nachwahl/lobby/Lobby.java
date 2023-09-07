@@ -92,7 +92,6 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         this.languageAPI = new LanguageAPI(this);
         this.hotbarItems = new HotbarItems(this);
         this.locationAPI = new LocationAPI(this);
-        this.locationAPI = new LocationAPI(this);
         this.userSettingsAPI = new UserSettingsAPI(this);
         this.realTime = new RealTime(this.getConfig().getString("time.timezone"), this.getConfig().getInt("time.updateInterval"), Bukkit.getWorld("world"));
         this.vanish = new Vanish();
@@ -100,20 +99,19 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         this.hologramAPI.loadData();
         this.miniGameBlockUtil = new MiniGameBlockUtil(this);
         MiniGameBlockUtil.reloadHolograms();
+                try {
+            Optional<QueryAPIAccessor> optionalQueryAPIAccessor = new PlanIntegration().hookIntoPlan();
+            planQuery = optionalQueryAPIAccessor.get();
+            Bukkit.getLogger().info("Plan ist installiert.");
+        } catch (Exception e) {
+            Bukkit.getLogger().info("Plan ist nicht installiert.");
+            Bukkit.getPluginManager().disablePlugin(this);
+        }
         try {
             this.leaderboardManager = new LeaderboardManager(this);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-        try {
-            Optional<QueryAPIAccessor> optionalQueryAPIAccessor = new PlanIntegration().hookIntoPlan();
-            planQuery = optionalQueryAPIAccessor.get();
-        } catch (Exception e) {
-            Bukkit.getLogger().info("Plan ist nicht installiert.");
-            Bukkit.getPluginManager().disablePlugin(this);
-        }
-
         this.bungeeConnector = new BungeeConnector(this);
 
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");

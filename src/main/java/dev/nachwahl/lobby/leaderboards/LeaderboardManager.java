@@ -13,4 +13,6 @@ public class LeaderboardManager {
     public LeaderboardManager(Lobby lobby) throws SQLException {
         playtimeLeaderboard = new PlaytimeLeaderboard(lobby,"lb.playtime");
     }
+
+
 }

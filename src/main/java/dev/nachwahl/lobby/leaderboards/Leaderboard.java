@@ -12,9 +12,9 @@ import java.util.ArrayList;
 public abstract class Leaderboard {
 
     @Getter
-    private Hologram hologram;
-    @Getter
     private Location location;
+    @Getter
+    private String id;
 
     @Getter
     private Lobby instance;
@@ -23,14 +23,20 @@ public abstract class Leaderboard {
         load();
     };
 
-    public Leaderboard(Lobby lobby,String loc) throws SQLException {
+    public Leaderboard(Lobby lobby,String id) throws SQLException {
         this.instance = lobby;
-        this.location = instance.getLocationAPI().getLocation(loc);
-        hologram = new Hologram(Position.of(location),new ArrayList<>(),new ArrayList<>());
+        this.id = id;
+        this.location = instance.getLocationAPI().getLocation(id);
+        System.out.println("loc "+location.toString());
+        instance.getHologramAPI().addHologram(id,new Hologram(Position.of(location),new ArrayList<>(),new ArrayList<>()));
 
         load();
     }
 
     public void load() {}
+
+    public Hologram getHologram() {
+        return instance.getHologramAPI().getHologram(id);
+    }
 
 }

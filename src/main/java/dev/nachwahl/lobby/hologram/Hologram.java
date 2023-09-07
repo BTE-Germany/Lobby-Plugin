@@ -89,6 +89,7 @@ public class Hologram {
         this.englishText = englishText;
         this.germanText = germanText;
 
+        System.out.println("updating soon");
         updateHolograms();
     }
     public void setText(String[] englishText, String[] germanText) {

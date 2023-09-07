@@ -146,7 +146,7 @@ public class MiniGameBlockInteractEvent implements Listener {
             String[] german = new String[]{germanString[0] + " " + germanString[1], germanString[2] + " " + germanString[3]};
             String[] english = new String[]{englishString[0] + " " + englishString[1], englishString[2] + " " + englishString[3]};
 
-            Lobby.getInstance().getHologramAPI().addHologram(new dev.nachwahl.lobby.hologram.Hologram(loc, english, german));
+            Lobby.getInstance().getHologramAPI().addHologram(game+"."+s,new dev.nachwahl.lobby.hologram.Hologram(loc, english, german));
         }
     }
 
