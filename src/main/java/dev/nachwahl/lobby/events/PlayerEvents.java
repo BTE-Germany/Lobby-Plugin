@@ -69,7 +69,7 @@ public class PlayerEvents implements Listener {
         this.lobby.getLocationAPI().teleportToLocation(player, "spawn", false);
 
 
-        player.setAllowFlight(true);
+        player.setAllowFlight(false); // No double jump
         player.setGameMode(GameMode.ADVENTURE);
 
         this.lobby.getUserSettingsAPI().getBooleanSetting(player,"playerVisibility",(value) -> {

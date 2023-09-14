@@ -44,8 +44,9 @@ public class PlaytimeLeaderboard extends Leaderboard {
         }
 
         // TODO
-        germanText.add(ChatColor.GOLD + "Total"+ ChatColor.DARK_GRAY + ": "  + ChatColor.GREEN + getPlaytimeReadable(getTotalPlaytime(users)));
-        englishText.add(ChatColor.GOLD + "Total" + ChatColor.DARK_GRAY + ": " + ChatColor.GREEN + getPlaytimeReadable(getTotalPlaytime(users)));
+        //germanText.add(ChatColor.GOLD + "Total"+ ChatColor.DARK_GRAY + ": "  + ChatColor.GREEN + getPlaytimeReadable(getTotalPlaytime(users)));
+        //englishText.add(ChatColor.GOLD + "Total" + ChatColor.DARK_GRAY + ": " + ChatColor.GREEN + getPlaytimeReadable(getTotalPlaytime(users)));
+
         getHologram().setText(englishText, germanText);
     }
 
