@@ -12,6 +12,8 @@ import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.sql.SQLException;
+
 @CommandAlias("lobbymanage|managelobby|ml|lm|lobby")
 public class LobbyManageCommand extends BaseCommand {
     @Dependency
@@ -57,5 +59,19 @@ public class LobbyManageCommand extends BaseCommand {
             this.lobby.getHologramAPI().showHolograms(player);
         }
         sender.sendMessage(mm.deserialize("<green>Erfolgreich Hologramme neugeladen.</green>"));
+    }
+
+    @CommandPermission("lobby.manage.leaderboard")
+    @Subcommand("leaderboard reload")
+    public void onLeaderboardReloadCommand(CommandSender sender) {
+        var mm = MiniMessage.miniMessage();
+        sender.sendMessage(mm.deserialize("<gold>Leaderboards werden neugeladen...</gold>"));
+        try {
+            this.lobby.getLeaderboardManager().load();
+        } catch (SQLException ignored) {}
+        for(Player player: Bukkit.getOnlinePlayers()) {
+            this.lobby.getHologramAPI().showHolograms(player);
+        }
+        sender.sendMessage(mm.deserialize("<green>Erfolgreich Leaderboards neugeladen.</green>"));
     }
 }

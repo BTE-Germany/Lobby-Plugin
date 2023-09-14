@@ -17,8 +17,9 @@ public class QueryAPIAccessor {
 
     }
 
-    public long getPlaytimeOnAllServers(UUID player, long ago) {
+    public long getPlaytimeOnAllServers(UUID player, long timespan) {
         long now = System.currentTimeMillis();
+        long ago = now-timespan;
         Set<UUID> serverUUIDs = queryService.getCommonQueries()
                 .fetchServerUUIDs();
 
@@ -33,7 +34,7 @@ public class QueryAPIAccessor {
 
     public ArrayList<User> getTopPlaytimeOnAllServers(long ago, int length) {
         ArrayList<User> users = new ArrayList<>();
-        queryService.query("SELECT uuid,name FROM plan_users", statement -> {
+        queryService.query("SELECT uuid,name FROM plan_users ", statement -> {
             try (ResultSet set = statement.executeQuery()) {
                 while (set.next()) {
                     users.add(new User(set.getString("name"),getPlaytimeOnAllServers(UUID.fromString(set.getString("uuid")),ago)));
