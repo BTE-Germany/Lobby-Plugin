@@ -113,14 +113,7 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void onItemDrop(EntityDropItemEvent event) {
-        if (event.getEntityType() == EntityType.PLAYER) {
-            Player player = (Player) event.getEntity();
-            if (!this.lobby.getEditModePlayers().contains(player)) {
-                event.setCancelled(true);
-            }
-        } else {
-            event.setCancelled(true);
-        }
+        event.setCancelled(true);
     }
 
     @EventHandler

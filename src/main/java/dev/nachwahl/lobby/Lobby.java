@@ -107,6 +107,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
             Bukkit.getLogger().info("Plan ist nicht installiert.");
             Bukkit.getPluginManager().disablePlugin(this);
         }
+
         try {
             this.leaderboardManager = new LeaderboardManager(this);
         } catch (SQLException e) {
@@ -164,6 +165,9 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         this.manager.registerCommand(new SpawnCommand());
         this.manager.registerCommand(new SettingsCommand());
         this.manager.registerCommand(new GamemodeCommand());
+        this.manager.registerCommand(new NavigatorCommand());
+        this.manager.registerCommand(new TutorialCommand());
+        this.manager.registerCommand(new SoonCommand());
     }
 
 

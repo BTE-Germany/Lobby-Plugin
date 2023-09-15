@@ -47,7 +47,8 @@ public class NavigatorGUI {
             this.gui.setItem(2, 8, ItemBuilder.from(Material.DIRT_PATH)
                     .name(this.lobby.getLanguageAPI().getMessage(language, "navigator.terra.name"))
                     .asGuiItem(event -> {
-                            // TODO: Open Terra Selector
+                        event.getInventory().close();
+                        new ServerGUI(lobby,player);
                     }));
 
             this.gui.getFiller().fill(ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());

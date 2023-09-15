@@ -14,7 +14,9 @@ public class LeaderboardManager {
 
     public LeaderboardManager(Lobby lobby) throws SQLException {
         this.lobby = lobby;
-        load();
+
+        // Reduces performance on startup (loads Plan players)
+        //load();
     }
 
     public void load() throws SQLException {

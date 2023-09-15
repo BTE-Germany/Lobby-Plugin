@@ -95,11 +95,11 @@ public class ItemClick implements Listener {
         }
 
         if(event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
-            if(player.getPassengers().size()>=1) {
+            if(!player.getPassengers().isEmpty()) {
                 Player passenger = (Player)  player.getPassengers().get(0);
                 player.removePassenger(passenger);
 
-                Vector v = player.getLocation().getDirection().multiply(2D).setY(2D);
+                Vector v = passenger.getLocation().getDirection().multiply(2D).setY(2D);
                 passenger.setVelocity(v);
             }
         }
@@ -110,10 +110,15 @@ public class ItemClick implements Listener {
         Player player = event.getPlayer();
         if(event.getRightClicked() instanceof Player) {
             Player passenger = (Player) event.getRightClicked();
-            Lobby.getInstance().getUserSettingsAPI().getBooleanSetting(passenger,"playerPickup",(result) -> {
+            Lobby.getInstance().getUserSettingsAPI().getBooleanSetting(player,"playerPickup",(result) -> {
                 if(!result)
                     return;
-                Bukkit.getScheduler().runTask(Lobby.getInstance(),() -> player.addPassenger(passenger));
+                Lobby.getInstance().getUserSettingsAPI().getBooleanSetting(passenger,"playerPickup",(result2) -> {
+                    if(!result2)
+                        return;
+
+                    Bukkit.getScheduler().runTask(Lobby.getInstance(),() -> player.addPassenger(passenger));
+                });
             });
         }
     }
