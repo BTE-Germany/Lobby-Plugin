@@ -5,22 +5,21 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Dependency;
 import dev.nachwahl.lobby.Lobby;
-import dev.nachwahl.lobby.guis.AccountGUI;
-import dev.nachwahl.lobby.guis.NavigatorGUI;
+import dev.nachwahl.lobby.guis.VisitGUI;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 
-@CommandAlias("navigator|nav")
-public class NavigatorCommand extends BaseCommand {
+@CommandAlias("visit|map")
+public class VisitCommand extends BaseCommand {
     @Dependency
     private Lobby plugin;
 
 
     @Default
-    public void onNavigatorCommand(CommandSender sender) {
+    public void onVisitCommand(CommandSender sender) {
         Player player = (Player) sender;
-        new NavigatorGUI(plugin, player);
+        new VisitGUI(plugin, player);
     }
 
 }

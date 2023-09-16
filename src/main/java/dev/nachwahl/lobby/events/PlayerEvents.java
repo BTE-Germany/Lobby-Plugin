@@ -3,6 +3,7 @@ package dev.nachwahl.lobby.events;
 import co.aikar.idb.DbRow;
 import dev.nachwahl.lobby.Lobby;
 import dev.nachwahl.lobby.guis.PrivacyGUI;
+import dev.nachwahl.lobby.utils.Actions;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
@@ -49,34 +50,18 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        DbRow user = this.lobby.getDatabase().getFirstRow("SELECT * FROM privacy WHERE minecraftUUID = ?", player.getUniqueId().toString());
         this.lobby.getUserSettingsAPI().setDefaultSettings(player);
+        DbRow user = this.lobby.getDatabase().getFirstRow("SELECT * FROM privacy WHERE minecraftUUID = ?", player.getUniqueId().toString());
+        this.lobby.getLocationAPI().teleportToLocation(player, "spawn", false);
+
+        event.joinMessage(Component.empty());
         if (user == null) {
             new PrivacyGUI(player, this.lobby).getGui().open(player);
         } else {
-        this.lobby.getHotbarItems().setHotbarItems(player);
-        event.joinMessage(Component.empty());
-        this.lobby.getLanguageAPI().getLanguage(player, language -> {
-            final Title title = Title.title(
-                    this.lobby.getLanguageAPI().getMessage(language, "welcomeTitle"),
-                    this.lobby.getLanguageAPI().getMessage(language, "welcomeSubtitle"));
-            player.showTitle(title);
-            this.lobby.getHologramAPI().showHolograms(player,language);
-        });
-        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
-        player.setFoodLevel(20);
-        player.setHealth(20);
-        this.lobby.getLocationAPI().teleportToLocation(player, "spawn", false);
 
+            Actions.performJoinActions(lobby,player);
+        }
 
-        player.setAllowFlight(false); // No double jump
-        player.setGameMode(GameMode.ADVENTURE);
-
-        this.lobby.getUserSettingsAPI().getBooleanSetting(player,"playerVisibility",(value) -> {
-            if(!value) {
-                Bukkit.getOnlinePlayers().forEach((p) -> player.hidePlayer(this.lobby,p));
-            }
-        });}
     }
 
     @EventHandler

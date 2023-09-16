@@ -22,10 +22,6 @@ public class HotbarItems {
     public void setHotbarItems(Player player) {
         this.languageAPI.getLanguage(player, language -> {
             ItemStack navigator = ItemBuilder.from(Material.COMPASS).name(this.languageAPI.getMessage(language, "navigator.itemName")).build();
-            /*ItemStack account = ItemBuilder.skull().owner(
-                    Bukkit.getOfflinePlayer(player.getUniqueId())).name(
-                            this.languageAPI.getMessage(language, "account.itemName", Placeholder.parsed("name", player.getName()))
-            ).build();*/
             ItemStack account = ItemBuilder.from(Material.REPEATER).name(this.languageAPI.getMessage(language, "account.itemName")).build();
 
             player.getInventory().clear();
@@ -37,7 +33,7 @@ public class HotbarItems {
                 ItemStack buildMode = ItemBuilder.from(Material.GOLDEN_AXE).name(this.languageAPI.getMessage(language, "manage.editMode")).build();
                 player.getInventory().setItem(8,buildMode);
             }
-            Bukkit.getScheduler().runTask(lobby,() -> player.performCommand("cosmetics item"));
+            // Bukkit.getScheduler().runTask(lobby,() -> player.performCommand("cosmetics item"));
 
 
         });

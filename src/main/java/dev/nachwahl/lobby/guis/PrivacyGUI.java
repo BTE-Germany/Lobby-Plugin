@@ -1,6 +1,7 @@
 package dev.nachwahl.lobby.guis;
 
 import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.utils.Actions;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import net.kyori.adventure.text.Component;
@@ -44,6 +45,8 @@ public class PrivacyGUI {
                 .asGuiItem(event -> {
                     try {
                         this.lobby.getDatabase().executeInsert("INSERT INTO privacy (minecraftUUID) VALUES (?)", player.getUniqueId().toString());
+
+                        Actions.performJoinActions(lobby,player);
                         new LanguageGUI(this.lobby, player);
                     }
                     catch (SQLException exception) {

@@ -4,6 +4,8 @@ import dev.nachwahl.lobby.Lobby;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -26,18 +28,18 @@ public class TutorialGUI {
             this.gui.setItem(2, 3, ItemBuilder.from(Material.GRASS_BLOCK)
                     .name(this.lobby.getLanguageAPI().getMessage(language, "help.plots.name"))
                     .asGuiItem(event -> {
-                       // TODO
+                        this.lobby.getBungeeConnector().sendToServer(player, this.lobby.getConfig().getString("server.Plot"), true);
                     }));
 
 
             this.gui.setItem(2, 5, ItemBuilder.from(Material.WOODEN_PICKAXE)
-                    .name(this.lobby.getLanguageAPI().getMessage(language, "help.test.name"))
+                    .name(Component.text("Coming soon...").color(NamedTextColor.RED).decorate(TextDecoration.BOLD)/*this.lobby.getLanguageAPI().getMessage(language, "help.test.name")*/)
                     .asGuiItem(event -> {
                         // TODO
                     }));
 
             this.gui.setItem(2, 7, ItemBuilder.from(Material.DIAMOND_PICKAXE)
-                    .name(this.lobby.getLanguageAPI().getMessage(language, "help.builder.name"))
+                    .name(Component.text("Coming soon...").color(NamedTextColor.RED).decorate(TextDecoration.BOLD)/*this.lobby.getLanguageAPI().getMessage(language, "help.builder.name")*/)
                     .asGuiItem(event -> {
                         // TODO
                     }));

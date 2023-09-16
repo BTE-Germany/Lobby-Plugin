@@ -168,6 +168,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         this.manager.registerCommand(new NavigatorCommand());
         this.manager.registerCommand(new TutorialCommand());
         this.manager.registerCommand(new SoonCommand());
+        this.manager.registerCommand(new VisitCommand());
     }
 
 
