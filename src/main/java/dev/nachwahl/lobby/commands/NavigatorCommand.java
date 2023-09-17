@@ -20,6 +20,7 @@ public class NavigatorCommand extends BaseCommand {
     @Default
     public void onNavigatorCommand(CommandSender sender) {
         Player player = (Player) sender;
+        System.out.println("ttt");
         new NavigatorGUI(plugin, player);
     }
 

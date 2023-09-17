@@ -1,6 +1,8 @@
 package dev.nachwahl.lobby.guis;
 
+import co.aikar.util.JSONUtil;
 import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.utils.ItemGenerator;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import net.kyori.adventure.text.Component;
@@ -24,14 +26,14 @@ public class NavigatorGUI {
 
 
             this.gui.setItem(2, 3, ItemBuilder.from(Material.GRASS_BLOCK)
-                    .name(this.lobby.getLanguageAPI().getMessage(language, "navigator.plots.name"))
+                            .name(this.lobby.getLanguageAPI().getMessage(language, "navigator.plots.name"))
                     .asGuiItem(event -> {
                         this.lobby.getBungeeConnector().sendToServer(player, this.lobby.getConfig().getString("server.Plot"), true);
                     }));
 
 
             this.gui.setItem(2, 5, ItemBuilder.from(Material.COMPASS)
-                    .name(this.lobby.getLanguageAPI().getMessage(language, "navigator.warps.name"))
+                            .name(this.lobby.getLanguageAPI().getMessage(language, "navigator.warps.name"))
                     .asGuiItem(event -> {
                         player.performCommand("nwarp");
                         event.getInventory().close();

@@ -22,7 +22,7 @@ public class SpawnCommand extends BaseCommand {
     @Default
     public void onSpawnCommand(CommandSender sender) {
         Player player = (Player) sender;
-        Lobby.getInstance().getLocationAPI().teleportToLocation((Player) sender,"spawn",true);
+        Lobby.getInstance().getLocationAPI().teleportToLocation((Player) sender,"spawn",false);
         if(player.getInventory().getChestplate()!=null &&player.getInventory().getChestplate().getType().equals(Material.ELYTRA)) return;
         if(!this.lobby.getElytraPlayers().containsKey(player.getUniqueId()))
             this.lobby.getElytraPlayers().put(player.getUniqueId(),player.getInventory().getChestplate());

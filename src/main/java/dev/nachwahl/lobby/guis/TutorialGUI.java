@@ -1,6 +1,7 @@
 package dev.nachwahl.lobby.guis;
 
 import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.utils.ItemGenerator;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import net.kyori.adventure.text.Component;
@@ -25,8 +26,8 @@ public class TutorialGUI {
                     .create();
 
 
-            this.gui.setItem(2, 3, ItemBuilder.from(Material.GRASS_BLOCK)
-                    .name(this.lobby.getLanguageAPI().getMessage(language, "help.plots.name"))
+            this.gui.setItem(2, 3, ItemBuilder.from(ItemGenerator.setMeta(this.lobby.getLanguageAPI().getMessageString(language,"navigator.plots.description"),ItemBuilder.from(Material.GRASS_BLOCK)
+                            .name(this.lobby.getLanguageAPI().getMessage(language, "help.plots.name")).asGuiItem().getItemStack()))
                     .asGuiItem(event -> {
                         this.lobby.getBungeeConnector().sendToServer(player, this.lobby.getConfig().getString("server.Plot"), true);
                     }));
@@ -42,6 +43,14 @@ public class TutorialGUI {
                     .name(Component.text("Coming soon...").color(NamedTextColor.RED).decorate(TextDecoration.BOLD)/*this.lobby.getLanguageAPI().getMessage(language, "help.builder.name")*/)
                     .asGuiItem(event -> {
                         // TODO
+                    }));
+
+
+            this.gui.setItem(3, 9, ItemBuilder.from(Material.BOOK)
+                    .name(this.lobby.getLanguageAPI().getMessage(language, "help.guides.name"))
+                    .asGuiItem(event -> {
+                        event.getInventory().close();
+                        new TutorialsGUI(lobby,player);
                     }));
 
 

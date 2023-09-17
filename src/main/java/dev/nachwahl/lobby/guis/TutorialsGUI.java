@@ -1,45 +1,47 @@
 package dev.nachwahl.lobby.guis;
 
 import dev.nachwahl.lobby.Lobby;
-import dev.nachwahl.lobby.utils.ItemGenerator;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
-public class VisitGUI {
+public class TutorialsGUI {
 
     private Gui gui;
     private final Lobby lobby;
 
-    public VisitGUI(Lobby lobby, Player player) {
+    public TutorialsGUI(Lobby lobby, Player player) {
         this.lobby = lobby;
         this.lobby.getLanguageAPI().getLanguage(player, language -> {
             this.gui = Gui.gui()
-                    .title(this.lobby.getLanguageAPI().getMessage(language, "map.title"))
+                    .title(this.lobby.getLanguageAPI().getMessage(language, "tutorials.title"))
                     .rows(3)
                     .disableAllInteractions()
                     .create();
 
-            this.gui.setItem(2, 4, ItemBuilder.from(ItemGenerator.setMeta(this.lobby.getLanguageAPI().getMessageString(language,"map.tpll.description"),ItemBuilder.from(Material.LIGHTNING_ROD)
-                            .name(this.lobby.getLanguageAPI().getMessage(language, "map.tpll.name")).asGuiItem().getItemStack()))
+
+            this.gui.setItem(1, 1, ItemBuilder.from(Material.GRASS_BLOCK)
+                    .name(this.lobby.getMiniMessage().deserialize("<gold>Terraform Tutorial</gold>"))
                     .asGuiItem(event -> {
                         event.getInventory().close();
                         Component component = this.lobby.getLanguageAPI().getMessage(language, "map.tpll.message");
-                        player.sendMessage(component.clickEvent(ClickEvent.openUrl("https://www.youtube.com/watch?v=dylAnX4lVq4&pp=ygUOaGVsbyBndXl6IG1lbWU%3D")));
+                        player.sendMessage(component.clickEvent(ClickEvent.openUrl("https://www.youtube.com/watch?v=no8a_79kd1k")));
                     }));
 
-            this.gui.setItem(2, 6, ItemBuilder.from(ItemGenerator.setMeta(this.lobby.getLanguageAPI().getMessageString(language,"navigator.warps.description"),ItemBuilder.from(Material.COMPASS)
-                            .name(this.lobby.getLanguageAPI().getMessage(language, "navigator.warps.name")).asGuiItem().getItemStack()))
+            this.gui.setItem(1, 2, ItemBuilder.from(Material.WOODEN_AXE)
+                    .name(this.lobby.getMiniMessage().deserialize("<gold>Worldedit Tutorial</gold>"))
                     .asGuiItem(event -> {
-                        player.performCommand("nwarp");
                         event.getInventory().close();
+                        Component component = this.lobby.getLanguageAPI().getMessage(language, "map.tpll.message");
+                        player.sendMessage(component.clickEvent(ClickEvent.openUrl("https://www.youtube.com/watch?v=6ReoE4dGi4E")));
                     }));
+
 
             this.gui.getFiller().fill(ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());
             Bukkit.getScheduler().runTask(this.lobby, () -> this.gui.open(player));
