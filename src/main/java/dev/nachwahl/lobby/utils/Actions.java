@@ -28,6 +28,14 @@ public class Actions {
         player.setAllowFlight(false); // No double jump
         player.setGameMode(GameMode.ADVENTURE);
 
+        lobby.getUserSettingsAPI().getBooleanSetting(player,"realTime",(s) -> {
+            if(s) {
+                player.setPlayerTime(lobby.getRealTime().getTime(),false);
+            }else {
+                player.resetPlayerTime();
+            }
+        });
+
         lobby.getUserSettingsAPI().getBooleanSetting(player,"playerVisibility",(value) -> {
             if(!value) {
                 Bukkit.getOnlinePlayers().forEach((p) -> player.hidePlayer(lobby,p));
