@@ -14,10 +14,6 @@ public class Actions {
     public static void performJoinActions(Lobby lobby, Player player) {
         lobby.getHotbarItems().setHotbarItems(player);
         lobby.getLanguageAPI().getLanguage(player, language -> {
-            final Title title = Title.title(
-                    lobby.getLanguageAPI().getMessage(language, "welcomeTitle"),
-                    lobby.getLanguageAPI().getMessage(language, "welcomeSubtitle"));
-            player.showTitle(title);
             lobby.getHologramAPI().showHolograms(player,language);
         });
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
