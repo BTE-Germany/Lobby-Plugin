@@ -50,6 +50,10 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        if(this.lobby.getConfig().getString("resourcepack")!=null) {
+            player.setResourcePack("https://cdn.bte-germany.de/general/resourcepacks/resourcepack_bteg_"+this.lobby.getConfig().getString("resourcepack")+".zip",this.lobby.getConfig().getString("resourcepack"),true,this.lobby.getMiniMessage().deserialize("<red><b>Bitte akzeptiere unser Resourcepack um auf dem Server spielen zu können.\nPlease accept our resourcepack to play on our server.</b></red>"));
+
+        }
         this.lobby.getUserSettingsAPI().setDefaultSettings(player);
         DbRow user = this.lobby.getDatabase().getFirstRow("SELECT * FROM privacy WHERE minecraftUUID = ?", player.getUniqueId().toString());
         this.lobby.getLocationAPI().teleportToLocation(player, "spawn", false);

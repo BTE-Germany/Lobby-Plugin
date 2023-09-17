@@ -4,7 +4,7 @@ mysql:
   database: lobby
   username: root
   password: ""
-prefix: "<aqua><b>BTEG</b></aqua> <dark_gray>»</dark_gray>"
+prefix: "ٹ"
 time:
   timezone: "Europe/Berlin"
   updateInterval: 60
@@ -17,3 +17,4 @@ socials:
   instagram: "world;1;178;4"
   tiktok: "world;0;178;6"
   discord: "world;-18;178;5"
+resourcepack: "19343efaec7d944f9cd69a7bb1695735fbccba10"

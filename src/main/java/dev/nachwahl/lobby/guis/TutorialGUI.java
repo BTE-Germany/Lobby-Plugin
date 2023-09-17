@@ -26,8 +26,8 @@ public class TutorialGUI {
                     .create();
 
 
-            this.gui.setItem(2, 3, ItemBuilder.from(ItemGenerator.setMeta(this.lobby.getLanguageAPI().getMessageString(language,"navigator.plots.description"),ItemBuilder.from(Material.GRASS_BLOCK)
-                            .name(this.lobby.getLanguageAPI().getMessage(language, "help.plots.name")).asGuiItem().getItemStack()))
+            this.gui.setItem(2, 3, ItemBuilder.from(Material.GRASS_BLOCK)
+                            .name(this.lobby.getLanguageAPI().getMessage(language, "help.plots.name"))
                     .asGuiItem(event -> {
                         this.lobby.getBungeeConnector().sendToServer(player, this.lobby.getConfig().getString("server.Plot"), true);
                     }));

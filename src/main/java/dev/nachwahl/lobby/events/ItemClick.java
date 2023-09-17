@@ -69,22 +69,22 @@ public class ItemClick implements Listener {
                 String url = "";
                 if (location.equals(youtube)) {
                     url = "https://www.youtube.com/@BTEGermany";
-                    textComponent = this.lobby.getLanguageAPI().getMessage(language, "advertisement.checkOut", Placeholder.parsed("platform", "<red>YouTube</red>"));
+                    textComponent = this.lobby.getLanguageAPI().getMessage(language, "advertisement.checkOut", Placeholder.parsed("platform", "<color:#FF0000>YouTube</color>"));
                 } else if (location.equals(twitch)) {
                     url = "https://www.twitch.tv/btegermany";
-                    textComponent = this.lobby.getLanguageAPI().getMessage(language, "advertisement.checkOut", Placeholder.parsed("platform", "<dark_purple>Twitch</dark_purple>"));
+                    textComponent = this.lobby.getLanguageAPI().getMessage(language, "advertisement.checkOut", Placeholder.parsed("platform", "<color:#9046ff>Twitch</color>"));
                 } else if (location.equals(tiktok)) {
                     url = "https://www.tiktok.com/@btegermany";
-                    textComponent = this.lobby.getLanguageAPI().getMessage(language, "advertisement.checkOut", Placeholder.parsed("platform", "<black>TikTok</black>"));
+                    textComponent = this.lobby.getLanguageAPI().getMessage(language, "advertisement.checkOut", Placeholder.parsed("platform", "<color:#ff0050>Tik</color><color:#00f2ea>Tok</color>"));
                 } else if (location.equals(instagram)) {
                     url = "https://www.instagram.com/btegermany/";
-                    textComponent = this.lobby.getLanguageAPI().getMessage(language, "advertisement.checkOut", Placeholder.parsed("platform", "<red>Insta</red><light_purple>gram</light_purple>"));
+                    textComponent = this.lobby.getLanguageAPI().getMessage(language, "advertisement.checkOut", Placeholder.parsed("platform", "<gradient:#f56040:#833ab4>Instragram</gradient>"));
                 } else if (location.equals(website)) {
                     url = "https://bte-germany.de/";
-                    textComponent = this.lobby.getLanguageAPI().getMessage(language, "advertisement.checkOut", Placeholder.parsed("platform", "<blue>bte-germany.de</blue>"));
+                    textComponent = this.lobby.getLanguageAPI().getMessage(language, "advertisement.checkOut", Placeholder.parsed("platform", "<color:#63b3ed>bte-germany.de</color>"));
                 } else if (location.equals(discord)) {
                     url = "https://discord.gg/GkSxGTYaAJ";
-                    textComponent = this.lobby.getLanguageAPI().getMessage(language, "advertisement.checkOut", Placeholder.parsed("platform", "<gray>Discord</gray>"));
+                    textComponent = this.lobby.getLanguageAPI().getMessage(language, "advertisement.checkOut", Placeholder.parsed("platform", "<color:#5865F2>Discord</color>"));
                 } else {
                     return;
                 }

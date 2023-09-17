@@ -26,16 +26,16 @@ public class VisitGUI {
                     .disableAllInteractions()
                     .create();
 
-            this.gui.setItem(2, 4, ItemBuilder.from(ItemGenerator.setMeta(this.lobby.getLanguageAPI().getMessageString(language,"map.tpll.description"),ItemBuilder.from(Material.LIGHTNING_ROD)
-                            .name(this.lobby.getLanguageAPI().getMessage(language, "map.tpll.name")).asGuiItem().getItemStack()))
+            this.gui.setItem(2, 4,ItemBuilder.from(Material.LIGHTNING_ROD)
+                            .name(this.lobby.getLanguageAPI().getMessage(language, "map.tpll.name"))
                     .asGuiItem(event -> {
                         event.getInventory().close();
                         Component component = this.lobby.getLanguageAPI().getMessage(language, "map.tpll.message");
                         player.sendMessage(component.clickEvent(ClickEvent.openUrl("https://www.youtube.com/watch?v=dylAnX4lVq4&pp=ygUOaGVsbyBndXl6IG1lbWU%3D")));
                     }));
 
-            this.gui.setItem(2, 6, ItemBuilder.from(ItemGenerator.setMeta(this.lobby.getLanguageAPI().getMessageString(language,"navigator.warps.description"),ItemBuilder.from(Material.COMPASS)
-                            .name(this.lobby.getLanguageAPI().getMessage(language, "navigator.warps.name")).asGuiItem().getItemStack()))
+            this.gui.setItem(2, 6, ItemBuilder.from(Material.COMPASS)
+                            .name(this.lobby.getLanguageAPI().getMessage(language, "navigator.warps.name"))
                     .asGuiItem(event -> {
                         player.performCommand("nwarp");
                         event.getInventory().close();
