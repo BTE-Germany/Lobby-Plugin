@@ -6,6 +6,7 @@ import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Dependency;
 import co.aikar.commands.annotation.Subcommand;
 import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.utils.HotbarItems;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -23,10 +24,7 @@ public class SpawnCommand extends BaseCommand {
     public void onSpawnCommand(CommandSender sender) {
         Player player = (Player) sender;
         Lobby.getInstance().getLocationAPI().teleportToLocation((Player) sender,"spawn",false);
-        if(player.getInventory().getChestplate()!=null &&player.getInventory().getChestplate().getType().equals(Material.ELYTRA)) return;
-        if(!this.lobby.getElytraPlayers().containsKey(player.getUniqueId()))
-            this.lobby.getElytraPlayers().put(player.getUniqueId(),player.getInventory().getChestplate());
-        player.getInventory().setChestplate(ItemBuilder.from(Material.ELYTRA).enchant(Enchantment.MENDING).build());
+        HotbarItems.setElytra(player,lobby);
     }
 
 }

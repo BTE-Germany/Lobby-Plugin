@@ -72,13 +72,13 @@ public class MiniGameBlockUtil {
             Location loc = Lobby.getInstance().getLocationAPI().parseLocation(s);
             Location locHD = new Location(loc.getWorld(), loc.getBlockX()+0.5, loc.getBlockY()+3.5,loc.getBlockZ()+0.5);
             Hologram hologram = Lobby.getInstance().getHologramAPI().getApi().createHologram(locHD);
-            hologram.getLines().appendText("§6§l"+game);
+            hologram.getLines().appendText("§9§l"+game);
         }
     }
 
     public static void setGameTitleHoverText(String game, Location loc){
         Hologram hologram = Lobby.getInstance().getHologramAPI().getApi().createHologram(new Location(loc.getWorld(), loc.getX()+0.5, loc.getY()+3.5,loc.getZ()+0.5));
-        hologram.getLines().appendText("§6§l"+game);
+        hologram.getLines().appendText("§9§l"+game);
     }
 
 

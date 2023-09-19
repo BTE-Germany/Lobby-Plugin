@@ -6,6 +6,7 @@ import dev.triumphteam.gui.builder.item.ItemBuilder;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -29,6 +30,8 @@ public class HotbarItems {
             player.getInventory().setItem(4, navigator);
             player.getInventory().setItem(6, account);
 
+            setElytra(player,lobby);
+
             if(player.hasPermission("lobby.manage.edit")) {
                 ItemStack buildMode = ItemBuilder.from(Material.GOLDEN_AXE).name(this.languageAPI.getMessage(language, "manage.editMode")).build();
                 player.getInventory().setItem(8,buildMode);
@@ -37,5 +40,12 @@ public class HotbarItems {
 
 
         });
+    }
+
+    public static void setElytra(Player player, Lobby lobby){
+        if(player.getInventory().getChestplate()!=null &&player.getInventory().getChestplate().getType().equals(Material.ELYTRA)) return;
+        if(!lobby.getElytraPlayers().containsKey(player.getUniqueId()))
+            lobby.getElytraPlayers().put(player.getUniqueId(),player.getInventory().getChestplate());
+        player.getInventory().setChestplate(ItemBuilder.from(Material.ELYTRA).enchant(Enchantment.MENDING).build());
     }
 }
