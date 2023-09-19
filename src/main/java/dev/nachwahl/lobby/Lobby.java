@@ -13,6 +13,7 @@ import dev.nachwahl.lobby.quests.listener.BlockBreakListener;
 import dev.nachwahl.lobby.quests.listener.BlockPlaceEvent;
 import dev.nachwahl.lobby.quests.listener.InteractListener;
 import dev.nachwahl.lobby.quests.listener.JoinListener;
+import dev.nachwahl.lobby.scoreboard.Scoreboard;
 import dev.nachwahl.lobby.storage.Database;
 import dev.nachwahl.lobby.utils.*;
 import dev.nachwahl.lobby.hologram.HologramAPI;
@@ -65,6 +66,9 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
     private PoolManager poolManager;
     private ArenaManager arenaManager;
 
+    @Getter
+    private Scoreboard scoreboard;
+
     @Override
     public void onEnable() {
         instance = this;
@@ -78,6 +82,8 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         questManager = new QuestManager();
         poolManager = new PoolManager();
         arenaManager = new ArenaManager();
+
+        scoreboard = new Scoreboard(this);
 
         registerListeners();
         registerCommand();
@@ -125,6 +131,11 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
             throw new RuntimeException(e);
         }
 
+
+        // Update scoreboards
+        getServer().getScheduler().runTaskTimer(this, () -> {
+            scoreboard.updateScoreboards();
+        }, 0, 20L);
 
     }
 

@@ -66,12 +66,16 @@ public class PlayerEvents implements Listener {
             Actions.performJoinActions(lobby,player);
         }
 
+        // Init scoreboard
+        this.lobby.getScoreboard().initScoreboard(player);
+
     }
 
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
         event.quitMessage(Component.empty());
         this.lobby.getVanish().remove(event.getPlayer());
+        this.lobby.getScoreboard().removeScoreboard(event.getPlayer());
     }
 
     @EventHandler
