@@ -28,8 +28,11 @@ public class DoubleJumpEvent implements Listener {
 
 
             if (!player.getAllowFlight()) return;
-            if (player.getInventory().getChestplate() != null && player.getInventory().getChestplate().getType().equals(Material.ELYTRA))
+            /* if (player.getInventory().getChestplate() != null && player.getInventory().getChestplate().getType().equals(Material.ELYTRA))
                 return;
+
+                The players have creative flight when having a elytra, if this is not commented out
+            */
 
             event.setCancelled(true);
             Vector v = player.getLocation().getDirection().multiply(2D).setY(2D);
