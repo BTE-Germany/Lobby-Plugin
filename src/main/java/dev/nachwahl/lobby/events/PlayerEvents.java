@@ -22,6 +22,7 @@ import org.bukkit.event.entity.EntityDropItemEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -62,7 +63,6 @@ public class PlayerEvents implements Listener {
         if (user == null) {
             new PrivacyGUI(player, this.lobby).getGui().open(player);
         } else {
-
             Actions.performJoinActions(lobby,player);
         }
 
@@ -101,7 +101,7 @@ public class PlayerEvents implements Listener {
     }
 
     @EventHandler
-    public void onItemDrop(EntityDropItemEvent event) {
+    public void onItemDrop(PlayerDropItemEvent event) {
         event.setCancelled(true);
     }
 
