@@ -67,7 +67,7 @@ public class PlayerEvents implements Listener {
         }
 
         // Init scoreboard
-        this.lobby.getScoreboard().initScoreboard(player);
+        //this.lobby.getScoreboard().initScoreboard(player);
 
     }
 

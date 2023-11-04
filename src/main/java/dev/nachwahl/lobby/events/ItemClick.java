@@ -78,7 +78,7 @@ public class ItemClick implements Listener {
                     textComponent = this.lobby.getLanguageAPI().getMessage(language, "advertisement.checkOut", Placeholder.parsed("platform", "<color:#ff0050>Tik</color><color:#00f2ea>Tok</color>"));
                 } else if (location.equals(instagram)) {
                     url = "https://www.instagram.com/btegermany/";
-                    textComponent = this.lobby.getLanguageAPI().getMessage(language, "advertisement.checkOut", Placeholder.parsed("platform", "<gradient:#f56040:#833ab4>Instragram</gradient>"));
+                    textComponent = this.lobby.getLanguageAPI().getMessage(language, "advertisement.checkOut", Placeholder.parsed("platform", "<gradient:#f56040:#833ab4>Instagram</gradient>"));
                 } else if (location.equals(website)) {
                     url = "https://bte-germany.de/";
                     textComponent = this.lobby.getLanguageAPI().getMessage(language, "advertisement.checkOut", Placeholder.parsed("platform", "<color:#63b3ed>bte-germany.de</color>"));

@@ -1,6 +1,7 @@
 package dev.nachwahl.lobby.guis;
 
 import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.language.Language;
 import dev.nachwahl.lobby.utils.ItemGenerator;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
@@ -31,7 +32,11 @@ public class VisitGUI {
                     .asGuiItem(event -> {
                         event.getInventory().close();
                         Component component = this.lobby.getLanguageAPI().getMessage(language, "map.tpll.message");
-                        player.sendMessage(component.clickEvent(ClickEvent.openUrl("https://www.youtube.com/watch?v=dylAnX4lVq4&pp=ygUOaGVsbyBndXl6IG1lbWU%3D")));
+                        if(language == Language.ENGLISH) {
+                            player.sendMessage(component.clickEvent(ClickEvent.openUrl("https://youtu.be/ukQ4ATKlhWU")));
+                        } else {
+                            player.sendMessage(component.clickEvent(ClickEvent.openUrl("https://youtu.be/T2NMEBdUAvs")));
+                        }
                     }));
 
             this.gui.setItem(2, 6, ItemBuilder.from(Material.COMPASS)
