@@ -92,7 +92,7 @@ public class LanguageAPI {
             languageCallback.accept(cached);
             return;
         }
-        this.lobby.getDatabase().getFirstRowAsync("SELECT * FROM languages WHERE minecraftUUID = ?", player.getUniqueId().toString())
+        this.lobby.getDatabase().getFirstRowAsync("SELECT * FROM langUsers WHERE uuid = ?", player.getUniqueId().toString())
                 .thenAccept(dbRow -> {
                     if(dbRow == null) {
                         languageCallback.accept(Language.ENGLISH);
@@ -100,7 +100,7 @@ public class LanguageAPI {
                     }
 
                     Language language;
-                    String selectedLanguage = dbRow.getString("language");
+                    String selectedLanguage = dbRow.getString("lang");
 
                     if (selectedLanguage != null) {
                         try {
@@ -133,16 +133,16 @@ public class LanguageAPI {
     }
 
     public void setLanguage(Language language, Player player) {
-        this.lobby.getDatabase().getFirstRowAsync("SELECT * FROM languages WHERE minecraftUUID = ?", player.getUniqueId().toString()).thenAccept(row -> {
+        this.lobby.getDatabase().getFirstRowAsync("SELECT * FROM langUsers WHERE uuid = ?", player.getUniqueId().toString()).thenAccept(row -> {
             if (row == null) {
-                this.lobby.getDatabase().executeUpdateAsync("INSERT INTO languages (minecraftUUID, language) VALUES (?, ?)", player.getUniqueId().toString(), language.getLang()).thenAccept(integer -> {
+                this.lobby.getDatabase().executeUpdateAsync("INSERT INTO langUsers (uuid, lang) VALUES (?, ?)", player.getUniqueId().toString(), language.getLang()).thenAccept(integer -> {
                     this.languageCache.put(player.getUniqueId(), language);
                     this.sendMessageToPlayer(player, "languageChanged");
                     this.lobby.getHotbarItems().setHotbarItems(player);
                     this.lobby.getHologramAPI().showHolograms(player,language);
                 });
             } else {
-                this.lobby.getDatabase().executeUpdateAsync("UPDATE languages SET language = ? WHERE minecraftUUID = ?", language.getLang(), player.getUniqueId().toString()).thenAccept(integer -> {
+                this.lobby.getDatabase().executeUpdateAsync("UPDATE langUsers SET lang = ? WHERE uuid = ?", language.getLang(), player.getUniqueId().toString()).thenAccept(integer -> {
                     this.languageCache.put(player.getUniqueId(), language);
                     this.sendMessageToPlayer(player, "languageChanged");
                     this.lobby.getHotbarItems().setHotbarItems(player);
