@@ -1,7 +1,9 @@
 package dev.nachwahl.lobby.utils;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,6 +17,14 @@ public class ItemGenerator {
             m.lore(List.of(ml));
         });
                 return item;
+    }
+
+    public static ItemStack customModel(Material material, Integer data) {
+        ItemStack item = new ItemStack(material);
+        ItemMeta meta = item.getItemMeta();
+        meta.setCustomModelData(data);
+        item.setItemMeta(meta);
+        return item;
     }
 
 }

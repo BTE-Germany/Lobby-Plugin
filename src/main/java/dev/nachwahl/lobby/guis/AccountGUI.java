@@ -2,6 +2,7 @@ package dev.nachwahl.lobby.guis;
 
 import dev.nachwahl.lobby.Lobby;
 import dev.nachwahl.lobby.language.Language;
+import dev.nachwahl.lobby.utils.ItemGenerator;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.builder.item.SkullBuilder;
 import dev.triumphteam.gui.guis.Gui;
@@ -10,6 +11,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class AccountGUI {
 
@@ -72,11 +74,17 @@ public class AccountGUI {
             // Language Item
 
             this.gui.setItem(3,4,ItemBuilder.skull().texture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOThkYWExZTNlZDk0ZmYzZTMzZTFkNGM2ZTQzZjAyNGM0N2Q3OGE1N2JhNGQzOGU3NWU3YzkyNjQxMDYifX19").name(this.lobby.getLanguageAPI().getMessage(language,"account.language.name")).asGuiItem());
-
-            SkullBuilder languageItem = ItemBuilder.skull().texture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWU3ODk5YjQ4MDY4NTg2OTdlMjgzZjA4NGQ5MTczZmU0ODc4ODY0NTM3NzQ2MjZiMjRiZDhjZmVjYzc3YjNmIn19fQ==");
+/*Ü
+            ItemBu languageItem = ItemBuilder.skull().texture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWU3ODk5YjQ4MDY4NTg2OTdlMjgzZjA4NGQ5MTczZmU0ODc4ODY0NTM3NzQ2MjZiMjRiZDhjZmVjYzc3YjNmIn19fQ==");
             if (this.lobby.getLanguageAPI().getLanguage(player).equals(Language.ENGLISH)) {
                 languageItem = ItemBuilder.skull().texture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGNhYzk3NzRkYTEyMTcyNDg1MzJjZTE0N2Y3ODMxZjY3YTEyZmRjY2ExY2YwY2I0YjM4NDhkZTZiYzk0YjQifX19");
+            }*/
+            ItemBuilder languageItem = ItemBuilder.from(ItemGenerator.customModel(Material.PAPER,9));
+
+            if(this.lobby.getLanguageAPI().getLanguage(player).equals(Language.ENGLISH)) {
+                languageItem = ItemBuilder.from(ItemGenerator.customModel(Material.PAPER,10));
             }
+
             this.gui.setItem(4, 4,
                     languageItem
                             .name(this.lobby.getLanguageAPI().getMessage(language, "language"))

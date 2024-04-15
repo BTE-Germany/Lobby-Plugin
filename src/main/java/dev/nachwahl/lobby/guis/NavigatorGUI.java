@@ -9,6 +9,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 
 public class NavigatorGUI {
 
@@ -25,7 +26,7 @@ public class NavigatorGUI {
                     .create();
 
 
-            this.gui.setItem(2, 3, ItemBuilder.from(Material.GRASS_BLOCK)
+            this.gui.setItem(2, 3, ItemBuilder.from(ItemGenerator.customModel(Material.PAPER,2))
                             .name(this.lobby.getLanguageAPI().getMessage(language, "navigator.plots.name"))
                     .asGuiItem(event -> {
                         this.lobby.getBungeeConnector().sendToServer(player, this.lobby.getConfig().getString("server.Plot"), true);
@@ -39,7 +40,7 @@ public class NavigatorGUI {
                         event.getInventory().close();
                     }));
 
-            this.gui.setItem(2, 7, ItemBuilder.from(Material.DIRT_PATH)
+            this.gui.setItem(2, 7, ItemBuilder.from(ItemGenerator.customModel(Material.PAPER,5))
                     .name(this.lobby.getLanguageAPI().getMessage(language, "navigator.terra.name"))
                     .asGuiItem(event -> {
                         event.getInventory().close();

@@ -23,7 +23,7 @@ public class HotbarItems {
     public void setHotbarItems(Player player) {
         this.languageAPI.getLanguage(player, language -> {
             ItemStack navigator = ItemBuilder.from(Material.COMPASS).name(this.languageAPI.getMessage(language, "navigator.itemName")).build();
-            ItemStack account = ItemBuilder.from(Material.REPEATER).name(this.languageAPI.getMessage(language, "account.itemName")).build();
+            ItemStack account = ItemBuilder.from(ItemGenerator.customModel(Material.PAPER,11)).name(this.languageAPI.getMessage(language, "account.itemName")).build();
 
             player.getInventory().clear();
 

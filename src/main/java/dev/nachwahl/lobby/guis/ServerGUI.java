@@ -1,6 +1,7 @@
 package dev.nachwahl.lobby.guis;
 
 import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.utils.ItemGenerator;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import net.kyori.adventure.text.Component;
@@ -23,19 +24,19 @@ public class ServerGUI {
                     .disableAllInteractions()
                     .create();
 
-            this.gui.setItem(2, 3, ItemBuilder.from(Material.DIRT_PATH)
+            this.gui.setItem(2, 3, ItemBuilder.from(ItemGenerator.customModel(Material.PAPER,16))
                     .name(this.lobby.getLanguageAPI().getMessage(language, "server.name", Placeholder.parsed("server","1")))
                     .asGuiItem(event -> {
                         lobby.getBungeeConnector().sendToServer(player,"Terra-1",true);
                     }));
 
-            this.gui.setItem(2, 5, ItemBuilder.from(Material.DIRT_PATH)
+            this.gui.setItem(2, 5, ItemBuilder.from(ItemGenerator.customModel(Material.PAPER,17))
                     .name(this.lobby.getLanguageAPI().getMessage(language, "server.name", Placeholder.parsed("server","2")))
                     .asGuiItem(event -> {
                         lobby.getBungeeConnector().sendToServer(player,"Terra-2",true);
                     }));
 
-            this.gui.setItem(2, 7, ItemBuilder.from(Material.DIRT_PATH)
+            this.gui.setItem(2, 7, ItemBuilder.from(ItemGenerator.customModel(Material.PAPER,18))
                     .name(this.lobby.getLanguageAPI().getMessage(language, "server.name", Placeholder.parsed("server","3")))
                     .asGuiItem(event -> {
                         lobby.getBungeeConnector().sendToServer(player,"Terra-3",true);
