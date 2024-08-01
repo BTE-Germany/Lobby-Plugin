@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>dev.nachwahl</groupId>
-    <artifactId>lobby</artifactId>
+    <artifactId>cosmetics</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Lobby</name>
+    <name>Cosmetics</name>
 
     <properties>
         <java.version>1.8</java.version>
@@ -38,19 +38,19 @@
                     <relocations>
                         <relocation>
                             <pattern>co.aikar.commands</pattern>
-                            <shadedPattern>dev.nachwahl.lobby.acf</shadedPattern> <!-- Replace this -->
+                            <shadedPattern>dev.nachwahl.cosmetics.acf</shadedPattern> <!-- Replace this -->
                         </relocation>
                         <relocation>
                             <pattern>co.aikar.locales</pattern>
-                            <shadedPattern>dev.nachwahl.lobby.locales</shadedPattern> <!-- Replace this -->
+                            <shadedPattern>dev.nachwahl.cosmetics.locales</shadedPattern> <!-- Replace this -->
                         </relocation>
                         <relocation>
                             <pattern>dev.triumphteam.gui</pattern>
-                            <shadedPattern>dev.nachwahl.lobby.gui</shadedPattern> <!-- Replace package here here -->
+                            <shadedPattern>dev.nachwahl.cosmetics.gui</shadedPattern> <!-- Replace package here here -->
                         </relocation>
                         <relocation>
                             <pattern>co.aikar.idb</pattern>
-                            <shadedPattern>dev.nachwahl.lobby.idb</shadedPattern>
+                            <shadedPattern>dev.nachwahl.cosmetics.idb</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
