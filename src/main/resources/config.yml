@@ -1,0 +1,20 @@
+mysql:
+  host: localhost
+  port: 3306
+  database: lobby
+  username: root
+  password: ""
+prefix: "ٹ"
+time:
+  timezone: "Europe/Berlin"
+  updateInterval: 60
+server:
+  Plot: Plot-1
+socials:
+  website: "world;-14;178;9"
+  youtube: "world;-5;178;10"
+  twitch: "world;-3;178;9"
+  instagram: "world;1;178;4"
+  tiktok: "world;0;178;6"
+  discord: "world;-18;178;5"
+resourcepack: "19343efaec7d944f9cd69a7bb1695735fbccba10"
