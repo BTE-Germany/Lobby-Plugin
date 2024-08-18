@@ -1,24 +1,28 @@
 package dev.nachwahl.lobby.scoreboard;
 
+import dev.nachwahl.cosmetics.Cosmetics;
 import dev.nachwahl.lobby.Lobby;
 import fr.mrmicky.fastboard.adventure.FastBoard;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
 public class Scoreboard {
 
-    private final HashMap<UUID, FastBoard> scoreboards = new HashMap<>();
     private final Lobby lobby;
+    private Cosmetics cosmetics;
+    private final Map<UUID, FastBoard> scoreboards = new HashMap<>();
 
-    public Scoreboard(Lobby lobby) {
+    public Scoreboard(Lobby lobby, Cosmetics cosmetics) {
         this.lobby = lobby;
+        this.cosmetics = cosmetics;
     }
 
     public void initScoreboard(Player player) {
         FastBoard board = new FastBoard(player);
-        board.updateTitle(this.lobby.getMiniMessage().deserialize("       <b><gradient:#262b44:#e63c45:#ffaf36>BTE Germany</gradient></b>       "));
+        board.updateTitle(Component.text("\uE350"));
+        board.updateLines(getUpdatedLines(player));
         this.scoreboards.put(player.getUniqueId(), board);
     }
 
@@ -31,10 +35,47 @@ public class Scoreboard {
 
     public void updateScoreboards() {
         for (FastBoard board : this.scoreboards.values()) {
-            board.updateLine(0, this.lobby.getMiniMessage().deserialize(""));
-            board.updateLine(1, this.lobby.getMiniMessage().deserialize("<gray>▶</gray> <color:#f23a29><b>Gems</b></color>"));
-            board.updateLine(2, this.lobby.getMiniMessage().deserialize("   <color:#bdbdb1>187</color> ௰"));
-            board.updateLine(3, this.lobby.getMiniMessage().deserialize(""));
+            board.updateLines(getUpdatedLines(board.getPlayer()));
         }
+    }
+
+    public List<Component> getUpdatedLines(Player player) {
+        List<Component> lines = new ArrayList<>();
+        this.cosmetics.getLanguageAPI().getLanguage(player, language -> {
+            this.cosmetics.getGemsAPI().getBalance(player, gems -> {
+                long playtime = this.cosmetics.getPlaytimeHandler().getPlaytime(player.getUniqueId());
+                lines.add(Component.empty());
+                lines.add(Component.text("§7Gems"));
+                lines.add(Component.text("௴ " + gems));
+                lines.add(Component.empty());
+                lines.add(cosmetics.getLanguageAPI().getMessage(language, "scoreboard.playtime"));
+                lines.add(Component.text("ꭑ " + formatPlaytime(playtime)));
+                lines.add(Component.empty());
+            });
+        });
+
+        return lines;
+    }
+
+    public static String formatPlaytime(long seconds) {
+        long days = seconds / (24 * 3600);
+        seconds %= (24 * 3600);
+        long hours = seconds / 3600;
+        seconds %= 3600;
+        long minutes = seconds / 60;
+
+        StringBuilder sb = new StringBuilder();
+
+        if (days > 0) {
+            sb.append(days).append(" Tag");
+            if (days > 1) {
+                sb.append("e");
+            }
+            sb.append(" ");
+        }
+
+        sb.append(hours).append("h ").append(minutes).append("min");
+
+        return sb.toString();
     }
 }

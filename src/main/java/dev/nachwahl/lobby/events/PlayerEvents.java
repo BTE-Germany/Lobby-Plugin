@@ -59,7 +59,9 @@ public class PlayerEvents implements Listener {
         }
 
         // Init scoreboard
-        //this.lobby.getScoreboard().initScoreboard(player);
+        if(player.hasPermission("lobby.scoreboard")) {
+            this.lobby.getScoreboard().initScoreboard(player);
+        }
 
     }
 
