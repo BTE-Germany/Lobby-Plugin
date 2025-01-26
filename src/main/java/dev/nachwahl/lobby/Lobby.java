@@ -22,6 +22,7 @@ import dev.nachwahl.lobby.quests.listener.JoinListener;
 import dev.nachwahl.lobby.scoreboard.Scoreboard;
 import dev.nachwahl.lobby.storage.Database;
 import dev.nachwahl.lobby.utils.*;
+import eu.decentsoftware.holograms.api.DHAPI;
 import lombok.Getter;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -65,6 +66,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
     private MiniGameBlockUtil miniGameBlockUtil;
     private CinematicUtil cinematicUtil;
     private LeaderboardManager leaderboardManager;
+    private BOTMScoreAPI botmScoreAPI;
 
     private QuestManager questManager;
     private PoolManager poolManager;
@@ -115,6 +117,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         this.hotbarItems = new HotbarItems(this);
         this.locationAPI = new LocationAPI(this);
         this.userSettingsAPI = new UserSettingsAPI(this);
+        this.botmScoreAPI = new BOTMScoreAPI(this);
         this.realTime = new RealTime(this.getConfig().getString("time.timezone"), this.getConfig().getInt("time.updateInterval"), Bukkit.getWorld("world"));
         this.vanish = new Vanish();
         this.hologramAPI = new HologramAPI(this);
@@ -147,6 +150,13 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
             throw new RuntimeException(e);
         }
 
+        botmScoreAPI.getLocations(loaction -> {
+            if (loaction != null) {
+                BOTMCommand botm = new BOTMCommand();
+                botm.create(loaction);
+            }
+        });
+        botmScoreAPI.clearLocation();
 
         // Update scoreboards
         getServer().getScheduler().runTaskTimer(this, () -> {
@@ -157,6 +167,9 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
 
     @Override
     public void onDisable() {
+
+        botmScoreAPI.saveLocation(DHAPI.getHologram("BOTM").getLocation());
+
         Bukkit.getLogger().info("Das Lobby Plugin wurde deaktiviert.");
         this.database.disconnect();
         this.getServer().getMessenger().unregisterOutgoingPluginChannel(this);
@@ -197,6 +210,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         this.manager.registerCommand(new SoonCommand());
         this.manager.registerCommand(new VisitCommand());
         this.manager.registerCommand(new CinematicCommand(cinematicUtil));
+        this.manager.registerCommand(new BOTMCommand());
     }
 
 
