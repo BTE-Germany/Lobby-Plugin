@@ -1,10 +1,8 @@
 package dev.nachwahl.lobby.commands;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Dependency;
-import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.*;
+import co.aikar.locales.MessageKey;
 import dev.nachwahl.lobby.Lobby;
 import eu.decentsoftware.holograms.api.DHAPI;
 import org.bukkit.ChatColor;
@@ -42,11 +40,13 @@ public class BOTMCommand extends BaseCommand {
     }
 
     @CommandPermission("bteg.lobby.botm")
-    @Subcommand("add <player>")
+    @Syntax("<player>")
+    @Subcommand("add")
     public void onBOTMAdd(String player) {
 
         this.lobby.getBotmScoreAPI().addPoints(player);
         update(true);
+        getCurrentCommandIssuer().sendInfo(MessageKey.of(ChatColor.GREEN + "Punkt wurde erfolgreich hinzugefügt!"));
 
     }
 

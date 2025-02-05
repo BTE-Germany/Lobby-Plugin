@@ -25,7 +25,7 @@ public class BOTMScoreAPI {
     public void setScore(String name, int score) {
         scoreCache.put(name, score);
 
-        this.lobby.getDatabase().executeUpdateAsync("INSERT INTO botm (name, score) VALUES (?, ?) ON DUPLICATE KEY UPDATE score = ?", name, score, score);
+        this.lobby.getDatabase().executeUpdateAsync("INSERT INTO botm (name, score) VALUES (?, ?) ON DUPLICATE KEY UPDATE score = VALUES(score)", name, score);
     }
 
     public void getScore(String name, Consumer<Integer> callback) {
