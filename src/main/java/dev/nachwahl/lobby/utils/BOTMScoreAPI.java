@@ -59,45 +59,4 @@ public class BOTMScoreAPI {
             }
         });
     }
-
-    public void saveLocation(Location location) throws SQLException {
-        this.lobby.getDatabase().executeUpdate("INSERT INTO botmLocation (axis, location) VALUES (?, ?) ON DUPLICATE KEY UPDATE location = VALUES (location)", "world", location.getWorld().getName());
-        this.lobby.getDatabase().executeUpdate("INSERT INTO botmLocation (axis, location) VALUES (?, ?) ON DUPLICATE KEY UPDATE location = VALUES (location)", "x", location.getX());
-        this.lobby.getDatabase().executeUpdate("INSERT INTO botmLocation (axis, location) VALUES (?, ?) ON DUPLICATE KEY UPDATE location = VALUES (location)", "y", location.getY());
-        this.lobby.getDatabase().executeUpdate("INSERT INTO botmLocation (axis, location) VALUES (?, ?) ON DUPLICATE KEY UPDATE location = VALUES (location)", "z", location.getZ());
-    }
-
-    public Location getLocation() throws SQLException {
-        List<DbRow> dbRows = this.lobby.getDatabase().getResults("SELECT * FROM botmLocation");
-        if (dbRows.isEmpty()) {
-            return null;
-        }
-        String world = "";
-        double x = 0;
-        double y = 0;
-        double z = 0;
-        for (DbRow dbRow : dbRows) {
-            switch (dbRow.getString("axis")) {
-                case "world":
-                    world = dbRow.getString("location");
-                    break;
-                case "x":
-                    x = Double.parseDouble(dbRow.getString("location"));
-                    break;
-                case "y":
-                    y = Double.parseDouble(dbRow.getString("location"));
-                    break;
-                case "z":
-                    z = Double.parseDouble(dbRow.getString("location"));
-                    break;
-            }
-        }
-        return new Location(Bukkit.getWorld(world), x, y, z);
-    }
-
-
-    public void clearLocation() {
-        this.lobby.getDatabase().executeUpdateAsync("DELETE FROM botmLocation");
-    }
-
 }

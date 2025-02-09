@@ -5,7 +5,7 @@ import co.aikar.commands.annotation.*;
 import co.aikar.idb.Database;
 import co.aikar.idb.DbRow;
 import dev.nachwahl.lobby.Lobby;
-import dev.nachwahl.lobby.utils.BOTMScoreAPI;
+import dev.nachwahl.lobby.language.Language;
 import eu.decentsoftware.holograms.api.DHAPI;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -33,22 +33,22 @@ public class BOTMCommand extends BaseCommand {
     public void onBOTMCreate(CommandSender sender) throws SQLException {
         Player player = (Player) sender;
 
-        player.sendMessage(create(player.getLocation(), this.lobby.getDatabase()));
+        player.sendMessage(create(player.getLocation(), this.lobby.getDatabase(), this.lobby.getLanguageAPI().getLanguage(player)));
     }
 
     @CommandPermission("bteg.lobby.botm")
     @Subcommand("move")
     public void onBOTMMove(CommandSender sender) throws SQLException {
         DHAPI.moveHologram("BOTM", ((Player)sender).getLocation());
-        this.lobby.getBotmScoreAPI().saveLocation(((Player)sender).getLocation());
-        sender.sendMessage(ChatColor.GREEN + "[BTE] Hologramm wurde verschoben!");
+        this.lobby.getLocationAPI().setLocation(((Player) sender).getLocation(), "botm");
+        this.lobby.getLanguageAPI().sendMessageToPlayer((Player) sender, "botm.moved");
     }
 
     @CommandPermission("bteg.lobby.botm")
     @Subcommand("remove")
     public void onBOTMRemove(CommandSender sender) {
         DHAPI.removeHologram("BOTM");
-        sender.sendMessage(ChatColor.GREEN + "[BTE] Hologramm wurde entfernt!");
+        this.lobby.getLanguageAPI().sendMessageToPlayer((Player) sender, "botm.removed");
     }
 
     @CommandPermission("bteg.lobby.botm")
@@ -59,13 +59,12 @@ public class BOTMCommand extends BaseCommand {
         Player player = (Player) sender;
 
         this.lobby.getBotmScoreAPI().addPoints(target);
-        update(true);
+        update(player);
 
-        player.sendMessage(ChatColor.GREEN + "[BTE] Punkte wurden hinzugefügt!");
-
+        this.lobby.getLanguageAPI().sendMessageToPlayer(player, "botm.added");
     }
 
-    public static String create(Location location, Database database) throws SQLException {
+    public static String create(Location location, Database database, Language language) throws SQLException {
 
         HashMap<String, Integer> scores = new HashMap<>();
         List<DbRow> dbRows = database.getResults("SELECT * FROM botm");
@@ -77,7 +76,7 @@ public class BOTMCommand extends BaseCommand {
         });
 
         // Create a hologram
-        if (scores.size() > 3) {
+        if (scores.size() >= 3) {
 
             ArrayList<String> keys = new ArrayList<>(scores.keySet());
 
@@ -99,22 +98,22 @@ public class BOTMCommand extends BaseCommand {
             for (int i = 0; i < entries; i++) lines.add(ChatColor.GRAY + relevantEntries[i].getValue() + ": " + ChatColor.GREEN + relevantEntries[i].getKey());
 
             DHAPI.createHologram("BOTM", location, lines);
-            lobby.getBotmScoreAPI().saveLocation(location);
+            lobby.getLocationAPI().setLocation(location, "botm");
 
-            return ChatColor.GREEN + "[BTE] Hologramm wurde erfolgreich erstellt!";
+            return lobby.getLanguageAPI().getMessageString(language, "botm.create.success");
         } else {
             // Send feedback
-            return ChatColor.YELLOW + "[BTE] Es existieren nicht genügend Einträge um ein Hologramm zu erstellen!";
+            return lobby.getLanguageAPI().getMessageString(language, "botm.create.failed");
 
         }
     }
 
-    public void update(boolean sendFeedback) throws SQLException {
+    public void update(Player player) throws SQLException {
         if (DHAPI.getHologram("BOTM") != null) {
             Location location = DHAPI.getHologram("BOTM").getLocation();
 
             DHAPI.removeHologram("BOTM");
-            create(location, this.lobby.getDatabase());
+            create(location, this.lobby.getDatabase(), this.lobby.getLanguageAPI().getLanguage(player));
         }
     }
 

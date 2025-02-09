@@ -4,6 +4,7 @@ import co.aikar.idb.DbRow;
 import dev.nachwahl.lobby.Lobby;
 import dev.nachwahl.lobby.commands.BOTMCommand;
 import dev.nachwahl.lobby.guis.PrivacyGUI;
+import dev.nachwahl.lobby.language.Language;
 import dev.nachwahl.lobby.utils.Actions;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import eu.decentsoftware.holograms.api.DHAPI;
@@ -69,12 +70,11 @@ public class PlayerEvents implements Listener {
             this.lobby.getScoreboard().initScoreboard(player);
         }
 
-        if (DHAPI.getHologram("BOTM") == null && this.lobby.getBotmScoreAPI().getLocation() != null) {
+        if (DHAPI.getHologram("BOTM") == null && this.lobby.getLocationAPI().getLocation("botm") != null) {
             try {
-                Location location = this.lobby.getBotmScoreAPI().getLocation();
+                Location location = this.lobby.getLocationAPI().getLocation("botm");
                 if (location != null) {
-                    Bukkit.getLogger().info(BOTMCommand.create(location, this.lobby.getDatabase()));
-                    Bukkit.getLogger().info(DHAPI.getHologram("BOTM").getLocation().toString());
+                    Bukkit.getLogger().info(BOTMCommand.create(location, this.lobby.getDatabase(), Language.GERMAN));
                 }
             } catch (SQLException e) {
                 Bukkit.getLogger().warning("Es wurde keine Location für das BOTM Hologramm gefunden.");
