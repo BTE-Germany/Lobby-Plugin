@@ -28,9 +28,9 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
@@ -40,8 +40,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 @Getter
 public final class Lobby extends JavaPlugin implements PluginMessageListener {
@@ -65,6 +63,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
     private MiniGameBlockUtil miniGameBlockUtil;
     private CinematicUtil cinematicUtil;
     private LeaderboardManager leaderboardManager;
+    private BOTMScoreAPI botmScoreAPI;
 
     private QuestManager questManager;
     private PoolManager poolManager;
@@ -115,6 +114,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         this.hotbarItems = new HotbarItems(this);
         this.locationAPI = new LocationAPI(this);
         this.userSettingsAPI = new UserSettingsAPI(this);
+        this.botmScoreAPI = new BOTMScoreAPI(this);
         this.realTime = new RealTime(this.getConfig().getString("time.timezone"), this.getConfig().getInt("time.updateInterval"), Bukkit.getWorld("world"));
         this.vanish = new Vanish();
         this.hologramAPI = new HologramAPI(this);
@@ -147,16 +147,27 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
             throw new RuntimeException(e);
         }
 
-
         // Update scoreboards
         getServer().getScheduler().runTaskTimer(this, () -> {
             scoreboard.updateScoreboards();
         }, 0, 100L);
 
+//        try {
+//            Location location = botmScoreAPI.getLocation();
+//            if (location != null) {
+//                BOTMCommand.create(location, this.getDatabase());
+//            }
+//        } catch (SQLException e) {
+//            Bukkit.getLogger().warning("Es wurde keine Location für das BOTM Hologramm gefunden.");
+//            throw new RuntimeException(e);
+//        }
+//        botmScoreAPI.clearLocation();
+
     }
 
     @Override
     public void onDisable() {
+
         Bukkit.getLogger().info("Das Lobby Plugin wurde deaktiviert.");
         this.database.disconnect();
         this.getServer().getMessenger().unregisterOutgoingPluginChannel(this);
@@ -197,6 +208,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         this.manager.registerCommand(new SoonCommand());
         this.manager.registerCommand(new VisitCommand());
         this.manager.registerCommand(new CinematicCommand(cinematicUtil));
+        this.manager.registerCommand(new BOTMCommand(this));
     }
 
 

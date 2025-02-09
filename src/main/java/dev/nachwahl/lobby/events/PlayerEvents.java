@@ -2,12 +2,17 @@ package dev.nachwahl.lobby.events;
 
 import co.aikar.idb.DbRow;
 import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.commands.BOTMCommand;
 import dev.nachwahl.lobby.guis.PrivacyGUI;
+import dev.nachwahl.lobby.language.Language;
 import dev.nachwahl.lobby.utils.Actions;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
+import eu.decentsoftware.holograms.api.DHAPI;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
@@ -23,6 +28,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.sql.SQLException;
 
 public class PlayerEvents implements Listener {
 
@@ -61,6 +68,18 @@ public class PlayerEvents implements Listener {
         // Init scoreboard
         if(player.hasPermission("lobby.scoreboard")) {
             this.lobby.getScoreboard().initScoreboard(player);
+        }
+
+        if (DHAPI.getHologram("BOTM") == null && this.lobby.getLocationAPI().getLocation("botm") != null) {
+            try {
+                Location location = this.lobby.getLocationAPI().getLocation("botm");
+                if (location != null) {
+                    Bukkit.getLogger().info(BOTMCommand.create(location, this.lobby.getDatabase(), Language.GERMAN));
+                }
+            } catch (SQLException e) {
+                Bukkit.getLogger().warning("Es wurde keine Location für das BOTM Hologramm gefunden.");
+                throw new RuntimeException(e);
+            }
         }
 
     }
