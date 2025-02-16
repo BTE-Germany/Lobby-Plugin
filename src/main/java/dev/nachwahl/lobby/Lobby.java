@@ -152,17 +152,6 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
             scoreboard.updateScoreboards();
         }, 0, 100L);
 
-//        try {
-//            Location location = botmScoreAPI.getLocation();
-//            if (location != null) {
-//                BOTMCommand.create(location, this.getDatabase());
-//            }
-//        } catch (SQLException e) {
-//            Bukkit.getLogger().warning("Es wurde keine Location für das BOTM Hologramm gefunden.");
-//            throw new RuntimeException(e);
-//        }
-//        botmScoreAPI.clearLocation();
-
     }
 
     @Override
