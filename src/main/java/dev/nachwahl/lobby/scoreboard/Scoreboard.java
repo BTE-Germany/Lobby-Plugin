@@ -11,7 +11,7 @@ import java.util.*;
 public class Scoreboard {
 
     private final Lobby lobby;
-    private Cosmetics cosmetics;
+    private final Cosmetics cosmetics;
     private final Map<UUID, FastBoard> scoreboards = new HashMap<>();
 
     public Scoreboard(Lobby lobby, Cosmetics cosmetics) {
@@ -20,6 +20,9 @@ public class Scoreboard {
     }
 
     public void initScoreboard(Player player) {
+        if(this.scoreboards.containsKey(player.getUniqueId())) {
+            return;
+        }
         FastBoard board = new FastBoard(player);
         board.updateTitle(Component.text("\uE350"));
         board.updateLines(getUpdatedLines(player));
@@ -40,6 +43,11 @@ public class Scoreboard {
     }
 
     public List<Component> getUpdatedLines(Player player) {
+        List<Component> backupLines = List.of();
+        if(this.scoreboards.get(player.getUniqueId())!=null){
+            backupLines = this.scoreboards.get(player.getUniqueId()).getLines();
+        }
+
         List<Component> lines = new ArrayList<>();
         this.cosmetics.getLanguageAPI().getLanguage(player, language -> {
             this.cosmetics.getGemsAPI().getBalance(player, gems -> {
@@ -54,7 +62,11 @@ public class Scoreboard {
             });
         });
 
-        return lines;
+        if(!lines.isEmpty()){
+            return lines;
+        }else{
+            return backupLines;
+        }
     }
 
     public static String formatPlaytime(long seconds) {
