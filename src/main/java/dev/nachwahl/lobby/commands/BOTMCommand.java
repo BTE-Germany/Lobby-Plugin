@@ -22,33 +22,33 @@ public class BOTMCommand extends BaseCommand {
     private static Lobby lobby;
 
     public BOTMCommand(Lobby lobby) {
-        this.lobby = lobby;
+        lobby = lobby;
     }
 
     private static final int entries = 3;
 
 
     @CommandPermission("bteg.lobby.botm")
-    @Subcommand("create")
+    @Subcommand("show")
     public void onBOTMCreate(CommandSender sender) throws SQLException {
         Player player = (Player) sender;
 
-        player.sendMessage(create(player.getLocation(), this.lobby.getDatabase(), this.lobby.getLanguageAPI().getLanguage(player)));
+        player.sendMessage(create(player.getLocation(), lobby.getDatabase(), lobby.getLanguageAPI().getLanguage(player)));
     }
 
     @CommandPermission("bteg.lobby.botm")
     @Subcommand("move")
     public void onBOTMMove(CommandSender sender) throws SQLException {
         DHAPI.moveHologram("BOTM", ((Player)sender).getLocation());
-        this.lobby.getLocationAPI().setLocation(((Player) sender).getLocation(), "botm");
-        this.lobby.getLanguageAPI().sendMessageToPlayer((Player) sender, "botm.moved");
+        lobby.getLocationAPI().setLocation(((Player) sender).getLocation(), "botm");
+        lobby.getLanguageAPI().sendMessageToPlayer((Player) sender, "botm.moved");
     }
 
     @CommandPermission("bteg.lobby.botm")
-    @Subcommand("remove")
-    public void onBOTMRemove(CommandSender sender) {
+    @Subcommand("unshow")
+    public void onBOTMUnshow(CommandSender sender) {
         DHAPI.removeHologram("BOTM");
-        this.lobby.getLanguageAPI().sendMessageToPlayer((Player) sender, "botm.removed");
+        lobby.getLanguageAPI().sendMessageToPlayer((Player) sender, "botm.unshow");
     }
 
     @CommandPermission("bteg.lobby.botm")
@@ -58,10 +58,52 @@ public class BOTMCommand extends BaseCommand {
 
         Player player = (Player) sender;
 
-        this.lobby.getBotmScoreAPI().addPoints(target);
+        lobby.getBotmScoreAPI().addPoints(target, 1);
         update(player);
 
-        this.lobby.getLanguageAPI().sendMessageToPlayer(player, "botm.added");
+        lobby.getLanguageAPI().sendMessageToPlayer(player, "botm.added");
+    }
+
+    @CommandPermission("bteg.lobby.botm")
+    @Syntax("<player>")
+    @Subcommand("remove")
+    public void onBOTMRemove(CommandSender sender, String target) throws SQLException {
+
+        Player player = (Player) sender;
+
+        lobby.getBotmScoreAPI().addPoints(target, -1);
+        update(player);
+
+        lobby.getLanguageAPI().sendMessageToPlayer(player, "botm.removed");
+    }
+
+    @CommandPermission("bteg.lobby.botm")
+    @Subcommand("set")
+    @Syntax("<player> <score>")
+    public void onBOTMSet(CommandSender sender, String target, int score) throws SQLException {
+
+        Player player = (Player) sender;
+
+        lobby.getBotmScoreAPI().setScore(target, score);
+        update(player);
+
+        lobby.getLanguageAPI().sendMessageToPlayer(player, "botm.set");
+    }
+
+    @Subcommand("list")
+    public void onBOTMList(CommandSender sender) throws SQLException {
+        Player player = (Player) sender;
+
+        HashMap<String, Integer> scores = new HashMap<>();
+        List<DbRow> dbRows = lobby.getDatabase().getResults("SELECT * FROM botm");
+
+        Map.Entry<Integer, String>[] relevantEntries = sortScores(scores, dbRows);
+
+
+        for (int i = 0; i < relevantEntries.length; i++) {
+            player.sendMessage(ChatColor.RED + String.valueOf(i + 1) + ". " + ChatColor.WHITE + relevantEntries[i].getValue() + ": " + ChatColor.GREEN + relevantEntries[i].getKey());
+        }
+
     }
 
     public static String create(Location location, Database database, Language language) throws SQLException {
@@ -69,33 +111,15 @@ public class BOTMCommand extends BaseCommand {
         HashMap<String, Integer> scores = new HashMap<>();
         List<DbRow> dbRows = database.getResults("SELECT * FROM botm");
 
-        dbRows.forEach(row -> {
-            String name = row.getString("name");
-            int score = row.getInt("score");
-            scores.put(name, score);
-        });
+
+        Map.Entry<Integer, String>[] relevantEntries = sortScores(scores, dbRows);
 
         // Create a hologram
         if (scores.size() >= 3) {
 
-            ArrayList<String> keys = new ArrayList<>(scores.keySet());
-
-            Map.Entry<Integer, String>[] relevantEntries = new Map.Entry[entries];
-
-            for (int i = 0; i < entries; i++) {
-
-                TreeMap<Integer, String> map = new TreeMap<>();
-
-                for (String key : keys) {
-                    map.put(scores.get(key), key);
-                }
-                relevantEntries[i] = map.lastEntry();
-                keys.remove(relevantEntries[i].getValue());
-            }
-
             List<String> lines = new ArrayList<>();
             lines.add(ChatColor.GOLD + "Build of the Month");
-            for (int i = 0; i < entries; i++) lines.add(ChatColor.GRAY + relevantEntries[i].getValue() + ": " + ChatColor.GREEN + relevantEntries[i].getKey());
+            for (int i = 0; i < entries; i++) lines.add(ChatColor.RED + String.valueOf(i + 1) + ". " + ChatColor.WHITE + relevantEntries[i].getValue() + ": " + ChatColor.GREEN + relevantEntries[i].getKey());
 
             DHAPI.createHologram("BOTM", location, lines);
             lobby.getLocationAPI().setLocation(location, "botm");
@@ -106,6 +130,30 @@ public class BOTMCommand extends BaseCommand {
             return lobby.getLanguageAPI().getMessageString(language, "botm.create.failed");
 
         }
+    }
+
+    private static Map.Entry<Integer, String>[] sortScores(HashMap<String, Integer> scores, List<DbRow> dbRows) {
+        dbRows.forEach(row -> {
+            String name = row.getString("name");
+            int score = row.getInt("score");
+            scores.put(name, score);
+        });
+
+        ArrayList<String> keys = new ArrayList<>(scores.keySet());
+
+        Map.Entry<Integer, String>[] relevantEntries = new Map.Entry[scores.size()];
+
+        for (int i = 0; i < scores.size(); i++) {
+
+            TreeMap<Integer, String> map = new TreeMap<>();
+
+            for (String key : keys) {
+                map.put(scores.get(key), key);
+            }
+            relevantEntries[i] = map.lastEntry();
+            keys.remove(relevantEntries[i].getValue());
+        }
+        return relevantEntries;
     }
 
     public void update(Player player) throws SQLException {
