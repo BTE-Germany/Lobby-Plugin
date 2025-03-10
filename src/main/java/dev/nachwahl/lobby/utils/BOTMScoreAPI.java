@@ -46,13 +46,13 @@ public class BOTMScoreAPI {
         }
     }
 
-    public void addPoints(String name) throws SQLException {
+    public void addPoints(String name, int points) throws SQLException {
         getScore(name, score -> {
             try{
                 if (score == null) {
-                    setScore(name, 1);
+                    setScore(name, points);
                 }else {
-                    setScore(name, score + 1);
+                    setScore(name, score + points);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
