@@ -34,9 +34,10 @@ public class TutorialGUI {
 
 
             this.gui.setItem(2, 5, ItemBuilder.from(Material.WOODEN_PICKAXE)
-                    .name(Component.text("Coming soon...").color(NamedTextColor.RED).decorate(TextDecoration.BOLD)/*this.lobby.getLanguageAPI().getMessage(language, "help.test.name")*/)
+                    .name(this.lobby.getLanguageAPI().getMessage(language, "help.apply.name"))
                     .asGuiItem(event -> {
-                        // TODO
+                        event.getInventory().close();
+                        player.sendMessage(this.lobby.getLanguageAPI().getMessage(language, "help.apply.message").clickEvent(net.kyori.adventure.text.event.ClickEvent.openUrl("https://buildtheearth.net/teams/de/apply")));
                     }));
 
             this.gui.setItem(2, 7, ItemBuilder.from(Material.DIAMOND_PICKAXE)
