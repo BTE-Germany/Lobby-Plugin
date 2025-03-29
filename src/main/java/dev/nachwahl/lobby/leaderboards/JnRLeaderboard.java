@@ -40,7 +40,7 @@ public class JnRLeaderboard {
         while (page.getLines().size() < titleLines + topCount + 2) {
             DHAPI.addHologramLine(page, "");
         }
-        page.setLine(0, "§9§lJump n Run");
+        page.setLine(0, "§d§lJump n Run");
 
         List<String> newLines;
         try {
@@ -78,9 +78,9 @@ public class JnRLeaderboard {
     }
 
     public static String getLineContent(int rank, String playerName, int score, boolean bold) {
-        return "§9" + (bold ? "§l" : "") + rank
+        return "§d" + (bold ? "§l" : "") + rank
                 + ". §f" + (bold ? "§l" : "") + playerName
-                + ": §9" + (bold ? "§l" : "") + score;
+                + ": §d" + (bold ? "§l" : "") + score;
     }
 
     public void cancel() {
