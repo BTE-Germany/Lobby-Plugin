@@ -99,6 +99,10 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
             Bukkit.getLogger().severe("Cosmetics Plugin nicht gefunden.");
         }
 
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new LobbyPlaceholderExpansion(this).register();
+        }
+
         for(Player player : Bukkit.getOnlinePlayers()){
             scoreboard.initScoreboard(player);
         }
