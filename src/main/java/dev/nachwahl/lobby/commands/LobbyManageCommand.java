@@ -81,6 +81,9 @@ public class LobbyManageCommand extends BaseCommand {
     @CommandPermission("lobby.manage.hologram")
     @Subcommand("hologram list")
     public void onListFancyholograms(@org.jetbrains.annotations.NotNull CommandSender sender) {
-        de.oliver.fancyholograms.api.FancyHologramsPlugin.get().getHologramManager().getHolograms().forEach(hologram -> sender.sendMessage(new com.google.gson.Gson().toJson(hologram)));
+        de.oliver.fancyholograms.api.FancyHologramsPlugin.get().getHologramManager().getHolograms().forEach(hologram -> {
+            sender.sendMessage(hologram.getName());
+            sender.sendMessage(new com.google.gson.Gson().toJson(hologram.getData()));
+        });
     }
 }
