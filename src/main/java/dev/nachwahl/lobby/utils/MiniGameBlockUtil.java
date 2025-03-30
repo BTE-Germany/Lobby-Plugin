@@ -2,7 +2,6 @@ package dev.nachwahl.lobby.utils;
 
 import dev.nachwahl.lobby.Lobby;
 import lombok.Getter;
-import me.filoghost.holographicdisplays.api.hologram.Hologram;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -65,24 +64,31 @@ public class MiniGameBlockUtil {
         for (String s : Lobby.getInstance().getMiniGameBlockUtil().getList(game.toLowerCase())) {
             Location loc = Lobby.getInstance().getLocationAPI().parseLocation(s);
             Location locHD = new Location(loc.getWorld(), loc.getBlockX() + 0.5, loc.getBlockY() + 3.5, loc.getBlockZ() + 0.5);
-            Hologram hologram = Lobby.getInstance().getHologramAPI().getApi().createHologram(locHD);
-            hologram.getLines().appendText("§9§l" + game);
+            de.oliver.fancyholograms.api.HologramManager manager = de.oliver.fancyholograms.api.FancyHologramsPlugin.get().getHologramManager();
+            de.oliver.fancyholograms.api.data.TextHologramData data =
+                new de.oliver.fancyholograms.api.data.TextHologramData(game + "_" + locHD.getBlockX() + "-" + locHD.getBlockZ(),
+                locHD);
+            data.addLine("§9§l" + game);
+            manager.create(data);
         }
     }
 
-    public static void setGameTitleHoverText(String game, Location loc) {
-        Hologram hologram = Lobby.getInstance().getHologramAPI().getApi().createHologram(new Location(loc.getWorld(), loc.getX() + 0.5, loc.getY() + 3.5, loc.getZ() + 0.5));
-        hologram.getLines().appendText("§9§l" + game);
+    public static void setGameTitleHoverText(String game, @org.jetbrains.annotations.NotNull Location loc) {
+        Location locHD = new Location(loc.getWorld(), loc.getBlockX() + 0.5, loc.getBlockY() + 3.5, loc.getBlockZ() + 0.5);
+        de.oliver.fancyholograms.api.HologramManager manager = de.oliver.fancyholograms.api.FancyHologramsPlugin.get().getHologramManager();
+        de.oliver.fancyholograms.api.data.TextHologramData data =
+            new de.oliver.fancyholograms.api.data.TextHologramData(game + "_" + locHD.getBlockX() + "-" + locHD.getBlockZ(),
+                locHD);
+        data.addLine("§9§l" + game);
+        manager.create(data);
     }
 
 
-    public static void deleteHologram(Location locHD) {
-        for (Hologram h : Lobby.getInstance().getHologramAPI().getApi().getHolograms()) {
-            Location hloc = h.getPosition().toLocation();
-            if (hloc.getBlockX() == locHD.getBlockX() && hloc.getBlockY() == locHD.getBlockY() && hloc.getBlockZ() == locHD.getBlockZ()) {
-                h.delete();
-            }
-        }
+    public static void deleteHologram(String game, @org.jetbrains.annotations.NotNull Location locHD) {
+        de.oliver.fancyholograms.api.HologramManager manager = de.oliver.fancyholograms.api.FancyHologramsPlugin.get().getHologramManager();
+        java.util.Optional<de.oliver.fancyholograms.api.hologram.Hologram> hologram =
+            manager.getHologram(game + "_" + locHD.getBlockX() + "-" + locHD.getBlockZ());
+        hologram.ifPresent(manager::removeHologram);
     }
 
     public static void reloadHolograms() {

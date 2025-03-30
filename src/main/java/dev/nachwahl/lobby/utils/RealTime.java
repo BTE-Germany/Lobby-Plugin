@@ -27,7 +27,6 @@ public class RealTime {
     @Getter
     @Setter
     private int updateInterval;
-    @Getter
     private long time;
     @Getter
     private World world;

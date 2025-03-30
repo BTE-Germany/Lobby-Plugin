@@ -1,21 +1,17 @@
 package dev.nachwahl.lobby.cinematic;
 
 import com.destroystokyo.paper.Title;
-import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.RunnableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,10 +43,10 @@ public class PlayerCinematic {
         runNextInterpolation(player, isLinear);
     }
 
-    private void runNextInterpolation(Player player, boolean isLinear) {
+    private void runNextInterpolation(@org.jetbrains.annotations.NotNull Player player, boolean isLinear) {
         GameMode previousGameMode = player.getGameMode();
         player.setGameMode(GameMode.SPECTATOR);
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW,9999,2,false,false));
+        player.addPotionEffect(new PotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS,9999,2,false,false));
         if (currentPointIndex < cameraPoints.size() - 1) {
             CompletableFuture<Void> future;
             PathPoint originPoint = cameraPoints.get(currentPointIndex);
@@ -70,7 +66,7 @@ public class PlayerCinematic {
             });
         } else {
             // Kamerafahrt abgeschlossen
-            player.removePotionEffect(PotionEffectType.SLOW);
+            player.removePotionEffect(org.bukkit.potion.PotionEffectType.SLOWNESS);
             player.setGameMode(previousGameMode);
             player.sendMessage("§aDie Kamerafahrt wurde abgeschlossen!");
         }

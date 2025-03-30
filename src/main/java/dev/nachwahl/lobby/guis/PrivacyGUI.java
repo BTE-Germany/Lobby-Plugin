@@ -29,7 +29,7 @@ public class PrivacyGUI {
                 .disableAllInteractions()
                 .create();
 
-        this.gui.setItem(2, 5, ItemBuilder.from(Material.WRITABLE_BOOK).enchant(Enchantment.ARROW_INFINITE)
+        this.gui.setItem(2, 5, ItemBuilder.from(Material.WRITABLE_BOOK).enchant(org.bukkit.enchantments.Enchantment.INFINITY)
                 .flags(ItemFlag.HIDE_ENCHANTS)
                 .name(mm.deserialize("<color:#a3ceff><u>Datenschutzerklärung</u> </color><dark_gray>-</dark_gray> <color:#a3ceff><u>Privacy policy</u></color>"))
                 .lore(

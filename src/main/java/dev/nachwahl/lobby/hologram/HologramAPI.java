@@ -3,8 +3,6 @@ package dev.nachwahl.lobby.hologram;
 import dev.nachwahl.lobby.Lobby;
 import dev.nachwahl.lobby.language.Language;
 import lombok.Getter;
-import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
-import me.filoghost.holographicdisplays.api.Position;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -20,9 +18,6 @@ import java.util.HashMap;
 
 public class HologramAPI {
 
-
-    @Getter
-    private HolographicDisplaysAPI api;
     private FileConfiguration dataFile;
 
     @Getter
@@ -34,11 +29,8 @@ public class HologramAPI {
 
     public HologramAPI(Lobby plugin) {
         this.plugin = plugin;
-        if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
-            api = HolographicDisplaysAPI.get(plugin);
             holograms = new ArrayList<>();
             customHolograms = new HashMap<>();
-        }
     }
 
     public void loadData() {
@@ -60,7 +52,8 @@ public class HologramAPI {
 
             if (world == null) return;
 
-            holograms.add(new Hologram(Position.of(world, Double.parseDouble(location[1]), Double.parseDouble(location[2]), Double.parseDouble(location[3])), englishText, germanText));
+            holograms.add(new Hologram(new org.bukkit.Location(world, Double.parseDouble(location[1]), Double.parseDouble(location[2]),
+                Double.parseDouble(location[3])), englishText, germanText, key));
         }
     }
 
@@ -106,25 +99,6 @@ public class HologramAPI {
         for (Hologram hologram : customHolograms.values()) {
             hologram.setPlayer(player, language);
         }
-    }
-
-    public void hideHolograms(Player player) {
-        for (Hologram hologram : holograms) {
-            hologram.removePlayer(player);
-        }
-        for (Hologram hologram : customHolograms.values()) {
-            hologram.removePlayer(player);
-        }
-    }
-
-    public void removeHologram(Position location) {
-        for (Hologram hologram : customHolograms.values()) {
-            if (hologram.getLocation().equals(location)) hologram.delete();
-        }
-    }
-
-    public void removeHologram(String id) {
-        customHolograms.get(id).delete();
     }
 
     public void addHologram(String id, Hologram hologram) {

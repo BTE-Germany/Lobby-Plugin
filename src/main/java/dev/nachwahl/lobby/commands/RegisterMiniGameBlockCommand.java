@@ -4,7 +4,6 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import dev.nachwahl.lobby.Lobby;
 import dev.nachwahl.lobby.utils.MiniGameBlockUtil;
-import me.filoghost.holographicdisplays.api.hologram.Hologram;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -35,8 +34,12 @@ public class RegisterMiniGameBlockCommand extends BaseCommand {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        Hologram hologram = lobby.getHologramAPI().getApi().createHologram(locHD);
-        hologram.getLines().appendText("§9§l" + args[0]);
+        de.oliver.fancyholograms.api.HologramManager manager = de.oliver.fancyholograms.api.FancyHologramsPlugin.get().getHologramManager();
+        de.oliver.fancyholograms.api.data.TextHologramData data =
+            new de.oliver.fancyholograms.api.data.TextHologramData(args[0] + "_" + locHD.getBlockX() + "-" + locHD.getBlockZ(),
+                locHD);
+        data.addLine("§9§l" + args[0]);
+        manager.create(data);
         player.sendMessage("§aDu hast einen Minigameblock für das Spiel §9" + args[0] + " §ahinzugefügt!");
     }
 
@@ -59,7 +62,7 @@ public class RegisterMiniGameBlockCommand extends BaseCommand {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                MiniGameBlockUtil.deleteHologram(locHD);
+                MiniGameBlockUtil.deleteHologram(args[0].toLowerCase(), locHD);
             }
         }
 
