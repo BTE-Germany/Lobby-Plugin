@@ -23,7 +23,7 @@ public class LobbyManageCommand extends BaseCommand {
 
     @CommandPermission("lobby.manage.reload")
     @Subcommand("reload")
-    public void onReloadCommand(CommandSender sender) {
+    public void onReloadCommand(@org.jetbrains.annotations.NotNull CommandSender sender) {
         var mm = MiniMessage.miniMessage();
         lobby.reloadConfig();
         sender.sendMessage(mm.deserialize("<green>Erfolgreich Konfiguration neugeladen.</green>"));
@@ -53,7 +53,7 @@ public class LobbyManageCommand extends BaseCommand {
 
     @CommandPermission("lobby.manage.hologram")
     @Subcommand("hologram reload")
-    public void onHologramReloadCommand(CommandSender sender) {
+    public void onHologramReloadCommand(@org.jetbrains.annotations.NotNull CommandSender sender) {
         var mm = MiniMessage.miniMessage();
         sender.sendMessage(mm.deserialize("<gold>Hologramme werden neugeladen...</gold>"));
         this.lobby.getHologramAPI().loadData();
@@ -65,16 +65,22 @@ public class LobbyManageCommand extends BaseCommand {
 
     @CommandPermission("lobby.manage.leaderboard")
     @Subcommand("leaderboard reload")
-    public void onLeaderboardReloadCommand(CommandSender sender) {
+    public void onLeaderboardReloadCommand(@org.jetbrains.annotations.NotNull CommandSender sender) {
         var mm = MiniMessage.miniMessage();
         sender.sendMessage(mm.deserialize("<gold>Leaderboards werden neugeladen...</gold>"));
         try {
             this.lobby.getLeaderboardManager().load();
-        } catch (SQLException ignored) {
+        } catch (SQLException ignored) { // Ignored
         }
         for (Player player : Bukkit.getOnlinePlayers()) {
             this.lobby.getHologramAPI().showHolograms(player);
         }
         sender.sendMessage(mm.deserialize("<green>Erfolgreich Leaderboards neugeladen.</green>"));
+    }
+
+    @CommandPermission("lobby.manage.hologram")
+    @Subcommand("hologram list")
+    public void onListFancyholograms(@org.jetbrains.annotations.NotNull CommandSender sender) {
+        de.oliver.fancyholograms.api.FancyHologramsPlugin.get().getHologramManager().getHolograms().forEach(hologram -> sender.sendMessage(new com.google.gson.Gson().toJson(hologram)));
     }
 }
