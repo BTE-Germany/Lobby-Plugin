@@ -39,7 +39,8 @@ public class RegisterMiniGameBlockCommand extends BaseCommand {
             new de.oliver.fancyholograms.api.data.TextHologramData(args[0] + "_" + locHD.getBlockX() + "-" + locHD.getBlockZ(),
                 locHD);
         data.addLine("§9§l" + args[0]);
-        manager.create(data);
+        data.setPersistent(false);
+        manager.addHologram(manager.create(data));
         player.sendMessage("§aDu hast einen Minigameblock für das Spiel §9" + args[0] + " §ahinzugefügt!");
     }
 

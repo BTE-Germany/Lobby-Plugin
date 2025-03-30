@@ -60,7 +60,7 @@ public class MiniGameBlockUtil {
         return null;
     }
 
-    public static void setGameTitleHoverTexts(String game) {
+    public static void setGameTitleHoverTexts(@org.jetbrains.annotations.NotNull String game) {
         for (String s : Lobby.getInstance().getMiniGameBlockUtil().getList(game.toLowerCase())) {
             Location loc = Lobby.getInstance().getLocationAPI().parseLocation(s);
             Location locHD = new Location(loc.getWorld(), loc.getBlockX() + 0.5, loc.getBlockY() + 3.5, loc.getBlockZ() + 0.5);
@@ -68,8 +68,9 @@ public class MiniGameBlockUtil {
             de.oliver.fancyholograms.api.data.TextHologramData data =
                 new de.oliver.fancyholograms.api.data.TextHologramData(game + "_" + locHD.getBlockX() + "-" + locHD.getBlockZ(),
                 locHD);
+            data.setPersistent(false);
             data.addLine("§9§l" + game);
-            manager.create(data);
+            manager.addHologram(manager.create(data));
         }
     }
 
@@ -80,7 +81,8 @@ public class MiniGameBlockUtil {
             new de.oliver.fancyholograms.api.data.TextHologramData(game + "_" + locHD.getBlockX() + "-" + locHD.getBlockZ(),
                 locHD);
         data.addLine("§9§l" + game);
-        manager.create(data);
+        data.setPersistent(false);
+        manager.addHologram(manager.create(data));
     }
 
 
