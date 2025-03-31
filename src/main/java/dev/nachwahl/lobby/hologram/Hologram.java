@@ -52,9 +52,7 @@ public class Hologram {
         de.oliver.fancyholograms.api.hologram.@org.jetbrains.annotations.NotNull Hologram englishHologram = getOrCreateEnglischHologram();
 
         ((de.oliver.fancyholograms.api.data.TextHologramData) germanHologram.getData()).setText(germanText);
-        germanHologram.forceUpdate();
         ((de.oliver.fancyholograms.api.data.TextHologramData) englishHologram.getData()).setText(englishText);
-        englishHologram.forceUpdate();
     }
 
     public void delete() {

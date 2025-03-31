@@ -7,6 +7,6 @@ website: https://bte-germany.de
 softdepend:
   - DecentHolograms
   - Plan
+  - BTEG-Cosmetics
 depend:
   - FancyHolograms
-  - BTEG-Cosmetics
