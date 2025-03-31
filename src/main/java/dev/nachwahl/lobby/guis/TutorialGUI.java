@@ -25,7 +25,7 @@ public class TutorialGUI {
                     .create();
 
 
-            this.gui.setItem(2, 3, ItemBuilder.from(ItemGenerator.customModel(Material.PAPER, 2))
+            this.gui.setItem(2, 3, ItemBuilder.from(ItemGenerator.customModel(Material.PAPER, "plot"))
                     .name(this.lobby.getLanguageAPI().getMessage(language, "help.plots.name"))
                     .asGuiItem(event -> this.lobby.getBungeeConnector().sendToServer(player, this.lobby.getConfig().getString("server.Plot"), true)));
 

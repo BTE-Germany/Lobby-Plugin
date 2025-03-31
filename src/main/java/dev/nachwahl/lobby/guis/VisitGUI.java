@@ -25,7 +25,7 @@ public class VisitGUI {
                     .disableAllInteractions()
                     .create();
 
-            this.gui.setItem(2, 4, ItemBuilder.from(ItemGenerator.customModel(Material.PAPER, 5))
+            this.gui.setItem(2, 4, ItemBuilder.from(ItemGenerator.customModel(Material.PAPER, "map"))
                     .name(this.lobby.getLanguageAPI().getMessage(language, "map.tpll.name"))
                     .asGuiItem(event -> {
                         event.getInventory().close();

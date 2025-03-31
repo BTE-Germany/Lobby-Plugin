@@ -24,7 +24,7 @@ public class NavigatorGUI {
                     .create();
 
 
-            this.gui.setItem(2, 3, ItemBuilder.from(ItemGenerator.customModel(Material.PAPER, 2))
+            this.gui.setItem(2, 3, ItemBuilder.from(ItemGenerator.customModel(Material.PAPER, "plot"))
                     .name(this.lobby.getLanguageAPI().getMessage(language, "navigator.plots.name"))
                     .asGuiItem(event -> {
                         this.lobby.getBungeeConnector().sendToServer(player, this.lobby.getConfig().getString("server.Plot"), true);
@@ -38,7 +38,7 @@ public class NavigatorGUI {
                         event.getInventory().close();
                     }));
 
-            this.gui.setItem(2, 7, ItemBuilder.from(ItemGenerator.customModel(Material.PAPER, 5))
+            this.gui.setItem(2, 7, ItemBuilder.from(ItemGenerator.customModel(Material.PAPER, "map"))
                     .name(this.lobby.getLanguageAPI().getMessage(language, "navigator.terra.name"))
                     .asGuiItem(event -> {
                         event.getInventory().close();
