@@ -1,9 +1,14 @@
 package dev.nachwahl.lobby.hologram;
 
+import de.oliver.fancyholograms.api.data.*;
 import dev.nachwahl.lobby.language.*;
 import lombok.*;
 import org.bukkit.*;
 import org.bukkit.entity.*;
+import de.oliver.fancyholograms.api.data.property.Visibility;
+import org.jetbrains.annotations.*;
+import de.oliver.fancyholograms.api.HologramManager;
+import de.oliver.fancyholograms.api.FancyHologramsPlugin;
 
 import java.util.*;
 
@@ -21,7 +26,7 @@ public class Hologram {
     @Getter
     private final String id;
 
-    de.oliver.fancyholograms.api.HologramManager manager = de.oliver.fancyholograms.api.FancyHologramsPlugin.get().getHologramManager();
+    HologramManager manager = FancyHologramsPlugin.get().getHologramManager();
 
     public Hologram(Location location, List<String> englishText, List<String> germanText, String id) {
         this.location = location;
@@ -38,21 +43,29 @@ public class Hologram {
     }
 
     public void setPlayer(Player player, Language language) {
+        de.oliver.fancyholograms.api.hologram.Hologram germanHologram = getGermanHologram();
+        de.oliver.fancyholograms.api.hologram.Hologram englischHologram = getGermanHologram();
+
+        if (germanHologram == null || englischHologram == null) {
+            return;
+        }
+
         if (language == Language.ENGLISH) {
-            getGermanHologram().forceHideHologram(player);
-            getEnglischHologram().forceShowHologram(player);
+            germanHologram.forceHideHologram(player);
+            englischHologram.forceShowHologram(player);
         } else if (language == Language.GERMAN) {
-            getEnglischHologram().forceHideHologram(player);
-            getGermanHologram().forceShowHologram(player);
+            englischHologram.forceHideHologram(player);
+            germanHologram.forceShowHologram(player);
         }
     }
 
     public void updateHolograms() {
-        de.oliver.fancyholograms.api.hologram.@org.jetbrains.annotations.NotNull Hologram germanHologram = getOrCreateGermanHologram();
-        de.oliver.fancyholograms.api.hologram.@org.jetbrains.annotations.NotNull Hologram englishHologram = getOrCreateEnglischHologram();
-
-        ((de.oliver.fancyholograms.api.data.TextHologramData) germanHologram.getData()).setText(germanText);
-        ((de.oliver.fancyholograms.api.data.TextHologramData) englishHologram.getData()).setText(englishText);
+        if (getOrCreateGermanHologram().getData() instanceof TextHologramData data) {
+            data.setText(germanText);
+        }
+        if (getOrCreateEnglischHologram().getData() instanceof TextHologramData data) {
+            data.setText(englishText);
+        }
     }
 
     public void delete() {
@@ -71,32 +84,35 @@ public class Hologram {
         updateHolograms();
     }
 
-    private de.oliver.fancyholograms.api.hologram.@org.jetbrains.annotations.NotNull Hologram getOrCreateGermanHologram() {
-        if (getGermanHologram() == null) {
-            de.oliver.fancyholograms.api.data.TextHologramData hologramData = new de.oliver.fancyholograms.api.data.TextHologramData(getId() +
-                "_GER", getLocation());
-            hologramData.setVisibility(de.oliver.fancyholograms.api.data.property.Visibility.MANUAL);
+    private de.oliver.fancyholograms.api.hologram.@NotNull Hologram getOrCreateGermanHologram() {
+        de.oliver.fancyholograms.api.hologram.Hologram hologram = getGermanHologram();
+        if (hologram == null) {
+            TextHologramData hologramData = new TextHologramData(getId() + "_GER", getLocation());
+            hologramData.setVisibility(Visibility.MANUAL);
             hologramData.setPersistent(false);
-            manager.addHologram(manager.create(hologramData));
+            hologram = manager.create(hologramData);
+            manager.addHologram(hologram);
         }
-        return getGermanHologram();
+        return hologram;
     }
 
-    private de.oliver.fancyholograms.api.hologram.@org.jetbrains.annotations.NotNull Hologram getOrCreateEnglischHologram() {
-        if (getEnglischHologram() == null) {
-            de.oliver.fancyholograms.api.data.TextHologramData hologramData = new de.oliver.fancyholograms.api.data.TextHologramData(getId() + "_EN", getLocation());
-            hologramData.setVisibility(de.oliver.fancyholograms.api.data.property.Visibility.MANUAL);
+    private de.oliver.fancyholograms.api.hologram.@NotNull Hologram getOrCreateEnglischHologram() {
+        de.oliver.fancyholograms.api.hologram.Hologram hologram = getEnglischHologram();
+        if (hologram == null) {
+            TextHologramData hologramData = new TextHologramData(getId() + "_EN", getLocation());
+            hologramData.setVisibility(Visibility.MANUAL);
             hologramData.setPersistent(false);
-            manager.addHologram(manager.create(hologramData));
+            hologram = manager.create(hologramData);
+            manager.addHologram(hologram);
         }
-        return getGermanHologram();
+        return hologram;
     }
 
-    private de.oliver.fancyholograms.api.hologram.Hologram getGermanHologram() {
+    private de.oliver.fancyholograms.api.hologram.@Nullable Hologram getGermanHologram() {
         return manager.getHologram(getId() + "_GER").orElse(null);
     }
 
-    private de.oliver.fancyholograms.api.hologram.Hologram getEnglischHologram() {
+    private de.oliver.fancyholograms.api.hologram.@Nullable Hologram getEnglischHologram() {
         return manager.getHologram(getId() + "_EN").orElse(null);
     }
 }
