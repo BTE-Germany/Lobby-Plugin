@@ -13,6 +13,10 @@ import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import de.oliver.fancyholograms.api.FancyHologramsPlugin;
+import org.jetbrains.annotations.NotNull;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.sql.SQLException;
 
@@ -23,7 +27,7 @@ public class LobbyManageCommand extends BaseCommand {
 
     @CommandPermission("lobby.manage.reload")
     @Subcommand("reload")
-    public void onReloadCommand(@org.jetbrains.annotations.NotNull CommandSender sender) {
+    public void onReloadCommand(@NotNull CommandSender sender) {
         var mm = MiniMessage.miniMessage();
         lobby.reloadConfig();
         sender.sendMessage(mm.deserialize("<green>Erfolgreich Konfiguration neugeladen.</green>"));
@@ -31,7 +35,7 @@ public class LobbyManageCommand extends BaseCommand {
 
     @CommandPermission("lobby.manage.edit")
     @Subcommand("edit")
-    public void onEditCommand(CommandSender sender) {
+    public void onEditCommand(@NotNull CommandSender sender) {
         Player player = (Player) sender;
         if (this.lobby.getEditModePlayers().contains(player)) {
             this.lobby.getEditModePlayers().remove(player);
@@ -53,7 +57,7 @@ public class LobbyManageCommand extends BaseCommand {
 
     @CommandPermission("lobby.manage.hologram")
     @Subcommand("hologram reload")
-    public void onHologramReloadCommand(@org.jetbrains.annotations.NotNull CommandSender sender) {
+    public void onHologramReloadCommand(@NotNull CommandSender sender) {
         var mm = MiniMessage.miniMessage();
         sender.sendMessage(mm.deserialize("<gold>Hologramme werden neugeladen...</gold>"));
         this.lobby.getHologramAPI().loadData();
@@ -65,7 +69,7 @@ public class LobbyManageCommand extends BaseCommand {
 
     @CommandPermission("lobby.manage.leaderboard")
     @Subcommand("leaderboard reload")
-    public void onLeaderboardReloadCommand(@org.jetbrains.annotations.NotNull CommandSender sender) {
+    public void onLeaderboardReloadCommand(@NotNull CommandSender sender) {
         var mm = MiniMessage.miniMessage();
         sender.sendMessage(mm.deserialize("<gold>Leaderboards werden neugeladen...</gold>"));
         try {
@@ -80,11 +84,35 @@ public class LobbyManageCommand extends BaseCommand {
 
     @CommandPermission("lobby.manage.hologram")
     @Subcommand("hologram list")
-    public void onListFancyholograms(@org.jetbrains.annotations.NotNull CommandSender sender) {
-        de.oliver.fancyholograms.api.FancyHologramsPlugin.get().getHologramManager().getHolograms().forEach(hologram -> {
+    public void onHologramList(@NotNull CommandSender sender) {
+        FancyHologramsPlugin.get().getHologramManager().getHolograms().forEach(hologram -> {
             sender.sendMessage(hologram.getName());
             hologram.forceUpdate();
             hologram.forceUpdateShownStateFor((Player) sender);
         });
+    }
+
+    @CommandPermission("lobby.manage.hologram")
+    @Subcommand("hologram delete")
+    public void onHologramDelete(@NotNull CommandSender sender) {
+        var manager = FancyHologramsPlugin.get().getHologramManager();
+        manager.getHolograms().forEach(manager::removeHologram);
+        sender.sendMessage(Component.text("Deleted all holograms.", NamedTextColor.DARK_RED));
+    }
+
+    @CommandPermission("lobby.manage.hologram")
+    @Subcommand("hologram debug")
+    public void onHologramDebug(@NotNull CommandSender sender) {
+        if (!(sender instanceof Player p)) return;
+        var manager = FancyHologramsPlugin.get().getHologramManager();
+        de.oliver.fancyholograms.api.data.TextHologramData data =
+            new de.oliver.fancyholograms.api.data.TextHologramData("debug", p.getLocation().add(2, 1, 2));
+        data.addLine("<blue>Super Cool Custom Hologram! Which seems to work?</blue>");
+        data.setPersistent(false);
+        manager.addHologram(manager.create(data));
+
+        Lobby.getInstance().getHologramAPI().addHologram("debugAPI", new dev.nachwahl.lobby.hologram.Hologram(p.getLocation().add(-2, 1, -2),
+            java.util.Collections.singletonList("<orange>Cool Orange Test text</orange>"),
+            java.util.Collections.singletonList("<red>Cool Red Test text</red>"), "debugAPI"));
     }
 }
