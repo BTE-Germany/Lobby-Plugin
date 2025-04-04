@@ -16,6 +16,8 @@ public class MiniGameBlockUtil {
     private FileConfiguration dataFile;
     private final Lobby plugin;
 
+    public static final String FORMATTING_CODE = "<blue><bold>";
+
     public MiniGameBlockUtil(Lobby plugin) {
         this.plugin = plugin;
 
@@ -69,7 +71,7 @@ public class MiniGameBlockUtil {
                 new de.oliver.fancyholograms.api.data.TextHologramData(game + "_" + locHD.getBlockX() + "-" + locHD.getBlockZ(),
                 locHD);
             data.setPersistent(false);
-            data.addLine("§9§l" + game);
+            data.addLine(FORMATTING_CODE + game);
             manager.addHologram(manager.create(data));
         }
     }
@@ -80,7 +82,7 @@ public class MiniGameBlockUtil {
         de.oliver.fancyholograms.api.data.TextHologramData data =
             new de.oliver.fancyholograms.api.data.TextHologramData(game + "_" + locHD.getBlockX() + "-" + locHD.getBlockZ(),
                 locHD);
-        data.addLine("§9§l" + game);
+        data.addLine(FORMATTING_CODE + game);
         data.setPersistent(false);
         manager.addHologram(manager.create(data));
     }

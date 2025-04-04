@@ -21,8 +21,7 @@ public class RegisterMiniGameBlockCommand extends BaseCommand {
     @Syntax("<game>")
     @Subcommand("add")
     public void onAdd(CommandSender sender, String[] args) {
-        if (!(sender instanceof Player)) return;
-        Player player = (Player) sender;
+        if (!(sender instanceof org.bukkit.entity.Player player)) return;
         Location location = player.getTargetBlockExact(3).getLocation();
         Location locHD = new Location(player.getWorld(), location.getBlockX() + 0.5, location.getBlockY() + 3.5, location.getBlockZ() + 0.5);
 
@@ -38,7 +37,7 @@ public class RegisterMiniGameBlockCommand extends BaseCommand {
         de.oliver.fancyholograms.api.data.TextHologramData data =
             new de.oliver.fancyholograms.api.data.TextHologramData(args[0] + "_" + locHD.getBlockX() + "-" + locHD.getBlockZ(),
                 locHD);
-        data.addLine("§9§l" + args[0]);
+        data.addLine(MiniGameBlockUtil.FORMATTING_CODE + args[0]);
         data.setPersistent(false);
         manager.addHologram(manager.create(data));
         player.sendMessage("§aDu hast einen Minigameblock für das Spiel §9" + args[0] + " §ahinzugefügt!");
