@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import net.kyori.adventure.text.Component;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.util.List;
 
 public class MiniGameBlockUtil {
 
+    public static final String FILE_NAME = "minigameblocks.yml";
     @Getter
     private FileConfiguration dataFile;
     private final Lobby plugin;
@@ -26,9 +28,13 @@ public class MiniGameBlockUtil {
     }
 
     public void loadData() {
-        File file = new File(plugin.getDataFolder() + File.separator + "minigameblocks.yml");
+        File file = new File(plugin.getDataFolder() + File.separator + FILE_NAME);
         if (!file.exists()) {
             file = createFile();
+            if (file == null) {
+                plugin.getComponentLogger().error(Component.text("Error while creating " + FILE_NAME + " file."));
+                return;
+            }
         }
         dataFile = YamlConfiguration.loadConfiguration(file);
     }
@@ -42,21 +48,21 @@ public class MiniGameBlockUtil {
     }
 
     public void saveFile() throws IOException {
-        File file = new File(plugin.getDataFolder() + File.separator + "minigameblocks.yml");
+        File file = new File(plugin.getDataFolder() + File.separator + FILE_NAME);
         dataFile.save(file);
         dataFile = YamlConfiguration.loadConfiguration(file);
     }
 
-    private File createFile() {
-        File file = new File(plugin.getDataFolder() + File.separator + "minigameblocks.yml");
+    private @org.jetbrains.annotations.Nullable File createFile() {
+        File file = new File(plugin.getDataFolder() + File.separator + FILE_NAME);
         if (!file.exists()) {
             try {
-                file.createNewFile();
+                if (!file.createNewFile()) return null;
                 dataFile = YamlConfiguration.loadConfiguration(file);
                 saveFile();
                 return file;
             } catch (IOException e) {
-                e.printStackTrace();
+                Lobby.getInstance().getComponentLogger().error(Component.text("Error accorded while writing " +  FILE_NAME + " file."), e);
             }
         }
         return null;
@@ -71,7 +77,7 @@ public class MiniGameBlockUtil {
                 new de.oliver.fancyholograms.api.data.TextHologramData(game + "_" + locHD.getBlockX() + "-" + locHD.getBlockZ(),
                 locHD);
             data.setPersistent(false);
-            data.addLine(FORMATTING_CODE + game);
+            data.setText(java.util.Collections.singletonList(FORMATTING_CODE + game));
             manager.addHologram(manager.create(data));
         }
     }
@@ -82,7 +88,7 @@ public class MiniGameBlockUtil {
         de.oliver.fancyholograms.api.data.TextHologramData data =
             new de.oliver.fancyholograms.api.data.TextHologramData(game + "_" + locHD.getBlockX() + "-" + locHD.getBlockZ(),
                 locHD);
-        data.addLine(FORMATTING_CODE + game);
+        data.setText(java.util.Collections.singletonList(FORMATTING_CODE + game));
         data.setPersistent(false);
         manager.addHologram(manager.create(data));
     }

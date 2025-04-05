@@ -6,7 +6,6 @@ import dev.nachwahl.lobby.Lobby;
 import dev.nachwahl.lobby.utils.MiniGameBlockUtil;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.io.IOException;
 import java.util.List;
@@ -37,7 +36,7 @@ public class RegisterMiniGameBlockCommand extends BaseCommand {
         de.oliver.fancyholograms.api.data.TextHologramData data =
             new de.oliver.fancyholograms.api.data.TextHologramData(args[0] + "_" + locHD.getBlockX() + "-" + locHD.getBlockZ(),
                 locHD);
-        data.addLine(MiniGameBlockUtil.FORMATTING_CODE + args[0]);
+        data.setText(java.util.Collections.singletonList(dev.nachwahl.lobby.utils.MiniGameBlockUtil.FORMATTING_CODE + args[0]));
         data.setPersistent(false);
         manager.addHologram(manager.create(data));
         player.sendMessage("§aDu hast einen Minigameblock für das Spiel §9" + args[0] + " §ahinzugefügt!");
@@ -47,8 +46,7 @@ public class RegisterMiniGameBlockCommand extends BaseCommand {
     @Syntax("<game>")
     @Subcommand("remove")
     public void onRemove(CommandSender sender, String[] args) {
-        if (!(sender instanceof Player)) return;
-        Player player = (Player) sender;
+        if (!(sender instanceof org.bukkit.entity.Player player)) return;
         Location location = player.getTargetBlockExact(3).getLocation();
         Location locHD = new Location(player.getWorld(), location.getBlockX() + 0.5, location.getBlockY() + 3.5, location.getBlockZ() + 0.5);
 

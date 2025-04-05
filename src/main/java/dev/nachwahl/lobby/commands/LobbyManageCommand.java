@@ -88,6 +88,7 @@ public class LobbyManageCommand extends BaseCommand {
         FancyHologramsPlugin.get().getHologramManager().getHolograms().forEach(hologram -> {
             sender.sendMessage(hologram.getName());
             hologram.forceUpdate();
+            hologram.showHologram((Player) sender);
             hologram.forceUpdateShownStateFor((Player) sender);
         });
     }
@@ -107,7 +108,7 @@ public class LobbyManageCommand extends BaseCommand {
         var manager = FancyHologramsPlugin.get().getHologramManager();
         de.oliver.fancyholograms.api.data.TextHologramData data =
             new de.oliver.fancyholograms.api.data.TextHologramData("debug", p.getLocation().add(2, 1, 2));
-        data.addLine("<blue>Super Cool Custom Hologram! Which seems to work?</blue>");
+        data.setText(java.util.Collections.singletonList("<blue>Super Cool Custom Hologram! Which seems to work?</blue>"));
         data.setPersistent(false);
         manager.addHologram(manager.create(data));
 

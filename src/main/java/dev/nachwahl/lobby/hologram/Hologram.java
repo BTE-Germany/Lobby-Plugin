@@ -54,11 +54,11 @@ public class Hologram {
         }
 
         if (language == Language.ENGLISH) {
-            englischHologram.forceShowHologram(player);
             germanHologram.forceHideHologram(player);
+            englischHologram.forceShowHologram(player);
         } else if (language == Language.GERMAN) {
-            germanHologram.forceShowHologram(player);
             englischHologram.forceHideHologram(player);
+            germanHologram.forceShowHologram(player);
         }
     }
 

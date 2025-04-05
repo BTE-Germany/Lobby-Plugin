@@ -79,7 +79,7 @@ public class HologramAPI {
                 saveFile();
                 return file;
             } catch (IOException e) {
-                Lobby.getInstance().getComponentLogger().error(Component.text("Error accorded while writing file."), e);
+                Lobby.getInstance().getComponentLogger().error(Component.text("Error accorded while writing " + FILE_NAME + " file."), e);
             }
         }
         return null;
