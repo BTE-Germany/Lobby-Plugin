@@ -7,16 +7,22 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 public class HotbarItems {
-    private Lobby lobby;
-    private LanguageAPI languageAPI;
+    private final Lobby lobby;
+    private final LanguageAPI languageAPI;
 
-    public HotbarItems(Lobby lobby) {
+    @Contract(pure = true)
+    public HotbarItems(@NotNull Lobby lobby) {
         this.lobby = lobby;
         this.languageAPI = lobby.getLanguageAPI();
     }
 
+    /**
+     * Setzt die Hotbar Items in der richtigen Sprache. Implizit wird durch languageAPI.getLanguage auch die language Permission gesetzt.
+     */
     public void setHotbarItems(Player player) {
         this.languageAPI.getLanguage(player, language -> {
             ItemStack navigator = ItemBuilder.from(Material.COMPASS).name(this.languageAPI.getMessage(language, "navigator.itemName")).build();
@@ -33,13 +39,10 @@ public class HotbarItems {
                 ItemStack buildMode = ItemBuilder.from(Material.GOLDEN_AXE).name(this.languageAPI.getMessage(language, "manage.editMode")).build();
                 player.getInventory().setItem(8, buildMode);
             }
-            // Bukkit.getScheduler().runTask(lobby,() -> player.performCommand("cosmetics item"));
-
-
         });
     }
 
-    public static void setElytra(Player player, Lobby lobby) {
+    public static void setElytra(@NotNull Player player, Lobby lobby) {
         if (player.getInventory().getChestplate() != null && player.getInventory().getChestplate().getType().equals(Material.ELYTRA)) return;
         if (!lobby.getElytraPlayers().containsKey(player.getUniqueId()))
             lobby.getElytraPlayers().put(player.getUniqueId(), player.getInventory().getChestplate());

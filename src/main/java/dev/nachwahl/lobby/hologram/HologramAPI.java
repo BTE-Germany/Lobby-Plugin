@@ -1,14 +1,12 @@
 package dev.nachwahl.lobby.hologram;
 
 import dev.nachwahl.lobby.Lobby;
-import dev.nachwahl.lobby.language.Language;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 import net.kyori.adventure.text.Component;
 import java.util.Objects;
@@ -92,24 +90,8 @@ public class HologramAPI {
         holograms = new ArrayList<>();
     }
 
-    public void showHolograms(Player player) {
-        showHolograms(player, Lobby.getInstance().getLanguageAPI().getLanguage(player));
-    }
-
-    public void showHolograms(Player player, Language language) {
-        for (Hologram hologram : holograms) {
-            hologram.setPlayer(player, language);
-        }
-        for (Hologram hologram : customHolograms.values()) {
-            hologram.setPlayer(player, language);
-        }
-    }
-
     public void addHologram(String id, Hologram hologram) {
         customHolograms.put(id, hologram);
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            hologram.setPlayer(player, Lobby.getInstance().getLanguageAPI().getLanguage(player));
-        }
     }
 
     public Hologram getHologram(String id) {

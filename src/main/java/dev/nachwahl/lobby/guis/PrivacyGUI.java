@@ -15,12 +15,10 @@ import java.sql.SQLException;
 
 public class PrivacyGUI {
 
-    private Gui gui;
-    private Player player;
-    private Lobby lobby;
+    private final Gui gui;
+    private final Lobby lobby;
 
     public PrivacyGUI(Player player, Lobby lobby) {
-        this.player = player;
         this.lobby = lobby;
         var mm = MiniMessage.miniMessage();
         this.gui = Gui.gui()
@@ -29,7 +27,7 @@ public class PrivacyGUI {
                 .disableAllInteractions()
                 .create();
 
-        this.gui.setItem(2, 5, ItemBuilder.from(Material.WRITABLE_BOOK).enchant(org.bukkit.enchantments.Enchantment.INFINITY)
+        this.gui.setItem(2, 5, ItemBuilder.from(Material.WRITABLE_BOOK).enchant(Enchantment.INFINITY)
                 .flags(ItemFlag.HIDE_ENCHANTS)
                 .name(mm.deserialize("<color:#a3ceff><u>Datenschutzerklärung</u> </color><dark_gray>-</dark_gray> <color:#a3ceff><u>Privacy policy</u></color>"))
                 .lore(
@@ -54,12 +52,10 @@ public class PrivacyGUI {
                 }));
         this.gui.setItem(2, 7, ItemBuilder.skull().texture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmViNTg4YjIxYTZmOThhZDFmZjRlMDg1YzU1MmRjYjA1MGVmYzljYWI0MjdmNDYwNDhmMThmYzgwMzQ3NWY3In19fQ==")
                 .name(mm.deserialize("<color:#ff3d40><b>Ablehnen / Decline</b></color>"))
-                .asGuiItem(event -> {
-                    player.kick(mm.deserialize("<red><b>Sorry :C</b></red>\n" +
-                            "\n" +
-                            "<gray>You have to accept the privacy policy.</gray>\n" +
-                            "<gray>Du musst der Datenschutzerklärung zustimmen.</gray>"));
-                }));
+                .asGuiItem(event -> player.kick(mm.deserialize("<red><b>Sorry :C</b></red>\n" +
+                        "\n" +
+                        "<gray>You have to accept the privacy policy.</gray>\n" +
+                        "<gray>Du musst der Datenschutzerklärung zustimmen.</gray>"))));
         this.gui.getFiller().fill(ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.text("")).asGuiItem());
     }
 

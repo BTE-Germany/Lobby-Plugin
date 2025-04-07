@@ -8,5 +8,6 @@ softdepend:
   - DecentHolograms
   - Plan
   - BTEG-Cosmetics
+  - Luckperms
 depend:
   - FancyHolograms

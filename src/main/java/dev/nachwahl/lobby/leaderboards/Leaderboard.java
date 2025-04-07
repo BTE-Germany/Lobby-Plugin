@@ -1,6 +1,7 @@
 package dev.nachwahl.lobby.leaderboards;
 
 import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.hologram.Hologram;
 import lombok.Getter;
 import org.bukkit.Location;
 
@@ -25,7 +26,7 @@ public abstract class Leaderboard {
         this.instance = lobby;
         this.id = id;
         this.location = instance.getLocationAPI().getLocation(id);
-        instance.getHologramAPI().addHologram(id, new dev.nachwahl.lobby.hologram.Hologram(location, new ArrayList<>(), new ArrayList<>(), id));
+        instance.getHologramAPI().addHologram(id, new Hologram(location, new ArrayList<>(), new ArrayList<>(), id));
 
         load();
     }
@@ -33,7 +34,7 @@ public abstract class Leaderboard {
     public void load() {
     }
 
-    public dev.nachwahl.lobby.hologram.Hologram getHologram() {
+    public Hologram getHologram() {
         return instance.getHologramAPI().getHologram(id);
     }
 

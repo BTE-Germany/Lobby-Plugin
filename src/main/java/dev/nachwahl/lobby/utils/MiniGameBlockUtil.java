@@ -1,15 +1,23 @@
 package dev.nachwahl.lobby.utils;
 
+import de.oliver.fancyholograms.api.FancyHologramsPlugin;
+import de.oliver.fancyholograms.api.HologramManager;
+import de.oliver.fancyholograms.api.data.TextHologramData;
+import de.oliver.fancyholograms.api.hologram.Hologram;
 import dev.nachwahl.lobby.Lobby;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class MiniGameBlockUtil {
 
@@ -53,7 +61,7 @@ public class MiniGameBlockUtil {
         dataFile = YamlConfiguration.loadConfiguration(file);
     }
 
-    private @org.jetbrains.annotations.Nullable File createFile() {
+    private @Nullable File createFile() {
         File file = new File(plugin.getDataFolder() + File.separator + FILE_NAME);
         if (!file.exists()) {
             try {
@@ -68,36 +76,25 @@ public class MiniGameBlockUtil {
         return null;
     }
 
-    public static void setGameTitleHoverTexts(@org.jetbrains.annotations.NotNull String game) {
+    public static void setGameTitleHoverTexts(@NotNull String game) {
         for (String s : Lobby.getInstance().getMiniGameBlockUtil().getList(game.toLowerCase())) {
             Location loc = Lobby.getInstance().getLocationAPI().parseLocation(s);
-            Location locHD = new Location(loc.getWorld(), loc.getBlockX() + 0.5, loc.getBlockY() + 3.5, loc.getBlockZ() + 0.5);
-            de.oliver.fancyholograms.api.HologramManager manager = de.oliver.fancyholograms.api.FancyHologramsPlugin.get().getHologramManager();
-            de.oliver.fancyholograms.api.data.TextHologramData data =
-                new de.oliver.fancyholograms.api.data.TextHologramData(game + "_" + locHD.getBlockX() + "-" + locHD.getBlockZ(),
-                locHD);
-            data.setPersistent(false);
-            data.setText(java.util.Collections.singletonList(FORMATTING_CODE + game));
-            manager.addHologram(manager.create(data));
+            setGameTitleHoverText(game, loc);
         }
     }
 
-    public static void setGameTitleHoverText(String game, @org.jetbrains.annotations.NotNull Location loc) {
+    public static void setGameTitleHoverText(String game, @NotNull Location loc) {
         Location locHD = new Location(loc.getWorld(), loc.getBlockX() + 0.5, loc.getBlockY() + 3.5, loc.getBlockZ() + 0.5);
-        de.oliver.fancyholograms.api.HologramManager manager = de.oliver.fancyholograms.api.FancyHologramsPlugin.get().getHologramManager();
-        de.oliver.fancyholograms.api.data.TextHologramData data =
-            new de.oliver.fancyholograms.api.data.TextHologramData(game + "_" + locHD.getBlockX() + "-" + locHD.getBlockZ(),
-                locHD);
-        data.setText(java.util.Collections.singletonList(FORMATTING_CODE + game));
+        HologramManager manager = FancyHologramsPlugin.get().getHologramManager();
+        TextHologramData data = new TextHologramData(game + "_" + locHD.getBlockX() + "-" + locHD.getBlockZ(), locHD);
+        data.setText(Collections.singletonList(FORMATTING_CODE + game));
         data.setPersistent(false);
         manager.addHologram(manager.create(data));
     }
 
-
-    public static void deleteHologram(String game, @org.jetbrains.annotations.NotNull Location locHD) {
-        de.oliver.fancyholograms.api.HologramManager manager = de.oliver.fancyholograms.api.FancyHologramsPlugin.get().getHologramManager();
-        java.util.Optional<de.oliver.fancyholograms.api.hologram.Hologram> hologram =
-            manager.getHologram(game + "_" + locHD.getBlockX() + "-" + locHD.getBlockZ());
+    public static void deleteHologram(String game, @NotNull Location locHD) {
+        HologramManager manager = FancyHologramsPlugin.get().getHologramManager();
+        Optional<Hologram> hologram = manager.getHologram(game + "_" + locHD.getBlockX() + "-" + locHD.getBlockZ());
         hologram.ifPresent(manager::removeHologram);
     }
 
@@ -105,5 +102,4 @@ public class MiniGameBlockUtil {
         String[] games = {"TicTacToe", "Connect4", "UNO", "BattleShip", "RockPaperScissors"};
         for (String s : games) setGameTitleHoverTexts(s);
     }
-
 }
