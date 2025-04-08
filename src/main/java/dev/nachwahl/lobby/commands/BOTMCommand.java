@@ -7,6 +7,7 @@ import co.aikar.idb.DbRow;
 import dev.nachwahl.lobby.Lobby;
 import dev.nachwahl.lobby.language.Language;
 import eu.decentsoftware.holograms.api.DHAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -14,6 +15,7 @@ import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @CommandAlias("botm")
 public class BOTMCommand extends BaseCommand {
@@ -52,13 +54,18 @@ public class BOTMCommand extends BaseCommand {
     }
 
     @CommandPermission("bteg.lobby.botm")
-    @Syntax("<player>")
+    @Syntax("<player> <month>")
     @Subcommand("add")
-    public void onBOTMAdd(CommandSender sender, String target) throws SQLException {
+    @CommandCompletion("* 1|2|3|4|5|6|7|8|9|10|11|12")
+    public void onBOTMAdd(CommandSender sender, String target, int month) throws SQLException {
 
         Player player = (Player) sender;
+        String uuid = Bukkit.getOfflinePlayer(target).getUniqueId().toString();
 
-        lobby.getBotmScoreAPI().addPoints(target, 1);
+        lobby.getBotmScoreAPI().addPoints(uuid, 1);
+        lobby.getConfig().set("lastBOTM.UUID", uuid);
+        lobby.getConfig().set("lastBOTM.month", month);
+
         update(player);
 
         lobby.getLanguageAPI().sendMessageToPlayer(player, "botm.added");
@@ -70,8 +77,9 @@ public class BOTMCommand extends BaseCommand {
     public void onBOTMRemove(CommandSender sender, String target) throws SQLException {
 
         Player player = (Player) sender;
+        String uuid = Bukkit.getOfflinePlayer(target).getUniqueId().toString();
 
-        lobby.getBotmScoreAPI().addPoints(target, -1);
+        lobby.getBotmScoreAPI().addPoints(uuid, -1);
         update(player);
 
         lobby.getLanguageAPI().sendMessageToPlayer(player, "botm.removed");
@@ -83,8 +91,9 @@ public class BOTMCommand extends BaseCommand {
     public void onBOTMSet(CommandSender sender, String target, int score) throws SQLException {
 
         Player player = (Player) sender;
+        String uuid = Bukkit.getOfflinePlayer(target).getUniqueId().toString();
 
-        lobby.getBotmScoreAPI().setScore(target, score);
+        lobby.getBotmScoreAPI().setScore(uuid, score);
         update(player);
 
         lobby.getLanguageAPI().sendMessageToPlayer(player, "botm.set");
@@ -101,9 +110,25 @@ public class BOTMCommand extends BaseCommand {
 
 
         for (int i = 0; i < relevantEntries.length; i++) {
-            player.sendMessage(ChatColor.RED + String.valueOf(i + 1) + ". " + ChatColor.WHITE + relevantEntries[i].getValue() + ": " + ChatColor.GREEN + relevantEntries[i].getKey());
+            player.sendMessage(ChatColor.RED + String.valueOf(i + 1) + ". " + ChatColor.WHITE + Bukkit.getOfflinePlayer(relevantEntries[i].getValue()).getName() + ": " + ChatColor.GREEN + relevantEntries[i].getKey());
         }
 
+    }
+
+    @CommandPermission("bteg.lobby.botm")
+    @Syntax("<player> <month> <year>")
+    @Subcommand("latest")
+    @CommandCompletion("* 1|2|3|4|5|6|7|8|9|10|11|12")
+    public void onBOTMLatest(CommandSender sender, String target, int month, int year) {
+
+        Player player = (Player) sender;
+        String uuid = Bukkit.getOfflinePlayer(target).getUniqueId().toString();
+
+        lobby.getConfig().set("lastBOTM.UUID", uuid);
+        lobby.getConfig().set("lastBOTM.month", month);
+        lobby.getConfig().set("lastBOTM.year", year);
+
+        lobby.getLanguageAPI().sendMessageToPlayer(player, "botm.latest.set");
     }
 
     public static String create(Location location, Database database, Language language) throws SQLException {
@@ -118,8 +143,19 @@ public class BOTMCommand extends BaseCommand {
         if (scores.size() >= 3) {
 
             List<String> lines = new ArrayList<>();
-            lines.add(ChatColor.GOLD + "Build of the Month");
-            for (int i = 0; i < entries; i++) lines.add(ChatColor.RED + String.valueOf(i + 1) + ". " + ChatColor.WHITE + relevantEntries[i].getValue() + ": " + ChatColor.GREEN + relevantEntries[i].getKey());
+            lines.add(ChatColor.GOLD + "" + ChatColor.BOLD + "Build of the Month");
+            for (int i = 0; i < entries; i++){
+                UUID uuid = UUID.fromString(relevantEntries[i].getValue());
+                lines.add(ChatColor.GOLD + String.valueOf(i + 1) + ". " + ChatColor.WHITE + Bukkit.getOfflinePlayer(uuid).getName() + ": " + ChatColor.GOLD + relevantEntries[i].getKey());
+            }
+
+            lines.add("");
+
+            UUID uuid = UUID.fromString(lobby.getConfig().getString("lastBOTM.UUID"));
+            AtomicInteger latestScore = new AtomicInteger();
+            lobby.getBotmScoreAPI().getScore(uuid.toString(), latestScore::set);
+            lines.add(ChatColor.GOLD + "" + lobby.getConfig().getInt("lastBOTM.month") + "." + lobby.getConfig().getInt("lastBOTM.year") + " " + ChatColor.WHITE + Bukkit.getOfflinePlayer(uuid).getName() + " " + ChatColor.GOLD + latestScore.get());
+
 
             DHAPI.createHologram("BOTM", location, lines);
             lobby.getLocationAPI().setLocation(location, "botm");
@@ -134,9 +170,9 @@ public class BOTMCommand extends BaseCommand {
 
     private static Map.Entry<Integer, String>[] sortScores(HashMap<String, Integer> scores, List<DbRow> dbRows) {
         dbRows.forEach(row -> {
-            String name = row.getString("name");
+            String uuid = row.getString("uuid");
             int score = row.getInt("score");
-            scores.put(name, score);
+            scores.put(uuid, score);
         });
 
         ArrayList<String> keys = new ArrayList<>(scores.keySet());
