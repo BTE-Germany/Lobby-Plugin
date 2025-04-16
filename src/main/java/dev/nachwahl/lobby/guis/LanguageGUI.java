@@ -5,6 +5,7 @@ import dev.nachwahl.lobby.language.Language;
 import dev.nachwahl.lobby.utils.ItemGenerator;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -12,6 +13,7 @@ import org.bukkit.entity.Player;
 
 public class LanguageGUI {
 
+    @Getter
     private Gui gui;
     private final Lobby lobby;
 
@@ -38,13 +40,6 @@ public class LanguageGUI {
                     }));
             this.gui.getFiller().fill(ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());
             Bukkit.getScheduler().runTask(this.lobby, () -> this.gui.open(player));
-
         });
     }
-
-    public Gui getGui() {
-        return gui;
-    }
-
-
 }

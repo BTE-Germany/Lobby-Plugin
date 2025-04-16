@@ -7,6 +7,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 import net.kyori.adventure.text.Component;
 import java.util.Objects;
@@ -15,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class HologramAPI {
 
@@ -26,6 +28,8 @@ public class HologramAPI {
     private ArrayList<Hologram> holograms;
     @Getter
     private final HashMap<String, Hologram> customHolograms;
+
+    public UUID debugPlayer; // TODO Remove when Lobby Holograms works fine again
 
     private final Lobby plugin;
 
@@ -96,5 +100,12 @@ public class HologramAPI {
 
     public Hologram getHologram(String id) {
         return customHolograms.get(id);
+    }
+
+    public void sendDebugMsg(Component component) {
+        if (debugPlayer != null) {
+            Player p = Bukkit.getPlayer(debugPlayer);
+            if (p != null) p.sendMessage(component);
+        }
     }
 }

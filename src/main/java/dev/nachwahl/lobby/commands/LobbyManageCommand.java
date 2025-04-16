@@ -7,6 +7,7 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Dependency;
 import co.aikar.commands.annotation.Subcommand;
 import dev.nachwahl.lobby.Lobby;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -81,5 +82,21 @@ public class LobbyManageCommand extends BaseCommand {
             Lobby.getInstance().getLanguageAPI().getLanguage(player);
         }
         sender.sendMessage(mm.deserialize("<green>Erfolgreich Leaderboards neugeladen.</green>"));
+    }
+
+    @CommandPermission("lobby.manage.hologram")
+    @Subcommand("hologram debug")
+    public void onHologramDebugCommand(@NotNull CommandSender sender) {
+        if (sender instanceof Player p) { // TODO Remove when Lobby Holograms works fine again
+            Lobby inst = Lobby.getInstance();
+            if (inst.getHologramAPI().debugPlayer != p.getUniqueId()) {
+                p.sendMessage(Component.text("Enabled/Switched Lobby Hologram Debug mode"));
+                inst.getHologramAPI().debugPlayer = p.getUniqueId();
+            } else {
+                p.sendMessage(Component.text("Disabled Lobby Hologram Debug mode"));
+                inst.getHologramAPI().debugPlayer = null;
+            }
+            inst.getLanguageAPI().setLanguage(inst.getLanguageAPI().getOppositeLanguage(inst.getLanguageAPI().getLanguage(p)), p);
+        }
     }
 }

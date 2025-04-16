@@ -3,6 +3,7 @@ package dev.nachwahl.lobby.utils;
 import dev.nachwahl.lobby.Lobby;
 import dev.nachwahl.lobby.language.LanguageAPI;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -24,6 +25,7 @@ public class HotbarItems {
      * Setzt die Hotbar Items in der richtigen Sprache. Implizit wird durch languageAPI.getLanguage auch die language Permission gesetzt.
      */
     public void setHotbarItems(Player player) {
+        Lobby.getInstance().getHologramAPI().sendDebugMsg(Component.text("Set Menu Items - language perm should be set"));
         this.languageAPI.getLanguage(player, language -> {
             ItemStack navigator = ItemBuilder.from(Material.COMPASS).name(this.languageAPI.getMessage(language, "navigator.itemName")).build();
             ItemStack account = ItemBuilder.from(ItemGenerator.customModel(Material.PAPER, "config")).name(this.languageAPI.getMessage(language, "account.itemName")).build();
