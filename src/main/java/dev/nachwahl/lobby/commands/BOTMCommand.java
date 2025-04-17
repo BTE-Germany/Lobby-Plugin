@@ -54,10 +54,10 @@ public class BOTMCommand extends BaseCommand {
     }
 
     @CommandPermission("bteg.lobby.botm")
-    @Syntax("<player> <month>")
+    @Syntax("<player> <month> <year>")
     @Subcommand("add")
     @CommandCompletion("* 1|2|3|4|5|6|7|8|9|10|11|12")
-    public void onBOTMAdd(CommandSender sender, String target, int month) throws SQLException {
+    public void onBOTMAdd(CommandSender sender, String target, int month, int year) throws SQLException {
 
         Player player = (Player) sender;
         String uuid = Bukkit.getOfflinePlayer(target).getUniqueId().toString();
@@ -65,6 +65,8 @@ public class BOTMCommand extends BaseCommand {
         lobby.getBotmScoreAPI().addPoints(uuid, 1);
         lobby.getConfig().set("lastBOTM.UUID", uuid);
         lobby.getConfig().set("lastBOTM.month", month);
+        lobby.getConfig().set("lastBOTM.year", year);
+        lobby.saveConfig();
 
         update(player);
 
@@ -119,7 +121,7 @@ public class BOTMCommand extends BaseCommand {
     @Syntax("<player> <month> <year>")
     @Subcommand("latest")
     @CommandCompletion("* 1|2|3|4|5|6|7|8|9|10|11|12")
-    public void onBOTMLatest(CommandSender sender, String target, int month, int year) {
+    public void onBOTMLatest(CommandSender sender, String target, int month, int year) throws SQLException {
 
         Player player = (Player) sender;
         String uuid = Bukkit.getOfflinePlayer(target).getUniqueId().toString();
@@ -127,7 +129,9 @@ public class BOTMCommand extends BaseCommand {
         lobby.getConfig().set("lastBOTM.UUID", uuid);
         lobby.getConfig().set("lastBOTM.month", month);
         lobby.getConfig().set("lastBOTM.year", year);
+        lobby.saveConfig();
 
+        update(player);
         lobby.getLanguageAPI().sendMessageToPlayer(player, "botm.latest.set");
     }
 
