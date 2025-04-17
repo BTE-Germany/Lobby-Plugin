@@ -9,3 +9,5 @@ softdepend:
 depend:
   - HolographicDisplays
   - BTEG-Cosmetics
+  - DecentHolograms
+  - PlaceholderAPI

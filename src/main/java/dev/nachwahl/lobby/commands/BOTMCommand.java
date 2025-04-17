@@ -148,18 +148,20 @@ public class BOTMCommand extends BaseCommand {
 
             List<String> lines = new ArrayList<>();
             lines.add(ChatColor.GOLD + "" + ChatColor.BOLD + "Build of the Month");
+
+            lines.add("%lobby_ownbotmscore%");
+
+            UUID uuidLatest = UUID.fromString(lobby.getConfig().getString("lastBOTM.UUID"));
+            AtomicInteger latestScore = new AtomicInteger();
+            lobby.getBotmScoreAPI().getScore(uuidLatest.toString(), latestScore::set);
+            lines.add(ChatColor.GOLD + "" + lobby.getConfig().getInt("lastBOTM.month") + "." + lobby.getConfig().getInt("lastBOTM.year") + " " + ChatColor.WHITE + Bukkit.getOfflinePlayer(uuidLatest).getName() + " " + ChatColor.GOLD + latestScore.get());
+
+            lines.add("");
+
             for (int i = 0; i < entries; i++){
                 UUID uuid = UUID.fromString(relevantEntries[i].getValue());
                 lines.add(ChatColor.GOLD + String.valueOf(i + 1) + ". " + ChatColor.WHITE + Bukkit.getOfflinePlayer(uuid).getName() + ": " + ChatColor.GOLD + relevantEntries[i].getKey());
             }
-
-            lines.add("");
-
-            UUID uuid = UUID.fromString(lobby.getConfig().getString("lastBOTM.UUID"));
-            AtomicInteger latestScore = new AtomicInteger();
-            lobby.getBotmScoreAPI().getScore(uuid.toString(), latestScore::set);
-            lines.add(ChatColor.GOLD + "" + lobby.getConfig().getInt("lastBOTM.month") + "." + lobby.getConfig().getInt("lastBOTM.year") + " " + ChatColor.WHITE + Bukkit.getOfflinePlayer(uuid).getName() + " " + ChatColor.GOLD + latestScore.get());
-
 
             DHAPI.createHologram("BOTM", location, lines);
             lobby.getLocationAPI().setLocation(location, "botm");
