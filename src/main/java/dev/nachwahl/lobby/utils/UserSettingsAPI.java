@@ -4,6 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import dev.nachwahl.lobby.Lobby;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -27,13 +28,13 @@ public class UserSettingsAPI {
     private final Cache<UserSetting, String> settingsCache = CacheBuilder.newBuilder()
             .expireAfterWrite(5, TimeUnit.MINUTES)
             .build();
-    private Lobby lobby;
+    private final Lobby lobby;
 
     public UserSettingsAPI(Lobby lobby) {
         this.lobby = lobby;
     }
 
-    public void setSetting(Player player, String key, String value, Consumer<Integer> callback) {
+    public void setSetting(@NotNull Player player, String key, String value, Consumer<Integer> callback) {
 
         if (settingsCache.getIfPresent(new UserSetting(player.getUniqueId(), key)) != null) {
             settingsCache.invalidate(new UserSetting(player.getUniqueId(), key));
@@ -53,7 +54,7 @@ public class UserSettingsAPI {
                     return null;
                 }).thenAccept(callback);
             }
-        }).exceptionally((e) -> {
+        }).exceptionally(e -> {
             this.lobby.getLogger().log(Level.SEVERE, e.getMessage());
             return null;
         });
@@ -89,14 +90,12 @@ public class UserSettingsAPI {
                 callback.accept(cache);
             }
         } catch (Exception e) {
-            System.out.println(e);
+            Lobby.getInstance().getComponentLogger().error("Error accored when getting Player Settings.", e);;
         }
-
     }
 
-
     public void toggleSetting(Player player, String key, Consumer<Integer> callback) {
-        getSetting(player, key, (value) -> {
+        getSetting(player, key, value -> {
             if (Objects.equals(value, "1")) {
                 setSetting(player, key, "0", callback);
             } else {
@@ -106,23 +105,12 @@ public class UserSettingsAPI {
     }
 
     public void getBooleanSetting(Player player, String key, Consumer<Boolean> callback) {
-        try {
-            getSetting(player, key, (value) -> {
-                callback.accept(Objects.equals(value, "1") ? true : false);
-            });
-        } catch (Exception e) {
-            throw e;
-        }
+        getSetting(player, key, value -> callback.accept(Objects.equals(value, "1")));
     }
 
     public void setDefaultSettings(Player player) {
-        this.setSettingIfNotExistant(player, "playerVisibility", "1", (i) -> {
-        });
-        this.setSettingIfNotExistant(player, "realTime", "1", (i) -> {
-        });
-        this.setSettingIfNotExistant(player, "playerPickup", "0", (i) -> {
-        });
+        this.setSettingIfNotExistant(player, "playerVisibility", "1", i -> {});
+        this.setSettingIfNotExistant(player, "realTime", "1", i -> {});
+        this.setSettingIfNotExistant(player, "playerPickup", "0", i -> {});
     }
-
-
 }

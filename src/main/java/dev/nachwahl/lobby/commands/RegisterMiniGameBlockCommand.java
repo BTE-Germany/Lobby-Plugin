@@ -2,14 +2,17 @@ package dev.nachwahl.lobby.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
+import de.oliver.fancyholograms.api.FancyHologramsPlugin;
+import de.oliver.fancyholograms.api.HologramManager;
+import de.oliver.fancyholograms.api.data.TextHologramData;
 import dev.nachwahl.lobby.Lobby;
 import dev.nachwahl.lobby.utils.MiniGameBlockUtil;
-import me.filoghost.holographicdisplays.api.hologram.Hologram;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 @CommandAlias("registerminigameblock|rmgb")
@@ -22,8 +25,7 @@ public class RegisterMiniGameBlockCommand extends BaseCommand {
     @Syntax("<game>")
     @Subcommand("add")
     public void onAdd(CommandSender sender, String[] args) {
-        if (!(sender instanceof Player)) return;
-        Player player = (Player) sender;
+        if (!(sender instanceof Player player)) return;
         Location location = player.getTargetBlockExact(3).getLocation();
         Location locHD = new Location(player.getWorld(), location.getBlockX() + 0.5, location.getBlockY() + 3.5, location.getBlockZ() + 0.5);
 
@@ -35,8 +37,11 @@ public class RegisterMiniGameBlockCommand extends BaseCommand {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        Hologram hologram = lobby.getHologramAPI().getApi().createHologram(locHD);
-        hologram.getLines().appendText("§9§l" + args[0]);
+        HologramManager manager = FancyHologramsPlugin.get().getHologramManager();
+        TextHologramData data = new TextHologramData(args[0] + "_" + locHD.getBlockX() + "-" + locHD.getBlockZ(), locHD);
+        data.setText(Collections.singletonList(dev.nachwahl.lobby.utils.MiniGameBlockUtil.FORMATTING_CODE + args[0]));
+        data.setPersistent(false);
+        manager.addHologram(manager.create(data));
         player.sendMessage("§aDu hast einen Minigameblock für das Spiel §9" + args[0] + " §ahinzugefügt!");
     }
 
@@ -44,8 +49,7 @@ public class RegisterMiniGameBlockCommand extends BaseCommand {
     @Syntax("<game>")
     @Subcommand("remove")
     public void onRemove(CommandSender sender, String[] args) {
-        if (!(sender instanceof Player)) return;
-        Player player = (Player) sender;
+        if (!(sender instanceof Player player)) return;
         Location location = player.getTargetBlockExact(3).getLocation();
         Location locHD = new Location(player.getWorld(), location.getBlockX() + 0.5, location.getBlockY() + 3.5, location.getBlockZ() + 0.5);
 
@@ -59,7 +63,7 @@ public class RegisterMiniGameBlockCommand extends BaseCommand {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                MiniGameBlockUtil.deleteHologram(locHD);
+                MiniGameBlockUtil.deleteHologram(args[0].toLowerCase(), locHD);
             }
         }
 

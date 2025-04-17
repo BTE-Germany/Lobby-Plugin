@@ -41,12 +41,7 @@ public class GamemodeCommand extends BaseCommand {
             player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
         } else {
             if (this.lobby.getEditModePlayers().contains(player)) {
-                this.lobby.getEditModePlayers().remove(player);
-                this.lobby.getLanguageAPI().sendMessageToPlayer(player, "manage.editMode.disable");
-                this.lobby.getHotbarItems().setHotbarItems(player);
-                player.setGameMode(GameMode.ADVENTURE);
-                player.setAllowFlight(true);
-                player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                LobbyManageCommand.disableBuildMode(player, this.lobby);
             }
         }
 

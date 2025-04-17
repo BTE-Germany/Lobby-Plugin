@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.components.CustomModelDataComponent;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,10 +19,14 @@ public class ItemGenerator {
         return item;
     }
 
-    public static ItemStack customModel(Material material, Integer data) {
+    public static ItemStack customModel(Material material, String data) {
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
-        meta.setCustomModelData(data);
+
+        CustomModelDataComponent modelDataComponent = meta.getCustomModelDataComponent();
+        modelDataComponent.setStrings(List.of(data));
+        meta.setCustomModelDataComponent(modelDataComponent);
+
         item.setItemMeta(meta);
         return item;
     }

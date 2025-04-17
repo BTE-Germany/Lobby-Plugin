@@ -4,15 +4,16 @@ import dev.nachwahl.lobby.Lobby;
 import dev.nachwahl.lobby.utils.ItemGenerator;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class TutorialGUI {
 
+    @lombok.Getter
     private Gui gui;
     private final Lobby lobby;
 
@@ -26,23 +27,19 @@ public class TutorialGUI {
                     .create();
 
 
-            this.gui.setItem(2, 3, ItemBuilder.from(ItemGenerator.customModel(Material.PAPER, 2))
+            this.gui.setItem(2, 3, ItemBuilder.from(ItemGenerator.customModel(Material.PAPER, "plot"))
                     .name(this.lobby.getLanguageAPI().getMessage(language, "help.plots.name"))
-                    .asGuiItem(event -> {
-                        this.lobby.getBungeeConnector().sendToServer(player, this.lobby.getConfig().getString("server.Plot"), true);
-                    }));
+                    .asGuiItem(event -> this.lobby.getBungeeConnector().sendToServer(player, this.lobby.getConfig().getString("server.Plot"), true)));
 
+            ItemStack item = new ItemStack(org.bukkit.Material.DIAMOND_PICKAXE);
+            item.unsetData(DataComponentTypes.ATTRIBUTE_MODIFIERS);
 
-            this.gui.setItem(2, 5, ItemBuilder.from(Material.WOODEN_PICKAXE)
-                    .name(Component.text("Coming soon...").color(NamedTextColor.RED).decorate(TextDecoration.BOLD)/*this.lobby.getLanguageAPI().getMessage(language, "help.test.name")*/)
+            this.gui.setItem(2, 7, ItemBuilder.from(item)
+                    .name(this.lobby.getLanguageAPI().getMessage(language, "help.apply.name"))
                     .asGuiItem(event -> {
-                        // TODO
-                    }));
-
-            this.gui.setItem(2, 7, ItemBuilder.from(Material.DIAMOND_PICKAXE)
-                    .name(Component.text("Coming soon...").color(NamedTextColor.RED).decorate(TextDecoration.BOLD)/*this.lobby.getLanguageAPI().getMessage(language, "help.builder.name")*/)
-                    .asGuiItem(event -> {
-                        // TODO
+                        event.getInventory().close();
+                        player.sendMessage(this.lobby.getLanguageAPI().getMessage(language, "help.apply.message")
+                            .clickEvent(net.kyori.adventure.text.event.ClickEvent.openUrl("https://buildtheearth.net/teams/de/apply")));
                     }));
 
 
@@ -56,13 +53,6 @@ public class TutorialGUI {
 
             this.gui.getFiller().fill(ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());
             Bukkit.getScheduler().runTask(this.lobby, () -> this.gui.open(player));
-
         });
     }
-
-    public Gui getGui() {
-        return gui;
-    }
-
-
 }

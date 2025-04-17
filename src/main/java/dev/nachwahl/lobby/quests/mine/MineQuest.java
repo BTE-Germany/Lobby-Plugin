@@ -13,6 +13,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
+import static org.bukkit.enchantments.Enchantment.EFFICIENCY;
+
 public class MineQuest extends Quest {
 
     public static String prefix = ChatColor.DARK_GRAY + "[" + ChatColor.YELLOW + "MineQuest" + ChatColor.DARK_GRAY + "] " + ChatColor.GRAY;
@@ -64,7 +66,7 @@ public class MineQuest extends Quest {
         this.player.teleport(new Location(Bukkit.getWorld(block.getWorld()), block.getX() + 0.5, block.getY(), block.getZ() + 0.5));
         ItemStack itemStack = new ItemStack(Material.NETHERITE_PICKAXE);
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.addEnchant(Enchantment.DIG_SPEED, 4, true);
+        itemMeta.addEnchant(EFFICIENCY, 4, true);
         itemStack.setItemMeta(itemMeta);
         this.player.getInventory().setItemInMainHand(itemStack);
         this.player.sendMessage(prefix + "Bei MineQuest geht es darum, so viele Erze wie möglich innerhalb einer Minute abzubauen. Viel Erfolg!");

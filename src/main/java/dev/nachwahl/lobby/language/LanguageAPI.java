@@ -6,7 +6,12 @@ import dev.nachwahl.lobby.Lobby;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.node.Node;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.RegisteredServiceProvider;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,6 +19,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -86,15 +92,21 @@ public class LanguageAPI {
         }
     }
 
-    public void getLanguage(Player player, Consumer<Language> languageCallback) {
+    /**
+     * Holt die Sprache aus der Datenbank und führt das Callback aus. Gleichzeitig wird die Language Permission gesetzt,
+     */
+    public void getLanguage(@NotNull Player player, Consumer<Language> languageCallback) {
+        Lobby.getInstance().getHologramAPI().sendDebugMsg(Component.text("Get Language Callback START"));
         Language cached = this.languageCache.getIfPresent(player.getUniqueId());
         if (cached != null) {
+            setLocalePermission(player, cached);
             languageCallback.accept(cached);
             return;
         }
         this.lobby.getDatabase().getFirstRowAsync("SELECT * FROM langUsers WHERE uuid = ?", player.getUniqueId().toString())
                 .thenAccept(dbRow -> {
                     if (dbRow == null) {
+                        setLocalePermission(player, Language.ENGLISH);
                         languageCallback.accept(Language.ENGLISH);
                         return;
                     }
@@ -109,8 +121,10 @@ public class LanguageAPI {
                         } catch (IllegalArgumentException e) {
                             language = Language.ENGLISH;
                         }
+                        setLocalePermission(player, language);
                         languageCallback.accept(language);
                     } else {
+                        setLocalePermission(player, Language.ENGLISH);
                         languageCallback.accept(Language.ENGLISH);
                     }
                 });
@@ -124,29 +138,63 @@ public class LanguageAPI {
         getMessage(player, player::sendMessage, messageKey, placeholders);
     }
 
-    public Language getLanguage(Player player) {
+    public Language getLanguage(@NotNull Player player) {
         Language language = this.languageCache.getIfPresent(player.getUniqueId());
         if (language == null) {
             language = Language.ENGLISH;
         }
+        setLocalePermission(player, language);
         return language;
     }
 
-    public void setLanguage(Language language, Player player) {
+    private void setLocalePermission(@NotNull Player player, @NotNull Language language) {
+        String permission = getPermissionFromLanguage(language);
+        Lobby.getInstance().getHologramAPI().sendDebugMsg(Component.text("Set Local Permission " + permission));
+        if (player.hasPermission(permission)) return;
+        RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+        if (provider != null) {
+            Lobby.getInstance().getHologramAPI().sendDebugMsg(Component.text("Set Local Permission - provider is not null & player dont have alread the permission"));
+            LuckPerms api = provider.getProvider();
+            String removePermission = getPermissionFromLanguage(getOppositeLanguage(language));
+
+            // Load, modify, then save
+            api.getUserManager().modifyUser(player.getUniqueId(), user -> {
+                Lobby.getInstance().getHologramAPI().sendDebugMsg(Component.text("Set Local - Try add perm"));
+                user.data().add(Node.builder(permission).build());
+                Lobby.getInstance().getHologramAPI().sendDebugMsg(Component.text("Set Local - Try remove perm"));
+                if (removePermission != null && player.hasPermission(removePermission)) user.data().remove(Node.builder(permission).build());
+                Lobby.getInstance().getHologramAPI().sendDebugMsg(Component.text("Set Local - Everything worked fine"));
+            });
+        }
+    }
+
+    public String getPermissionFromLanguage(@NotNull Language language) {
+        return "group." + language.name().toLowerCase(Locale.ROOT);
+    }
+
+    public Language getOppositeLanguage(@NotNull Language language) {
+        if (language == Language.GERMAN) {
+            return Language.ENGLISH;
+        } else {
+            return Language.GERMAN;
+        }
+    }
+
+    public void setLanguage(Language language, @NotNull Player player) {
         this.lobby.getDatabase().getFirstRowAsync("SELECT * FROM langUsers WHERE uuid = ?", player.getUniqueId().toString()).thenAccept(row -> {
             if (row == null) {
                 this.lobby.getDatabase().executeUpdateAsync("INSERT INTO langUsers (uuid, lang) VALUES (?, ?)", player.getUniqueId().toString(), language.getLang()).thenAccept(integer -> {
                     this.languageCache.put(player.getUniqueId(), language);
                     this.sendMessageToPlayer(player, "languageChanged");
+                    Lobby.getInstance().getHologramAPI().sendDebugMsg(Component.text("INSERT LANG Set Language Permission to " + getPermissionFromLanguage(language)));
                     this.lobby.getHotbarItems().setHotbarItems(player);
-                    this.lobby.getHologramAPI().showHolograms(player, language);
                 });
             } else {
                 this.lobby.getDatabase().executeUpdateAsync("UPDATE langUsers SET lang = ? WHERE uuid = ?", language.getLang(), player.getUniqueId().toString()).thenAccept(integer -> {
                     this.languageCache.put(player.getUniqueId(), language);
                     this.sendMessageToPlayer(player, "languageChanged");
+                    Lobby.getInstance().getHologramAPI().sendDebugMsg(Component.text("INSERT LANG Set Language Permission to " + getPermissionFromLanguage(language)));
                     this.lobby.getHotbarItems().setHotbarItems(player);
-                    this.lobby.getHologramAPI().showHolograms(player, language);
                 });
             }
         });

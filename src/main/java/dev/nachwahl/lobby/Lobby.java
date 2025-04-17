@@ -9,6 +9,7 @@ import dev.nachwahl.lobby.commands.*;
 import dev.nachwahl.lobby.events.*;
 import dev.nachwahl.lobby.hologram.HologramAPI;
 import dev.nachwahl.lobby.language.LanguageAPI;
+import dev.nachwahl.lobby.leaderboards.JnRLeaderboard;
 import dev.nachwahl.lobby.leaderboards.LeaderboardManager;
 import dev.nachwahl.lobby.plan.PlanIntegration;
 import dev.nachwahl.lobby.plan.QueryAPIAccessor;
@@ -64,6 +65,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
     private CinematicUtil cinematicUtil;
     private LeaderboardManager leaderboardManager;
     private BOTMScoreAPI botmScoreAPI;
+    private JnRLeaderboard jnRLeaderboard;
 
     private QuestManager questManager;
     private PoolManager poolManager;
@@ -97,6 +99,10 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
             Bukkit.getLogger().severe("Cosmetics Plugin nicht gefunden.");
         }
 
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new LobbyPlaceholderExpansion(this).register();
+        }
+
         for(Player player : Bukkit.getOnlinePlayers()){
             scoreboard.initScoreboard(player);
         }
@@ -116,6 +122,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
         this.locationAPI = new LocationAPI(this);
         this.userSettingsAPI = new UserSettingsAPI(this);
         this.botmScoreAPI = new BOTMScoreAPI(this);
+        this.jnRLeaderboard = new JnRLeaderboard(this);
         this.realTime = new RealTime(this.getConfig().getString("time.timezone"), this.getConfig().getInt("time.updateInterval"), Bukkit.getWorld("world"));
         this.vanish = new Vanish();
         this.hologramAPI = new HologramAPI(this);
@@ -161,6 +168,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
     public void onDisable() {
 
         Bukkit.getLogger().info("Das Lobby Plugin wurde deaktiviert.");
+        this.jnRLeaderboard.cancel();
         this.database.disconnect();
         this.getServer().getMessenger().unregisterOutgoingPluginChannel(this);
         this.getServer().getMessenger().unregisterIncomingPluginChannel(this);

@@ -1,13 +1,14 @@
 name: Lobby
 version: '${project.version}'
 main: dev.nachwahl.lobby.Lobby
-api-version: '1.20'
+api-version: '1.21'
 authors: [ Nachwahl,Nudlsupp ]
 website: https://bte-germany.de
 softdepend:
   - Plan
-depend:
-  - HolographicDisplays
   - BTEG-Cosmetics
+  - Luckperms
+depend:
+  - FancyHolograms
   - DecentHolograms
   - PlaceholderAPI

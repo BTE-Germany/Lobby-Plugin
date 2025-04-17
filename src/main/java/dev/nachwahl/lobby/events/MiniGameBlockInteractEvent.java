@@ -1,10 +1,11 @@
 package dev.nachwahl.lobby.events;
 
+import de.oliver.fancyholograms.api.FancyHologramsPlugin;
+import de.oliver.fancyholograms.api.HologramManager;
+import de.oliver.fancyholograms.api.hologram.Hologram;
 import dev.nachwahl.lobby.Lobby;
 import dev.nachwahl.lobby.language.Language;
 import dev.nachwahl.lobby.utils.MiniGameBlockUtil;
-import me.filoghost.holographicdisplays.api.Position;
-import me.filoghost.holographicdisplays.api.hologram.Hologram;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
@@ -18,17 +19,19 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class MiniGameBlockInteractEvent implements Listener {
 
     HashMap<Player, String> playerHashMap = new HashMap<>();
 
     @EventHandler
-    void onInteract(PlayerInteractEvent e) {
+    void onInteract(@NotNull PlayerInteractEvent e) {
 
         Player p = e.getPlayer();
         Action action = e.getAction();
@@ -38,8 +41,7 @@ public class MiniGameBlockInteractEvent implements Listener {
         }
         Location loc = block.getLocation();
 
-        if (e.getHand() == EquipmentSlot.HAND) {
-            if (action.equals(Action.RIGHT_CLICK_BLOCK)) {
+        if (e.getHand() == EquipmentSlot.HAND && action.equals(Action.RIGHT_CLICK_BLOCK)) {
                 String gameName = "";
 
                 String[] games = {"TicTacToe", "Connect4", "UNO", "BattleShip", "RockPaperScissors"};
@@ -52,21 +54,16 @@ public class MiniGameBlockInteractEvent implements Listener {
                     }
                 }
 
-                if (gameName.equals("")) {
+                if (gameName.isEmpty()) {
                     return;
                 }
                 if (playerHashMap.containsKey(p)) {
                     String existingGame = playerHashMap.get(p);
                     for (String s : Lobby.getInstance().getMiniGameBlockUtil().getList(existingGame.toLowerCase())) {
                         Location blockLoc = Lobby.getInstance().getLocationAPI().parseLocation(s);
-
-                        for (Hologram h : Lobby.getInstance().getHologramAPI().getApi().getHolograms()) {
-                            Location hloc = h.getPosition().toLocation();
-                            if (blockLoc.getBlock().getLocation().getBlockX() == hloc.getBlock().getLocation().getBlockX() && blockLoc.getBlock().getLocation().getBlockZ() == hloc.getBlock().getLocation().getBlockZ()) {
-                                h.delete();
-                            }
-                        }
-
+                        HologramManager manager = FancyHologramsPlugin.get().getHologramManager();
+                        java.util.Optional<Hologram> hologram = manager.getHologram(gameName.toLowerCase() + "_" + blockLoc.getBlockX() + "-" + blockLoc.getBlockZ());
+                        hologram.ifPresent(manager::removeHologram);
                     }
                     playerHashMap.remove(p);
                     MiniGameBlockUtil.setGameTitleHoverTexts(existingGame);
@@ -76,23 +73,19 @@ public class MiniGameBlockInteractEvent implements Listener {
                 }
                 e.setCancelled(true);
             }
-        }
+
     }
 
     @EventHandler
-    public void onLeave(PlayerQuitEvent event) {
+    public void onLeave(@NotNull PlayerQuitEvent event) {
         Player player = event.getPlayer();
         if (playerHashMap.containsKey(player)) {
             String existingGame = playerHashMap.get(player);
             for (String s : Lobby.getInstance().getMiniGameBlockUtil().getList(existingGame.toLowerCase())) {
                 Location blockLoc = Lobby.getInstance().getLocationAPI().parseLocation(s);
-
-                for (Hologram h : Lobby.getInstance().getHologramAPI().getApi().getHolograms()) {
-                    Location hloc = h.getPosition().toLocation();
-                    if (blockLoc.getBlock().getLocation().getBlockX() == hloc.getBlock().getLocation().getBlockX() && blockLoc.getBlock().getLocation().getBlockZ() == hloc.getBlock().getLocation().getBlockZ()) {
-                        h.delete();
-                    }
-                }
+                HologramManager manager = FancyHologramsPlugin.get().getHologramManager();
+                Optional<Hologram> hologram = manager.getHologram(existingGame.toLowerCase() + "_" + blockLoc.getBlockX() + "-" + blockLoc.getBlockZ());
+                hologram.ifPresent(manager::removeHologram);
 
             }
             playerHashMap.remove(player);
@@ -115,7 +108,7 @@ public class MiniGameBlockInteractEvent implements Listener {
         Location locHD = new Location(locBlock.getWorld(), locBlock.getBlockX() + 0.5, locBlock.getBlockY() + 3, locBlock.getBlockZ() + 0.5);
 
         if (players.size() > 1) {
-            MiniGameBlockUtil.deleteHologram(locHD);
+            MiniGameBlockUtil.deleteHologram(game, locHD);
             Player p2 = players.get(1);
             p2.playSound(p2, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 100, 0);
             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "mbg force " + game + " " + p1.getName() + " " + p2.getName());
@@ -126,18 +119,16 @@ public class MiniGameBlockInteractEvent implements Listener {
             }
             MiniGameBlockUtil.setGameTitleHoverText(game, locBlock);
         } else {
-            Lobby.getInstance().getLanguageAPI().getMessage(p1, message -> {
-                p1.sendMessage(Lobby.getInstance().getMiniMessage().deserialize("<prefix> ").append(message));
-            }, "minigame.queue");
+            Lobby.getInstance().getLanguageAPI().getMessage(p1, message -> p1.sendMessage(Lobby.getInstance().getMiniMessage().deserialize("<prefix> ").append(message)), "minigame.queue");
             p1.playSound(p1, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 100, 0);
             setQueueHoverTexts(game);
         }
     }
 
-    private void setQueueHoverTexts(String game) {
+    private void setQueueHoverTexts(@NotNull String game) {
         for (String s : Lobby.getInstance().getMiniGameBlockUtil().getList(game.toLowerCase())) {
             Location blockLoc = Lobby.getInstance().getLocationAPI().parseLocation(s);
-            Position loc = Position.of(blockLoc.getWorld(), blockLoc.getBlockX() + 0.5, blockLoc.getBlockY() + 3, blockLoc.getBlockZ() + 0.5);
+            Location loc = new Location(blockLoc.getWorld(), blockLoc.getBlockX() + 0.5, blockLoc.getBlockY() + 3, blockLoc.getBlockZ() + 0.5);
             Component englishComponent = Lobby.getInstance().getLanguageAPI().getMessage(Language.ENGLISH, "minigame.queue");
             Component germanComponent = Lobby.getInstance().getLanguageAPI().getMessage(Language.GERMAN, "minigame.queue");
             String[] englishString = LegacyComponentSerializer.legacyAmpersand().serialize(englishComponent).replaceAll("&", "§").split(" ");
@@ -146,8 +137,8 @@ public class MiniGameBlockInteractEvent implements Listener {
             String[] german = new String[]{germanString[0] + " " + germanString[1], germanString[2] + " " + germanString[3]};
             String[] english = new String[]{englishString[0] + " " + englishString[1], englishString[2] + " " + englishString[3]};
 
-            Lobby.getInstance().getHologramAPI().addHologram(game + "." + s, new dev.nachwahl.lobby.hologram.Hologram(loc, english, german));
+            Lobby.getInstance().getHologramAPI().addHologram(game + "." + s, new dev.nachwahl.lobby.hologram.Hologram(loc, english, german,
+                game + " " + loc.getBlockX() + "-" + loc.getBlockZ()));
         }
     }
-
 }

@@ -1,21 +1,18 @@
 package dev.nachwahl.lobby.cinematic;
 
 import com.destroystokyo.paper.Title;
-import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.RunnableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,7 +21,7 @@ public class PlayerCinematic {
     private List<PathPoint> cameraPoints = new ArrayList<>();
     private int currentPointIndex = 0;
 
-    private Plugin plugin;
+    private final Plugin plugin;
 
     private double totalTicks;
 
@@ -35,7 +32,7 @@ public class PlayerCinematic {
         this.plugin = plugin;
     }
 
-    public void startCinematic(Player player, List<PathPoint> cameraPoints,double totalTicks, boolean isLinear) {
+    public void startCinematic(Player player, @NotNull List<PathPoint> cameraPoints, double totalTicks, boolean isLinear) {
         this.cameraPoints = cameraPoints;
         this.totalTicks = totalTicks;
         for (int i = 1; i < cameraPoints.size(); i++) {
@@ -47,10 +44,10 @@ public class PlayerCinematic {
         runNextInterpolation(player, isLinear);
     }
 
-    private void runNextInterpolation(Player player, boolean isLinear) {
+    private void runNextInterpolation(@NotNull Player player, boolean isLinear) {
         GameMode previousGameMode = player.getGameMode();
         player.setGameMode(GameMode.SPECTATOR);
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW,9999,2,false,false));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS,9999,2,false,false));
         if (currentPointIndex < cameraPoints.size() - 1) {
             CompletableFuture<Void> future;
             PathPoint originPoint = cameraPoints.get(currentPointIndex);
@@ -58,7 +55,6 @@ public class PlayerCinematic {
             if(isLinear) {
                 future = runLinearInterpolationTask(player, originPoint, targetPoint, true);
             } else {
-                //future = runSplineInterpolationTask(player, cameraPoints);
                 future = runLinearInterpolationTask(player, originPoint, targetPoint, false);
             }
 
@@ -70,13 +66,13 @@ public class PlayerCinematic {
             });
         } else {
             // Kamerafahrt abgeschlossen
-            player.removePotionEffect(PotionEffectType.SLOW);
+            player.removePotionEffect(PotionEffectType.SLOWNESS);
             player.setGameMode(previousGameMode);
             player.sendMessage("§aDie Kamerafahrt wurde abgeschlossen!");
         }
     }
 
-    private CompletableFuture<Void> runLinearInterpolationTask(Player player,PathPoint originPoint, PathPoint targetPoint, boolean linear) {
+    private @NotNull CompletableFuture<Void> runLinearInterpolationTask(Player player, @NotNull PathPoint originPoint, PathPoint targetPoint, boolean linear) {
         String title = originPoint.getTitle();
         String subtitle = originPoint.getSubtitle();
         String chatMessage = originPoint.getChatMessage();
@@ -290,9 +286,7 @@ public class PlayerCinematic {
         }.runTaskTimer(plugin, 0, 1);
 
         // Weise die Instanz des BukkitRunnable zur späteren Verwendung zu
-        future.whenComplete((result, throwable) -> {
-            runnable.cancel();
-        });
+        future.whenComplete((result, throwable) -> runnable.cancel());
 
         return future;
     }
