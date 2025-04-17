@@ -5,9 +5,10 @@ api-version: '1.21'
 authors: [ Nachwahl,Nudlsupp ]
 website: https://bte-germany.de
 softdepend:
-  - DecentHolograms
   - Plan
   - BTEG-Cosmetics
   - Luckperms
 depend:
   - FancyHolograms
+  - DecentHolograms
+  - PlaceholderAPI
