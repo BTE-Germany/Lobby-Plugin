@@ -112,7 +112,8 @@ public class BOTMCommand extends BaseCommand {
 
 
         for (int i = 0; i < relevantEntries.length; i++) {
-            player.sendMessage(ChatColor.RED + String.valueOf(i + 1) + ". " + ChatColor.WHITE + Bukkit.getOfflinePlayer(relevantEntries[i].getValue()).getName() + ": " + ChatColor.GREEN + relevantEntries[i].getKey());
+            UUID uuid = UUID.fromString(relevantEntries[i].getValue());
+            player.sendMessage(ChatColor.GOLD + String.valueOf(i + 1) + ". " + ChatColor.WHITE + Bukkit.getOfflinePlayer(uuid).getName() + ": " + ChatColor.GOLD + relevantEntries[i].getKey());
         }
 
     }
@@ -185,14 +186,16 @@ public class BOTMCommand extends BaseCommand {
 
         Map.Entry<Integer, String>[] relevantEntries = new Map.Entry[scores.size()];
 
+
+
         for (int i = 0; i < scores.size(); i++) {
 
-            TreeMap<Integer, String> map = new TreeMap<>();
+            TreeMap<Integer, String> treeMap = new TreeMap<>();
 
             for (String key : keys) {
-                map.put(scores.get(key), key);
+                treeMap.put(scores.get(key), key);
             }
-            relevantEntries[i] = map.lastEntry();
+            relevantEntries[i] = treeMap.lastEntry();
             keys.remove(relevantEntries[i].getValue());
         }
         return relevantEntries;
