@@ -27,7 +27,7 @@ public class BOTMCommand extends BaseCommand {
         lobby = lobby;
     }
 
-    private static final int entries = 3;
+    private static final int entries = 8;
 
 
     @CommandPermission("bteg.lobby.botm")
@@ -150,8 +150,6 @@ public class BOTMCommand extends BaseCommand {
             List<String> lines = new ArrayList<>();
             lines.add(ChatColor.GOLD + "" + ChatColor.BOLD + "Build of the Month");
 
-            lines.add("%lobby_ownbotmscore%");
-
             UUID uuidLatest = UUID.fromString(lobby.getConfig().getString("lastBOTM.UUID"));
             AtomicInteger latestScore = new AtomicInteger();
             lobby.getBotmScoreAPI().getScore(uuidLatest.toString(), latestScore::set);
@@ -163,6 +161,10 @@ public class BOTMCommand extends BaseCommand {
                 UUID uuid = UUID.fromString(relevantEntries[i].getValue());
                 lines.add(ChatColor.GOLD + String.valueOf(i + 1) + ". " + ChatColor.WHITE + Bukkit.getOfflinePlayer(uuid).getName() + ": " + ChatColor.GOLD + relevantEntries[i].getKey());
             }
+
+            lines.add("");
+
+            lines.add("%lobby_ownbotmscore%");
 
             DHAPI.createHologram("BOTM", location, lines);
             lobby.getLocationAPI().setLocation(location, "botm");
