@@ -15,6 +15,8 @@ import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @CommandAlias("botm")
@@ -35,7 +37,8 @@ public class BOTMCommand extends BaseCommand {
     public void onBOTMCreate(CommandSender sender) throws SQLException {
         Player player = (Player) sender;
 
-        player.sendMessage(create(player.getLocation(), lobby.getDatabase(), lobby.getLanguageAPI().getLanguage(player)));
+        create(player.getLocation(), lobby.getDatabase(), lobby.getLanguageAPI().getLanguage(player))
+                .thenAccept(player::sendMessage);
     }
 
     @CommandPermission("bteg.lobby.botm")
@@ -111,9 +114,16 @@ public class BOTMCommand extends BaseCommand {
         Map.Entry<Integer, String>[] relevantEntries = sortScores(scores, dbRows);
 
 
-        for (int i = 0; i < relevantEntries.length; i++) {
-            player.sendMessage(ChatColor.RED + String.valueOf(i + 1) + ". " + ChatColor.WHITE + Bukkit.getOfflinePlayer(relevantEntries[i].getValue()).getName() + ": " + ChatColor.GREEN + relevantEntries[i].getKey());
-        }
+        player.sendMessage(ChatColor.RED + String.valueOf(relevantEntries.length) + ChatColor.WHITE + " Einträge");
+        CompletableFuture.runAsync(() -> {
+            try {
+                for (int i = 0; i < relevantEntries.length; i++) {
+                    player.sendMessage(ChatColor.RED + String.valueOf(i + 1) + ". " + ChatColor.WHITE + lobby.getBotmScoreAPI().getPlayerName(UUID.fromString(relevantEntries[i].getValue())).get() + ": " + ChatColor.GREEN + relevantEntries[i].getKey());
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                lobby.getLogger().info(e::getMessage);
+            }
+        });
 
     }
 
@@ -135,7 +145,7 @@ public class BOTMCommand extends BaseCommand {
         lobby.getLanguageAPI().sendMessageToPlayer(player, "botm.latest.set");
     }
 
-    public static String create(Location location, Database database, Language language) throws SQLException {
+    public static CompletableFuture<String> create(Location location, Database database, Language language) throws SQLException {
 
         HashMap<String, Integer> scores = new HashMap<>();
         List<DbRow> dbRows = database.getResults("SELECT * FROM botm");
@@ -154,22 +164,29 @@ public class BOTMCommand extends BaseCommand {
             UUID uuidLatest = UUID.fromString(lobby.getConfig().getString("lastBOTM.UUID"));
             AtomicInteger latestScore = new AtomicInteger();
             lobby.getBotmScoreAPI().getScore(uuidLatest.toString(), latestScore::set);
-            lines.add(ChatColor.GOLD + "" + lobby.getConfig().getInt("lastBOTM.month") + "." + lobby.getConfig().getInt("lastBOTM.year") + " " + ChatColor.WHITE + Bukkit.getOfflinePlayer(uuidLatest).getName() + " " + ChatColor.GOLD + latestScore.get());
 
-            lines.add("");
+            return CompletableFuture.supplyAsync(() -> {
+                try {
+                    lines.add(ChatColor.GOLD + "" + lobby.getConfig().getInt("lastBOTM.month") + "." + lobby.getConfig().getInt("lastBOTM.year") + " " + ChatColor.WHITE + lobby.getBotmScoreAPI().getPlayerName(uuidLatest).get() + " " + ChatColor.GOLD + latestScore.get());
 
-            for (int i = 0; i < entries; i++){
-                UUID uuid = UUID.fromString(relevantEntries[i].getValue());
-                lines.add(ChatColor.GOLD + String.valueOf(i + 1) + ". " + ChatColor.WHITE + Bukkit.getOfflinePlayer(uuid).getName() + ": " + ChatColor.GOLD + relevantEntries[i].getKey());
-            }
+                    lines.add("");
 
-            DHAPI.createHologram("BOTM", location, lines);
-            lobby.getLocationAPI().setLocation(location, "botm");
+                    for (int i = 0; i < entries; i++) {
+                        UUID uuid = UUID.fromString(relevantEntries[i].getValue());
+                        lines.add(ChatColor.GOLD + String.valueOf(i + 1) + ". " + ChatColor.WHITE + lobby.getBotmScoreAPI().getPlayerName(uuid).get() + ": " + ChatColor.GOLD + relevantEntries[i].getKey());
+                    }
+                } catch (InterruptedException | ExecutionException e) {
+                    lobby.getLogger().info(e::getMessage);
+                }
 
-            return lobby.getLanguageAPI().getMessageString(language, "botm.create.success");
+                DHAPI.createHologram("BOTM", location, lines);
+                lobby.getLocationAPI().setLocation(location, "botm");
+
+                return lobby.getLanguageAPI().getMessageString(language, "botm.create.success");
+            });
         } else {
             // Send feedback
-            return lobby.getLanguageAPI().getMessageString(language, "botm.create.failed");
+            return CompletableFuture.completedFuture(lobby.getLanguageAPI().getMessageString(language, "botm.create.failed"));
 
         }
     }
