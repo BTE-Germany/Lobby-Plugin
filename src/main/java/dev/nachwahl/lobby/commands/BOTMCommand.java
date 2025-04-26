@@ -119,7 +119,7 @@ public class BOTMCommand extends BaseCommand {
             try {
                 for (int i = 0; i < relevantEntries.length; i++) {
                     UUID uuid = UUID.fromString(relevantEntries[i].getValue());
-                    player.sendMessage(ChatColor.GOLD + String.valueOf(i + 1) + ". " + ChatColor.WHITE + Bukkit.getOfflinePlayer(uuid).getName() + ": " + ChatColor.GOLD + relevantEntries[i].getKey());
+                    player.sendMessage(ChatColor.GOLD + String.valueOf(i + 1) + ". " + ChatColor.WHITE + lobby.getBotmScoreAPI().getPlayerName(uuid).get() + ": " + ChatColor.GOLD + relevantEntries[i].getKey());
                 }
             } catch (InterruptedException | ExecutionException e) {
                 lobby.getLogger().info(e::getMessage);
