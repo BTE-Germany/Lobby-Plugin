@@ -77,7 +77,8 @@ public class PlayerEvents implements Listener {
             try {
                 Location location = this.lobby.getLocationAPI().getLocation("botm");
                 if (location != null) {
-                    Bukkit.getLogger().info(BOTMCommand.create(location, this.lobby.getDatabase(), Language.GERMAN));
+                    BOTMCommand.create(location, this.lobby.getDatabase(), Language.GERMAN)
+                            .thenAccept(this.lobby.getLogger()::info);
                 }
             } catch (SQLException e) {
                 Bukkit.getLogger().warning("Es wurde keine Location für das BOTM Hologramm gefunden.");
