@@ -29,7 +29,7 @@ public class AddEntryGUI {
     int year = date.getYear() - 2000;
     String name;
     String player1;
-    String player2 ;
+    String player2;
     String player3;
 
     public AddEntryGUI(Lobby lobby, Player player) {
