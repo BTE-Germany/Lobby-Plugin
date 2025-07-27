@@ -41,18 +41,14 @@ public class BOTMPlaceholder extends PlaceholderExpansion {
 
             //Get Playername and score
             String playerName = player.getName();
-             AtomicInteger score = new AtomicInteger();
-            //Get score from database
+            int score;
             try {
-                Lobby.getInstance().getBotmScoreAPI().getScore(uuid.toString(), scoreInDB -> {
-                    //This is a callback, we need to set the result here
-                    score.set(Integer.parseInt(String.valueOf(scoreInDB)));
-                });
+                score = Lobby.getInstance().getBotmScoreAPI().getScore(String.valueOf(uuid));
             } catch (SQLException e) {
-                score.set(0);
+                throw new RuntimeException(e);
             }
 
-            return player.getName() + ": " + ChatColor.GOLD + score;
+            return playerName + ": " + ChatColor.GOLD + score;
         }
         return null;
     }
