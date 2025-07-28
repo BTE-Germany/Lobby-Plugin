@@ -159,47 +159,6 @@ public class BOTMScoreAPI {
         }
     }
 
-//    private static Map.Entry<Integer, String>[] sortScores(HashMap<String, Integer> scores, List<DbRow> dbRows) {
-//        // scores: Map<Name, Score>
-//        dbRows.forEach(row -> {
-//            // Sammle alle UUIDs aus player1_uuid, player2_uuid, player3_uuid
-//            Set<String> uuids = new HashSet<>();
-//            if (row.get("player1_uuid") != null) uuids.add(row.getString("player1_uuid"));
-//            if (row.get("player2_uuid") != null) uuids.add(row.getString("player2_uuid"));
-//            if (row.get("player3_uuid") != null) uuids.add(row.getString("player3_uuid"));
-//
-//            for (String uuid : uuids) {
-//                String name = Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName();
-//                if (name != null) {
-//                    try {
-//                        int score = lobby.getBotmScoreAPI().getScore(name);
-//                        scores.put(name, score);
-//                    } catch (SQLException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        });
-//
-//        ArrayList<String> keys = new ArrayList<>(scores.keySet());
-//
-//        @SuppressWarnings("unchecked")
-//        Map.Entry<Integer, String>[] relevantEntries = new Map.Entry[scores.size()];
-//
-//        for (int i = 0; i < scores.size(); i++) {
-//
-//            TreeMap<Integer, String> treeMap = new TreeMap<>();
-//
-//            for (String key : keys) {
-//                treeMap.put(scores.get(key), key);
-//            }
-//            relevantEntries[i] = treeMap.lastEntry();
-//            keys.remove(relevantEntries[i].getValue());
-//        }
-//        return relevantEntries;
-//    }
-
-
     public CompletableFuture<String> getPlayerName(UUID uuid) {
         OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
         if (player.getName() != null) {
