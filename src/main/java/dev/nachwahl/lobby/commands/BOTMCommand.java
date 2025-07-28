@@ -58,37 +58,4 @@ public class BOTMCommand extends BaseCommand {
     }
 
 */
-
-
-    /*
-    private static Map.Entry<Integer, String>[] sortScores(HashMap<String, Integer> scores, List<DbRow> dbRows) {
-        dbRows.forEach(row -> {
-            String uuid = row.getString("uuid");
-            int score = row.getInt("score");
-            scores.put(uuid, score);
-        });
-
-        ArrayList<String> keys = new ArrayList<>(scores.keySet());
-
-        Map.Entry<Integer, String>[] relevantEntries = new Map.Entry[scores.size()];
-
-
-
-        for (int i = 0; i < scores.size(); i++) {
-
-            TreeMap<Integer, String> treeMap = new TreeMap<>();
-
-            for (String key : keys) {
-                treeMap.put(scores.get(key), key);
-            }
-            relevantEntries[i] = treeMap.lastEntry();
-            keys.remove(relevantEntries[i].getValue());
-        }
-        return relevantEntries;
-    }
-
-    public void update(Player player) throws SQLException {
-
-    }
-*/
 }
