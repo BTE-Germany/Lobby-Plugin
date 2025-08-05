@@ -1,21 +1,17 @@
 package dev.nachwahl.lobby.utils;
 
 import dev.nachwahl.lobby.Lobby;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class Actions {
+    private Actions() {}
 
-    public static void performJoinActions(Lobby lobby, Player player) {
+    public static void performJoinActions(@NotNull Lobby lobby, Player player) {
         lobby.getHotbarItems().setHotbarItems(player);
-        lobby.getLanguageAPI().getLanguage(player, language -> {
-            lobby.getHologramAPI().showHolograms(player, language);
-        });
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
         player.setFoodLevel(20);
         player.setHealth(20);
@@ -33,8 +29,8 @@ public class Actions {
         });
 
         lobby.getUserSettingsAPI().getBooleanSetting(player, "playerVisibility", (value) -> {
-            if (!value) {
-                Bukkit.getOnlinePlayers().forEach((p) -> player.hidePlayer(lobby, p));
+            if (Boolean.FALSE.equals(value)) {
+                Bukkit.getOnlinePlayers().forEach(p -> player.hidePlayer(lobby, p));
             }
         });
     }

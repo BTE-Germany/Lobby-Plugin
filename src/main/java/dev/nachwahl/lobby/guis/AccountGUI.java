@@ -79,10 +79,10 @@ public class AccountGUI {
             if (this.lobby.getLanguageAPI().getLanguage(player).equals(Language.ENGLISH)) {
                 languageItem = ItemBuilder.skull().texture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGNhYzk3NzRkYTEyMTcyNDg1MzJjZTE0N2Y3ODMxZjY3YTEyZmRjY2ExY2YwY2I0YjM4NDhkZTZiYzk0YjQifX19");
             }*/
-            ItemBuilder languageItem = ItemBuilder.from(ItemGenerator.customModel(Material.PAPER, 9));
+            ItemBuilder languageItem = ItemBuilder.from(ItemGenerator.customModel(Material.PAPER, "de_flag"));
 
             if (this.lobby.getLanguageAPI().getLanguage(player).equals(Language.ENGLISH)) {
-                languageItem = ItemBuilder.from(ItemGenerator.customModel(Material.PAPER, 10));
+                languageItem = ItemBuilder.from(ItemGenerator.customModel(Material.PAPER, "us_flag"));
             }
 
             this.gui.setItem(4, 4,

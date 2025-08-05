@@ -27,6 +27,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
@@ -53,7 +54,9 @@ public class PlayerEvents implements Listener {
         player.setGameMode(GameMode.ADVENTURE);
         Actions.performJoinActions(lobby, player);
         if (this.lobby.getConfig().getString("resourcepack") != null) {
-            player.setResourcePack("https://cdn.bte-germany.de/general/resourcepacks/resourcepack_bteg_" + this.lobby.getConfig().getString("resourcepack") + ".zip", this.lobby.getConfig().getString("resourcepack"), true, this.lobby.getMiniMessage().deserialize("<red><b>Bitte akzeptiere unser Resourcepack um auf dem Server spielen zu können.\nPlease accept our resourcepack to play on our server.</b></red>"));
+            if (player.getResourcePackStatus() == PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED && Lobby.getInstance().getHologramAPI().debugPlayer != null) {
+                Lobby.getInstance().getHologramAPI().sendDebugMsg(Component.text("Skipped resourcepack loading because its already loaded"));
+            } else player.setResourcePack("https://cdn.bte-germany.de/general/resourcepacks/resourcepack_bteg_" + this.lobby.getConfig().getString("resourcepack") + ".zip", this.lobby.getConfig().getString("resourcepack"), true, this.lobby.getMiniMessage().deserialize("<red><b>Bitte akzeptiere unser Resourcepack um auf dem Server spielen zu können.\nPlease accept our resourcepack to play on our server.</b></red>"));
         }
         this.lobby.getUserSettingsAPI().setDefaultSettings(player);
         DbRow user = this.lobby.getDatabase().getFirstRow("SELECT * FROM privacy WHERE minecraftUUID = ?", player.getUniqueId().toString());
@@ -74,7 +77,8 @@ public class PlayerEvents implements Listener {
             try {
                 Location location = this.lobby.getLocationAPI().getLocation("botm");
                 if (location != null) {
-                    Bukkit.getLogger().info(BOTMCommand.create(location, this.lobby.getDatabase(), Language.GERMAN));
+                    BOTMCommand.create(location, this.lobby.getDatabase(), Language.GERMAN)
+                            .thenAccept(this.lobby.getLogger()::info);
                 }
             } catch (SQLException e) {
                 Bukkit.getLogger().warning("Es wurde keine Location für das BOTM Hologramm gefunden.");

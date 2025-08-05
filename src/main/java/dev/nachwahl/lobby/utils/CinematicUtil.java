@@ -3,7 +3,6 @@ package dev.nachwahl.lobby.utils;
 import dev.nachwahl.lobby.Lobby;
 import dev.nachwahl.lobby.cinematic.PathPoint;
 import lombok.Getter;
-import me.filoghost.holographicdisplays.api.hologram.Hologram;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
