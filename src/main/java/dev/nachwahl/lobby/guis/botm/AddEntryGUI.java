@@ -180,27 +180,33 @@ public class AddEntryGUI {
                     .name(this.lobby.getLanguageAPI().getMessage(language, "botm-gui.confirm"))
                     .asGuiItem(event -> {
                         try {
-                            lobby.getBotmScoreAPI().addEntry(
+                            boolean success = lobby.getBotmScoreAPI().addEntry(
                                     EntryUtil.getEntry(player).getName(),
                                     EntryUtil.getEntry(player).getYear(),
                                     EntryUtil.getEntry(player).getMonth(),
                                     EntryUtil.getEntry(player).getPlayer1(),
                                     EntryUtil.getEntry(player).getPlayer2(),
                                     EntryUtil.getEntry(player).getPlayer3());
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
-                        }
-                        EntryUtil.entries.remove(player);
-                        event.getInventory().close();
-                        this.lobby.getLanguageAPI().sendMessageToPlayer(player, "botm.added");
+                            
+                            if (success) {
+                                EntryUtil.entries.remove(player);
+                                event.getInventory().close();
+                                this.lobby.getLanguageAPI().sendMessageToPlayer(player, "botm.added");
 
-                        try {
-                            this.lobby.getBotmScoreAPI().reload(player);
+                                try {
+                                    this.lobby.getBotmScoreAPI().reload(player);
+                                } catch (SQLException e) {
+                                    throw new RuntimeException(e);
+                                } catch (ExecutionException e) {
+                                    throw new RuntimeException(e);
+                                } catch (InterruptedException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            } else {
+                                // Entry already exists for this month and year
+                                this.lobby.getLanguageAPI().sendMessageToPlayer(player, "botm.duplicate");
+                            }
                         } catch (SQLException e) {
-                            throw new RuntimeException(e);
-                        } catch (ExecutionException e) {
-                            throw new RuntimeException(e);
-                        } catch (InterruptedException e) {
                             throw new RuntimeException(e);
                         }
                     }));

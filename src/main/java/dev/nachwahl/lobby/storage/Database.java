@@ -104,7 +104,7 @@ public class Database {
             List<DbRow> scoreColumns = this.database.getResults("SHOW COLUMNS FROM botm LIKE 'score'");
             boolean hasScoreColumn = !scoreColumns.isEmpty();
             
-            return hasUuidColumn && hasScoreColumn;
+            return hasUuidColumn || hasScoreColumn;
         } catch (SQLException e) {
             // If we can't check columns, assume it's not old structure
             return false;
@@ -153,7 +153,7 @@ public class Database {
     private void ensureNewBOTMStructure() throws SQLException {
         // Check and add missing columns
         addColumnIfNotExists("botm", "name", "VARCHAR(255) NOT NULL DEFAULT 'Unknown'");
-        addColumnIfNotExists("botm", "year", "INT NOT NULL DEFAULT 2024");
+        addColumnIfNotExists("botm", "year", "INT NOT NULL DEFAULT 0");
         addColumnIfNotExists("botm", "month", "INT NOT NULL DEFAULT 1");
         addColumnIfNotExists("botm", "player1_uuid", "VARCHAR(36) NOT NULL DEFAULT ''");
         addColumnIfNotExists("botm", "player2_uuid", "VARCHAR(36) NULL");
