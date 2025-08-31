@@ -28,6 +28,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.CompletableFuture;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 public class BOTMScoreAPI {
@@ -37,7 +42,7 @@ public class BOTMScoreAPI {
 
     private final Map<UUID, String> playerNames = new HashMap<>();
 
-    private static final int entries = 8;
+    private static final int entries = 3;
 
     public BOTMScoreAPI(Lobby lobby) {
         this.lobby = lobby;
@@ -138,8 +143,7 @@ public class BOTMScoreAPI {
             lines.add("%lobby_ownbotmscore%");
 
             // Create the hologram
-            DHAPI.createHologram("BOTM", location.add(0, 4, 0), lines);
-            lobby.getLocationAPI().setLocation(location, "botm");
+            DHAPI.createHologram("BOTM", location, lines);
 
             return lobby.getLanguageAPI().getMessageString(language, "botm.create.success");
         } else {

@@ -8,6 +8,7 @@ import eu.decentsoftware.holograms.api.DHAPI;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -44,7 +45,9 @@ public class BOTMGUI {
                         .asGuiItem(event -> {
                             if (DHAPI.getHologram("BOTM") == null) {
                                 try {
-                                    player.sendMessage(lobby.getBotmScoreAPI().create(player.getLocation(), lobby.getDatabase(), language));
+                                    Location location = player.getLocation();
+                                    player.sendMessage(lobby.getBotmScoreAPI().create(location.add(0, 4,0 ), lobby.getDatabase(), language));
+                                    lobby.getLocationAPI().setLocation(location, "botm");
                                 } catch (SQLException e) {
                                     throw new RuntimeException(e);
                                 } catch (ExecutionException e) {
@@ -53,7 +56,9 @@ public class BOTMGUI {
                                     throw new RuntimeException(e);
                                 }
                             }else {
-                                DHAPI.moveHologram("BOTM", player.getLocation().add(0,4,0));
+                                Location location = player.getLocation();
+                                DHAPI.moveHologram("BOTM", location.add(0, 4,0 ));
+                                lobby.getLocationAPI().setLocation(location, "botm");
                                 lobby.getLocationAPI().setLocation(player.getLocation(), "botm");
                                 lobby.getLanguageAPI().sendMessageToPlayer(player, "botm.moved");
                             }

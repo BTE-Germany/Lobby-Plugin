@@ -73,12 +73,11 @@ public class PlayerEvents implements Listener {
             this.lobby.getScoreboard().initScoreboard(player);
         }
 
-        if (DHAPI.getHologram("BOTM") == null && this.lobby.getLocationAPI().getLocation("botm") != null) {
+        if (DHAPI.getHologram("BOTM") == null && lobby.getLocationAPI().getLocation("botm") != null) {
             try {
-                Location location = this.lobby.getLocationAPI().getLocation("botm");
+                Location location = lobby.getLocationAPI().getLocation("botm");
                 if (location != null) {
-                    BOTMCommand.create(location, this.lobby.getDatabase(), Language.GERMAN)
-                            .thenAccept(this.lobby.getLogger()::info);
+                    lobby.getBotmScoreAPI().create(location, lobby.getDatabase(), Language.GERMAN);
                 }
             } catch (SQLException e) {
                 Bukkit.getLogger().warning("Es wurde keine Location für das BOTM Hologramm gefunden.");
