@@ -184,16 +184,15 @@ public class AddEntryGUI {
                         .asGuiItem(event -> {
                             event.getInventory().close();
                             try {
-                                lobby.getBotmScoreAPI().addEntry(
+                                boolean success =lobby.getBotmScoreAPI().addEntry(
                                         EntryUtil.getEntry(player).getName(),
                                         EntryUtil.getEntry(player).getYear(),
                                         EntryUtil.getEntry(player).getMonth(),
                                         EntryUtil.getEntry(player).getPlayer1(),
                                         EntryUtil.getEntry(player).getPlayer2(),
                                         EntryUtil.getEntry(player).getPlayer3());
-                            } catch (SQLException e) {
-                                throw new RuntimeException(e);
-                            }
+
+                                if (success) {
                             EntryUtil.entries.remove(player);
                             this.lobby.getLanguageAPI().sendMessageToPlayer(player, "botm.added");
 
@@ -206,7 +205,14 @@ public class AddEntryGUI {
                             } catch (InterruptedException e) {
                                 throw new RuntimeException(e);
                             }
-                        }));
+                        }else {
+                                // Entry already exists for this month and year
+                                this.lobby.getLanguageAPI().sendMessageToPlayer(player, "botm.duplicate");
+                            }
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }));
 
                 this.gui.getFiller().fill(ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());
 
