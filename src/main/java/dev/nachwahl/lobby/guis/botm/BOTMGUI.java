@@ -61,7 +61,7 @@ public class BOTMGUI {
 
                 this.gui.setItem(2, 7, ItemBuilder.from(Material.PAPER)
                         .name(this.lobby.getLanguageAPI().getMessage(language, "botm-gui.list_entries"))
-                        .lore(this.lobby.getLanguageAPI().getMessage(language, "comming-soon"))
+                        .lore(this.lobby.getLanguageAPI().getMessage(language, "coming-soon"))
                         .asGuiItem(event -> {
                             //comming soon
                         }));
