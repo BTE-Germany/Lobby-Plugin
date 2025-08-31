@@ -37,7 +37,7 @@ public class BOTMScoreAPI {
 
     private final Map<UUID, String> playerNames = new HashMap<>();
 
-    private static final int entries = 3;
+    private static final int entries = 8;
 
     public BOTMScoreAPI(Lobby lobby) {
         this.lobby = lobby;
@@ -138,7 +138,7 @@ public class BOTMScoreAPI {
             lines.add("%lobby_ownbotmscore%");
 
             // Create the hologram
-            DHAPI.createHologram("BOTM", location, lines);
+            DHAPI.createHologram("BOTM", location.add(0, 4, 0), lines);
             lobby.getLocationAPI().setLocation(location, "botm");
 
             return lobby.getLanguageAPI().getMessageString(language, "botm.create.success");

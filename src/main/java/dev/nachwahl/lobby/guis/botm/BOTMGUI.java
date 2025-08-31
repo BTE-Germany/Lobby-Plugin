@@ -53,7 +53,7 @@ public class BOTMGUI {
                                     throw new RuntimeException(e);
                                 }
                             }else {
-                                DHAPI.moveHologram("BOTM", player.getLocation());
+                                DHAPI.moveHologram("BOTM", player.getLocation().add(0,4,0));
                                 lobby.getLocationAPI().setLocation(player.getLocation(), "botm");
                                 lobby.getLanguageAPI().sendMessageToPlayer(player, "botm.moved");
                             }
