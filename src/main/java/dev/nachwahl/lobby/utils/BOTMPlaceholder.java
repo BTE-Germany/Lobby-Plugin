@@ -1,5 +1,6 @@
 package dev.nachwahl.lobby.utils;
 
+import co.aikar.commands.annotation.Dependency;
 import dev.nachwahl.lobby.Lobby;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.ChatColor;
@@ -7,10 +8,19 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class BOTMPlaceholder extends PlaceholderExpansion {
+
+    @Dependency
+    private static Lobby lobby;
+
+    public BOTMPlaceholder(Lobby lobby) {
+        this.lobby = lobby;
+    }
 
     @Override
     public @NotNull String getIdentifier() {
@@ -37,22 +47,31 @@ public class BOTMPlaceholder extends PlaceholderExpansion {
         if (identifier.equals("ownbotmscore")) {
 
             UUID uuid = player.getUniqueId();
-            String result = "";
 
             //Get Playername and score
-            String playerName = player.getName();
-             AtomicInteger score = new AtomicInteger();
-            //Get score from database
+            String position = lobby.getLanguageAPI().getMessageString(this.lobby.getLanguageAPI().getLanguage(player), "botm.no_position");
             try {
-                Lobby.getInstance().getBotmScoreAPI().getScore(uuid.toString(), scoreInDB -> {
-                    //This is a callback, we need to set the result here
-                    score.set(Integer.parseInt(String.valueOf(scoreInDB)));
-                });
+                List<Map.Entry<String, Integer>> scores = lobby.getBotmScoreAPI().sortScores();
+                for(Map.Entry<String, Integer> entry : scores) {
+                    if (entry.getKey().equals(uuid.toString())) {
+                        position = String.valueOf(scores.indexOf(entry) + 1);
+                        break;
+                    }
+                }
             } catch (SQLException e) {
-                score.set(0);
+                throw new RuntimeException(e);
             }
 
-            return player.getName() + ": " + ChatColor.GOLD + score;
+
+            String playerName = player.getName();
+            int score;
+            try {
+                score = lobby.getBotmScoreAPI().getScore(uuid);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+            return ChatColor.GOLD + "" + ChatColor.BOLD + position + ". " + ChatColor.WHITE + ChatColor.BOLD + playerName + ": " + ChatColor.GOLD + ChatColor.BOLD + score;
         }
         return null;
     }

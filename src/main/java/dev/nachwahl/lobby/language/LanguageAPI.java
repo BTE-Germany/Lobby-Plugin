@@ -31,7 +31,7 @@ public class LanguageAPI {
     private final Lobby lobby;
     private final HashMap<Language, HashMap<String, String>> messages = new HashMap<>();
     private final Cache<UUID, Language> languageCache = CacheBuilder.newBuilder()
-            .expireAfterWrite(30, TimeUnit.SECONDS)
+            .expireAfterWrite(2, TimeUnit.MINUTES)
             .build();
 
     @SneakyThrows
@@ -116,7 +116,7 @@ public class LanguageAPI {
 
                     if (selectedLanguage != null) {
                         try {
-                            language = Language.valueOf(selectedLanguage);
+                            language = Language.fromString(selectedLanguage);
                             this.languageCache.put(player.getUniqueId(), language);
                         } catch (IllegalArgumentException e) {
                             language = Language.ENGLISH;

@@ -12,4 +12,13 @@ public enum Language {
     Language(String lang) {
         this.lang = lang;
     }
+
+    public static Language fromString(String lang) {
+        for (Language language : values()) {
+            if (language.getLang().equals(lang)) {
+                return language;
+            }
+        }
+        return ENGLISH;
+    }
 }

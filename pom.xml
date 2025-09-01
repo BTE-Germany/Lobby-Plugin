@@ -127,6 +127,10 @@
             <name>FancyPlugins Repository</name>
             <url>https://repo.fancyplugins.de/releases</url>
         </repository>
+        <repository>
+            <id>codemc-snapshots</id>
+            <url>https://repo.codemc.io/repository/maven-snapshots/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -207,6 +211,11 @@
             <artifactId>api</artifactId>
             <version>5.4</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.wesjd</groupId>
+            <artifactId>anvilgui</artifactId>
+            <version>1.10.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>
