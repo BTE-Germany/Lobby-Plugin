@@ -59,7 +59,6 @@ public class BOTMGUI {
                                 Location location = player.getLocation();
                                 DHAPI.moveHologram("BOTM", location.add(0, 4,0 ));
                                 lobby.getLocationAPI().setLocation(location, "botm");
-                                lobby.getLocationAPI().setLocation(player.getLocation(), "botm");
                                 lobby.getLanguageAPI().sendMessageToPlayer(player, "botm.moved");
                             }
                         }));

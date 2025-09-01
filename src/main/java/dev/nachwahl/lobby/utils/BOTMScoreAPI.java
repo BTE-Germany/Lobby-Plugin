@@ -37,7 +37,7 @@ public class BOTMScoreAPI {
 
     private final Map<UUID, String> playerNames = new HashMap<>();
 
-    private static final int entries = 3;
+    private static final int entries = 8;
 
     public BOTMScoreAPI(Lobby lobby) {
         this.lobby = lobby;
@@ -113,6 +113,8 @@ public class BOTMScoreAPI {
             List<String> lines = new ArrayList<>();
             lines.add(ChatColor.GOLD + "" + ChatColor.BOLD + "Build of the Month");
 
+            lines.add("");
+
             // Get the latest BOTM UUID and score
             List<DbRow> dbRows = database.getResults("SELECT player1_uuid, month, year FROM botm ORDER BY year DESC, month DESC LIMIT 1");
             if (dbRows.isEmpty()) {
@@ -122,7 +124,9 @@ public class BOTMScoreAPI {
 
             int score = lobby.getBotmScoreAPI().getScore(UUID.fromString(row.getString("player1_uuid")));
 
-            lines.add(ChatColor.GOLD + "" + row.getInt("month") + "/" + row.getInt("year") + " " + ChatColor.WHITE + lobby.getBotmScoreAPI().getPlayerName(UUID.fromString(row.getString("player1_uuid"))).get() + ": " + ChatColor.GOLD + score);
+            String monthName = "%months_month." + row.getInt("month") + "%";
+
+            lines.add(ChatColor.GOLD + "" + monthName + " 20" + row.getInt("year") + " " + ChatColor.WHITE + lobby.getBotmScoreAPI().getPlayerName(UUID.fromString(row.getString("player1_uuid"))).get() + ": " + ChatColor.GOLD + score);
 
             lines.add("");
 
