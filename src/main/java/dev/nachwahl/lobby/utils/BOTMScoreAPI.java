@@ -131,9 +131,18 @@ public class BOTMScoreAPI {
             lines.add("");
 
             // Add the top entries to the hologram
+            outer:
             for (int i = 0; i < entries; i++){
                 UUID uuid = UUID.fromString(scores.get(i).getKey());
-                lines.add(ChatColor.GOLD + String.valueOf(i + 1) + ". " + ChatColor.WHITE + lobby.getBotmScoreAPI().getPlayerName(uuid).get() + ": " + ChatColor.GOLD + scores.get(i).getValue());
+                for (int j = 0; j <= i; j++) {
+                    if (j == i) {
+                        lines.add(ChatColor.GOLD + "1. " + ChatColor.WHITE + lobby.getBotmScoreAPI().getPlayerName(uuid).get() + ": " + ChatColor.GOLD + scores.get(i).getValue());
+                        continue outer;
+                    }
+                    if(scores.get(i).getValue().equals(scores.get(i - (j + 1)).getValue())) continue;
+                    lines.add(ChatColor.GOLD + String.valueOf((i - j) + 1) + ". " + ChatColor.WHITE + lobby.getBotmScoreAPI().getPlayerName(uuid).get() + ": " + ChatColor.GOLD + scores.get(i).getValue());
+                    continue outer;
+                }
             }
 
             lines.add("");

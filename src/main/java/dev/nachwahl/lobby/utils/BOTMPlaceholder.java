@@ -3,6 +3,8 @@ package dev.nachwahl.lobby.utils;
 import co.aikar.commands.annotation.Dependency;
 import dev.nachwahl.lobby.Lobby;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.apache.commons.lang3.tuple.Pair;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -10,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -52,9 +55,25 @@ public class BOTMPlaceholder extends PlaceholderExpansion {
             String position = lobby.getLanguageAPI().getMessageString(this.lobby.getLanguageAPI().getLanguage(player), "botm.no_position");
             try {
                 List<Map.Entry<String, Integer>> scores = lobby.getBotmScoreAPI().sortScores();
-                for(Map.Entry<String, Integer> entry : scores) {
-                    if (entry.getKey().equals(uuid.toString())) {
-                        position = String.valueOf(scores.indexOf(entry) + 1);
+
+                List<Pair<Integer, Map.Entry<String, Integer>>> ranking = new java.util.ArrayList<>();
+                int rank = 1;
+                int count = 0;
+                for(Map.Entry<String, Integer>score : scores) {
+                    count++;
+                    if(scores.indexOf(score) == 0) {
+                        ranking.add(Pair.of(rank, score));
+                        continue;
+                    }
+                    if(!Objects.equals(score.getValue(), scores.get(scores.indexOf(score) - 1).getValue())) {
+                        rank = count;
+                    }
+                    ranking.add(Pair.of(rank, score));
+                }
+
+                for(Map.Entry<Integer, Map.Entry<String, Integer>>rankedEntry : ranking) {
+                    if (rankedEntry.getValue().getKey().equals(uuid.toString())) {
+                        position = String.valueOf(rankedEntry.getKey());
                         break;
                     }
                 }
