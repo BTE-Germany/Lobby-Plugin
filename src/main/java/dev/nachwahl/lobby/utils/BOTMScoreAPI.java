@@ -1,10 +1,18 @@
 package dev.nachwahl.lobby.utils;
 
+import co.aikar.commands.annotation.Dependency;
+import co.aikar.idb.Database;
 import co.aikar.idb.DbRow;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.language.Language;
+import eu.decentsoftware.holograms.api.DHAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 import org.bukkit.OfflinePlayer;
 import org.json.JSONObject;
 
@@ -14,60 +22,151 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.sql.SQLException;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 public class BOTMScoreAPI {
 
+    @Dependency
+    private static Lobby lobby;
 
-    private final Cache<String, Integer> scoreCache = CacheBuilder.newBuilder()
-            .expireAfterWrite(5, TimeUnit.MINUTES)
-            .build();
     private final Map<UUID, String> playerNames = new HashMap<>();
-    private final Lobby lobby;
+
+    private static final int entries = 8;
 
     public BOTMScoreAPI(Lobby lobby) {
         this.lobby = lobby;
     }
 
-    public void setScore(String uuid, int score) throws SQLException {
-        scoreCache.put(uuid, score);
 
-        this.lobby.getDatabase().executeUpdate("INSERT INTO botm (uuid, score) VALUES (?, ?) ON DUPLICATE KEY UPDATE score = VALUES(score)", uuid, score);
+    public boolean addEntry(String name, int year, int month, String player1_name, @Nullable String player2_name, @Nullable String player3_name) throws SQLException {
+        DbRow dbRow = this.lobby.getDatabase().getFirstRow(
+                "SELECT * FROM botm WHERE year = ? AND month = ?", year, month
+        );
+        if (dbRow != null) {
+            // Eintrag existiert bereits für diesen Monat und Jahr
+            return false;
+        }
+
+        // Hole die UUIDs der Spieler anhand der Namen
+        UUID player1_uuid = Bukkit.getOfflinePlayer(player1_name).getUniqueId();
+        UUID player2_uuid = null;
+        UUID player3_uuid = null;
+        if (player2_name != null) {
+            player2_uuid = Bukkit.getOfflinePlayer(player2_name).getUniqueId();
+        }
+        if (player3_name != null) {
+            player3_uuid = Bukkit.getOfflinePlayer(player3_name).getUniqueId();
+        }
+
+        this.lobby.getDatabase().executeUpdate(
+                "INSERT INTO botm (name, year, month, player1_uuid, player2_uuid, player3_uuid) VALUES (?, ?, ?, ?, ?, ?)",
+                name,
+                year,
+                month,
+                player1_uuid.toString(),
+                player2_uuid != null ? player2_uuid.toString() : null,
+                player3_uuid != null ? player3_uuid.toString() : null
+        );
+        return true;
     }
 
-    public void getScore(String uuid, Consumer<Integer> callback) throws SQLException {
-        Integer cache = scoreCache.getIfPresent(uuid);
+    /**
+     * Gibt die Anzahl der Einträge zurück, in denen der Spieler (per Name) als Spieler vorkommt.
+     */
+    public int getScore(String playerName) throws SQLException {
+        String uuid = Bukkit.getOfflinePlayer(playerName).getUniqueId().toString();
+        DbRow row = this.lobby.getDatabase().getFirstRow(
+            "SELECT COUNT(*) AS cnt FROM botm WHERE player1_uuid = ? OR player2_uuid = ? OR player3_uuid = ?",
+                uuid.toString(), uuid.toString(), uuid.toString()
+        );
+        if (row != null) {
+            return row.getInt("cnt");
+        }
+        return 0;
+    }
 
-        if (cache == null) {
-            DbRow dbRow = this.lobby.getDatabase().getFirstRow("SELECT * FROM botm WHERE uuid = ?", uuid);
-            if (dbRow == null) {
-                callback.accept(0);
-            } else {
-                scoreCache.put(uuid, dbRow.get("score"));
-                callback.accept(dbRow.get("score"));
+    public int getScore(UUID uuid) throws SQLException {
+        DbRow row = this.lobby.getDatabase().getFirstRow(
+                "SELECT COUNT(*) AS cnt FROM botm WHERE player1_uuid = ? OR player2_uuid = ? OR player3_uuid = ?",
+                uuid.toString(), uuid.toString(), uuid.toString()
+        );
+        if (row != null) {
+            return row.getInt("cnt");
+        }
+        return 0;
+    }
+
+    public String create(Location location, Database database, Language language) throws SQLException, ExecutionException, InterruptedException {
+
+        List<Map.Entry<String, Integer>> scores = sortScores();
+
+        // Create a hologram
+        if (scores.size() >= entries) {
+
+            //Headline
+            List<String> lines = new ArrayList<>();
+            lines.add(ChatColor.GOLD + "" + ChatColor.BOLD + "Build of the Month");
+
+            lines.add("");
+
+            // Get the latest BOTM UUID and score
+            List<DbRow> dbRows = database.getResults("SELECT player1_uuid, month, year FROM botm ORDER BY year DESC, month DESC LIMIT 1");
+            if (dbRows.isEmpty()) {
+                return null;
             }
-        }else {
-            callback.accept(cache);
+            DbRow row = dbRows.get(0);
+
+            int score = lobby.getBotmScoreAPI().getScore(UUID.fromString(row.getString("player1_uuid")));
+
+            String monthName = "%months_month." + row.getInt("month") + "%";
+
+            lines.add(ChatColor.GOLD + "" + monthName + " 20" + row.getInt("year") + " " + ChatColor.WHITE + lobby.getBotmScoreAPI().getPlayerName(UUID.fromString(row.getString("player1_uuid"))).get() + ": " + ChatColor.GOLD + score);
+
+            lines.add("");
+
+            // Add the top entries to the hologram
+            outer:
+            for (int i = 0; i < entries; i++){
+                UUID uuid = UUID.fromString(scores.get(i).getKey());
+                for (int j = 0; j <= i; j++) {
+                    if (j == i) {
+                        lines.add(ChatColor.GOLD + "1. " + ChatColor.WHITE + lobby.getBotmScoreAPI().getPlayerName(uuid).get() + ": " + ChatColor.GOLD + scores.get(i).getValue());
+                        continue outer;
+                    }
+                    if(scores.get(i).getValue().equals(scores.get(i - (j + 1)).getValue())) continue;
+                    lines.add(ChatColor.GOLD + String.valueOf((i - j) + 1) + ". " + ChatColor.WHITE + lobby.getBotmScoreAPI().getPlayerName(uuid).get() + ": " + ChatColor.GOLD + scores.get(i).getValue());
+                    continue outer;
+                }
+            }
+
+            lines.add("");
+
+            // Add the own score placeholder
+            lines.add("%lobby_ownbotmscore%");
+
+            // Create the hologram
+            DHAPI.createHologram("BOTM", location, lines);
+
+            return lobby.getLanguageAPI().getMessageString(language, "botm.create.success");
+        } else {
+            return lobby.getLanguageAPI().getMessageString(language, "botm.create.failed");
+
         }
     }
 
-    public void addPoints(String uuid, int points) throws SQLException {
-        getScore(uuid, score -> {
-            try{
-                if (score == null) {
-                    setScore(uuid, points);
-                } else {
-                    setScore(uuid, score + points);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
+    public void reload(Player player) throws SQLException, ExecutionException, InterruptedException {
+        if (DHAPI.getHologram("BOTM") != null) {
+            Location location = DHAPI.getHologram("BOTM").getLocation();
+
+            DHAPI.removeHologram("BOTM");
+            create(location, this.lobby.getDatabase(), this.lobby.getLanguageAPI().getLanguage(player));
+        }
     }
 
     public CompletableFuture<String> getPlayerName(UUID uuid) {
@@ -113,4 +212,24 @@ public class BOTMScoreAPI {
             return "<Unbekannter Spieler>";
         }
     }
+
+    public List<Map.Entry<String, Integer>> sortScores() throws SQLException {
+        List<DbRow> dbRows = lobby.getDatabase().getResults("SELECT * FROM botm");
+        Map<String, Integer> scores = new HashMap<>();
+
+        for (DbRow row : dbRows) {
+            for (String col : Arrays.asList("player1_uuid", "player2_uuid", "player3_uuid")) {
+                String uuid = row.getString(col);
+                if (uuid != null && !uuid.isEmpty()) {
+                    scores.put(uuid, scores.getOrDefault(uuid, 0) + 1);
+                }
+            }
+        }
+
+        List<Map.Entry<String, Integer>> sorted = new ArrayList<>(scores.entrySet());
+        sorted.sort((a, b) -> b.getValue().compareTo(a.getValue()));
+
+        return sorted;
+    }
+
 }

@@ -155,7 +155,8 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
             throw new RuntimeException(e);
         }
 
-        new BOTMPlaceholder().register();
+        new BOTMPlaceholder(this).register();
+        new MonthPlaceholders(this).register();
 
         // Update scoreboards
         getServer().getScheduler().runTaskTimer(this, () -> {
