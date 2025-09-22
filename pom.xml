@@ -6,7 +6,7 @@
 
     <groupId>dev.nachwahl</groupId>
     <artifactId>lobby</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
 
     <name>Lobby</name>
@@ -19,19 +19,20 @@
 
     <build>
         <plugins>
-            <plugin>
+            <plugin> <!-- https://maven.apache.org/plugins/maven-compiler-plugin/ -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.0</version>
                 <configuration>
                     <source>21</source>
                     <target>21</target>
+                    <release>21</release>
                 </configuration>
             </plugin>
-            <plugin>
+            <plugin> <!-- https://maven.apache.org/plugins/maven-shade-plugin/ -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.6.0</version>
+                <version>3.6.1</version>
                 <configuration>
                     <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml
                     </dependencyReducedPomLocation>
@@ -70,7 +71,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
+            <plugin> <!-- https://maven.apache.org/plugins/maven-resources-plugin/ -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>3.3.1</version>
@@ -78,9 +79,8 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-
-
         </plugins>
+
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -131,24 +131,54 @@
             <id>codemc-snapshots</id>
             <url>https://repo.codemc.io/repository/maven-snapshots/</url>
         </repository>
+        <repository> <!-- For AnvilGUI -->
+            <id>triumphteam-snapshots</id>
+            <url>https://repo.triumphteam.dev/snapshots/</url>
+        </repository>
     </repositories>
 
     <dependencies>
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.21.4-R0.1-SNAPSHOT</version>
+            <version>1.21.8-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
+        <dependency> <!-- https://github.com/aikar/commands -->
             <groupId>co.aikar</groupId>
             <artifactId>acf-paper</artifactId>
             <version>0.5.1-SNAPSHOT</version>
         </dependency>
-        <dependency>
+        <dependency> <!-- https://search.maven.org/artifact/dev.triumphteam/triumph-gui -->
             <groupId>dev.triumphteam</groupId>
-            <artifactId>triumph-gui</artifactId>
-            <version>3.1.11</version>
+            <artifactId>triumph-gui-paper</artifactId>
+            <version>3.1.13-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>adventure-platform-bukkit</artifactId>
+                    <groupId>net.kyori</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>adventure-api</artifactId>
+                    <groupId>net.kyori</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>adventure-text-serializer-gson</artifactId>
+                    <groupId>net.kyori</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>adventure-platform-api</artifactId>
+                    <groupId>net.kyori</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>adventure-text-serializer-bungeecord</artifactId>
+                    <groupId>net.kyori</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>adventure-text-serializer-gson-legacy-impl</artifactId>
+                    <groupId>net.kyori</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>co.aikar</groupId>
@@ -159,28 +189,34 @@
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>6.3.0</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
-        <dependency>
+        <dependency> <!-- https://github.com/aikar/db -->
             <groupId>co.aikar</groupId>
             <artifactId>idb-bukkit</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
-        <dependency>
+        <dependency> <!-- https://central.sonatype.com/artifact/org.projectlombok/lombok -->
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.36</version>
+            <version>1.18.42</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
+        <dependency> <!-- https://github.com/plan-player-analytics/Plan/releases -->
             <groupId>com.github.plan-player-analytics</groupId>
             <artifactId>Plan</artifactId>
             <version>5.6.2965</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
+        <dependency> <!-- https://github.com/MrMicky-FR/FastBoard/releases -->
             <groupId>fr.mrmicky</groupId>
             <artifactId>fastboard</artifactId>
-            <version>2.1.4</version>
+            <version>2.1.5</version>
         </dependency>
         <dependency>
             <groupId>dev.nachwahl</groupId>
@@ -191,36 +227,46 @@
         <dependency>
             <groupId>com.github.decentsoftware-eu</groupId>
             <artifactId>decentholograms</artifactId>
-            <version>2.8.16</version>
+            <version>2.9.7</version>
             <scope>provided</scope>
         </dependency>
         <dependency> <!-- Recommended Hologram Plugin -->
-            <groupId>de.oliver</groupId>
+            <groupId>de.oliver</groupId> <!-- https://repo.fancyplugins.de/#/releases/de/oliver/FancyHolograms -->
             <artifactId>FancyHolograms</artifactId>
-            <version>2.4.2</version>
+            <version>2.7.0</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
+        <dependency> <!-- https://github.com/PlaceholderAPI/PlaceholderAPI/releases -->
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
             <version>2.11.6</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>adventure-platform-bukkit</artifactId>
+                    <groupId>net.kyori</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>bstats-bukkit</artifactId>
+                    <groupId>org.bstats</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
-        <dependency>
+        <dependency> <!-- https://luckperms.net/wiki/Developer-API -->
             <groupId>net.luckperms</groupId>
             <artifactId>api</artifactId>
             <version>5.4</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
+        <dependency> <!-- https://github.com/WesJD/AnvilGUI -->
             <groupId>net.wesjd</groupId>
             <artifactId>anvilgui</artifactId>
-            <version>1.10.5-SNAPSHOT</version>
+            <version>1.10.8-SNAPSHOT</version>
         </dependency>
-        <dependency>
+        <dependency> <!-- https://central.sonatype.com/artifact/org.json/json -->
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20250107</version>
+            <version>20250517</version>
         </dependency>
     </dependencies>
 </project>

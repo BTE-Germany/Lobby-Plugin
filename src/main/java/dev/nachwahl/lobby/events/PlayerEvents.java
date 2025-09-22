@@ -6,7 +6,7 @@ import dev.nachwahl.lobby.commands.BOTMCommand;
 import dev.nachwahl.lobby.guis.PrivacyGUI;
 import dev.nachwahl.lobby.language.Language;
 import dev.nachwahl.lobby.utils.Actions;
-import dev.triumphteam.gui.builder.item.ItemBuilder;
+import dev.triumphteam.gui.builder.item.PaperItemBuilder;
 import eu.decentsoftware.holograms.api.DHAPI;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
@@ -133,7 +133,7 @@ public class PlayerEvents implements Listener {
             if (player.getInventory().getChestplate().getType().equals(Material.ELYTRA)) return;
             if (!this.lobby.getElytraPlayers().containsKey(player.getUniqueId()))
                 this.lobby.getElytraPlayers().put(player.getUniqueId(), player.getInventory().getChestplate());
-            player.getInventory().setChestplate(ItemBuilder.from(Material.ELYTRA).enchant(Enchantment.MENDING).build());
+            player.getInventory().setChestplate(PaperItemBuilder.from(Material.ELYTRA).enchant(Enchantment.MENDING).build());
             return;
         }
         ;

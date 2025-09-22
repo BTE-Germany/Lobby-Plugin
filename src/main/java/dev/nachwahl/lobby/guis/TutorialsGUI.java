@@ -1,7 +1,7 @@
 package dev.nachwahl.lobby.guis;
 
 import dev.nachwahl.lobby.Lobby;
-import dev.triumphteam.gui.builder.item.ItemBuilder;
+import dev.triumphteam.gui.builder.item.PaperItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -24,7 +24,7 @@ public class TutorialsGUI {
                     .create();
 
 
-            this.gui.setItem(1, 1, ItemBuilder.from(Material.GRASS_BLOCK)
+            this.gui.setItem(1, 1, PaperItemBuilder.from(Material.GRASS_BLOCK)
                     .name(this.lobby.getMiniMessage().deserialize("<gold>Terraform Tutorial</gold>"))
                     .asGuiItem(event -> {
                         event.getInventory().close();
@@ -32,7 +32,7 @@ public class TutorialsGUI {
                         player.sendMessage(component.clickEvent(ClickEvent.openUrl("https://www.youtube.com/watch?v=no8a_79kd1k")));
                     }));
 
-            this.gui.setItem(1, 2, ItemBuilder.from(Material.WOODEN_AXE)
+            this.gui.setItem(1, 2, PaperItemBuilder.from(Material.WOODEN_AXE)
                     .name(this.lobby.getMiniMessage().deserialize("<gold>Worldedit Tutorial</gold>"))
                     .asGuiItem(event -> {
                         event.getInventory().close();
@@ -41,7 +41,7 @@ public class TutorialsGUI {
                     }));
 
 
-            this.gui.getFiller().fill(ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());
+            this.gui.getFiller().fill(PaperItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());
             Bukkit.getScheduler().runTask(this.lobby, () -> this.gui.open(player));
 
         });

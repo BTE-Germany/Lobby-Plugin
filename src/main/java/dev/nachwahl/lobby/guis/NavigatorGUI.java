@@ -2,7 +2,7 @@ package dev.nachwahl.lobby.guis;
 
 import dev.nachwahl.lobby.Lobby;
 import dev.nachwahl.lobby.utils.ItemGenerator;
-import dev.triumphteam.gui.builder.item.ItemBuilder;
+import dev.triumphteam.gui.builder.item.PaperItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -24,28 +24,28 @@ public class NavigatorGUI {
                     .create();
 
 
-            this.gui.setItem(2, 3, ItemBuilder.from(ItemGenerator.customModel(Material.PAPER, "plot"))
+            this.gui.setItem(2, 3, PaperItemBuilder.from(ItemGenerator.customModel(Material.PAPER, "plot"))
                     .name(this.lobby.getLanguageAPI().getMessage(language, "navigator.plots.name"))
                     .asGuiItem(event -> {
                         this.lobby.getBungeeConnector().sendToServer(player, this.lobby.getConfig().getString("server.Plot"), true);
                     }));
 
 
-            this.gui.setItem(2, 5, ItemBuilder.from(Material.COMPASS)
+            this.gui.setItem(2, 5, PaperItemBuilder.from(Material.COMPASS)
                     .name(this.lobby.getLanguageAPI().getMessage(language, "navigator.warps.name"))
                     .asGuiItem(event -> {
                         player.performCommand("nwarp");
                         event.getInventory().close();
                     }));
 
-            this.gui.setItem(2, 7, ItemBuilder.from(ItemGenerator.customModel(Material.PAPER, "map"))
+            this.gui.setItem(2, 7, PaperItemBuilder.from(ItemGenerator.customModel(Material.PAPER, "map"))
                     .name(this.lobby.getLanguageAPI().getMessage(language, "navigator.terra.name"))
                     .asGuiItem(event -> {
                         event.getInventory().close();
                         new ServerGUI(lobby, player);
                     }));
 
-            this.gui.getFiller().fill(ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());
+            this.gui.getFiller().fill(PaperItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());
             Bukkit.getScheduler().runTask(this.lobby, () -> this.gui.open(player));
 
         });
