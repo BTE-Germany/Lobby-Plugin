@@ -8,9 +8,13 @@ import dev.triumphteam.gui.guis.Gui;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -84,14 +88,33 @@ public class BOTMList {
                         .asGuiItem()
                 );
 
-                this.gui.setItem(i + 1, 5, ItemBuilder.from(Material.PLAYER_HEAD)
+                OfflinePlayer offlinePlayer1 = Bukkit.getOfflinePlayer(player1_name);
+
+                ItemStack player1_head = new ItemStack(Material.PLAYER_HEAD);
+                SkullMeta player1_meta = (SkullMeta) player1_head.getItemMeta();
+                player1_meta.displayName(Component.text(player1_name));
+                player1_meta.setOwningPlayer(offlinePlayer1);
+                player1_head.setItemMeta(player1_meta);
+
+                this.gui.setItem(i + 1, 5, ItemBuilder.from(player1_head)
                         .name(Component.text(player1_name))
+                        .lore(offlinePlayer1.getLastSeen() == 0 ? this.lobby.getLanguageAPI().getMessage(language, "botm.list.item.offline_player_error") : null)
                         .asGuiItem()
                 );
 
                 if (player2_name != null) {
-                    this.gui.setItem(i + 1, 6, ItemBuilder.from(Material.PLAYER_HEAD)
+
+                    OfflinePlayer offlinePlayer2 = Bukkit.getOfflinePlayer(player2_name);
+
+                    ItemStack player2_head = new ItemStack(Material.PLAYER_HEAD);
+                    SkullMeta player2_meta = (SkullMeta) player2_head.getItemMeta();
+                    player2_meta.displayName(Component.text(player2_name));
+                    player2_meta.setOwningPlayer(offlinePlayer2);
+                    player2_head.setItemMeta(player2_meta);
+
+                    this.gui.setItem(i + 1, 6, ItemBuilder.from(player2_head)
                             .name(Component.text(player2_name))
+                            .lore(offlinePlayer2.getLastSeen() == 0 ? this.lobby.getLanguageAPI().getMessage(language, "botm.list.item.offline_player_error") : null)
                             .asGuiItem()
                     );
                 }else{
@@ -102,8 +125,18 @@ public class BOTMList {
                 }
 
                 if (player3_name != null) {
-                    this.gui.setItem(i + 1, 7, ItemBuilder.from(Material.PLAYER_HEAD)
+
+                    OfflinePlayer offlinePlayer3 = Bukkit.getOfflinePlayer(player3_name);
+
+                    ItemStack player3_head = new ItemStack(Material.PLAYER_HEAD);
+                    SkullMeta player3_meta = (SkullMeta) player3_head.getItemMeta();
+                    player3_meta.displayName(Component.text(player3_name));
+                    player3_meta.setOwningPlayer(offlinePlayer3);
+                    player3_head.setItemMeta(player3_meta);
+
+                    this.gui.setItem(i + 1, 7, ItemBuilder.from(player3_head)
                             .name(Component.text(player3_name))
+                            .lore(offlinePlayer3.getLastSeen() == 0 ? this.lobby.getLanguageAPI().getMessage(language, "botm.list.item.offline_player_error") : null)
                             .asGuiItem()
                     );
                 }else{
