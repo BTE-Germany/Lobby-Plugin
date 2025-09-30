@@ -131,10 +131,6 @@
             <id>codemc-snapshots</id>
             <url>https://repo.codemc.io/repository/maven-snapshots/</url>
         </repository>
-        <repository> <!-- For AnvilGUI -->
-            <id>triumphteam-snapshots</id>
-            <url>https://repo.triumphteam.dev/snapshots/</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -152,7 +148,7 @@
         <dependency> <!-- https://search.maven.org/artifact/dev.triumphteam/triumph-gui -->
             <groupId>dev.triumphteam</groupId>
             <artifactId>triumph-gui-paper</artifactId>
-            <version>3.1.13-SNAPSHOT</version>
+            <version>3.1.13</version>
             <exclusions>
                 <exclusion>
                     <artifactId>adventure-platform-bukkit</artifactId>
