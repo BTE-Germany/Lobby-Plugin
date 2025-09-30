@@ -64,9 +64,12 @@ public class BOTMGUI {
 
                 this.gui.setItem(2, 7, PaperItemBuilder.from(Material.PAPER)
                         .name(this.lobby.getLanguageAPI().getMessage(language, "botm-gui.list_entries"))
-                        .lore(this.lobby.getLanguageAPI().getMessage(language, "coming-soon"))
                         .asGuiItem(event -> {
-                            //comming soon
+                            try {
+                                new BOTMList(lobby, player, 1);
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
                         }));
 
                 this.gui.setItem(1, 9, PaperItemBuilder.from(Material.SUNFLOWER)
