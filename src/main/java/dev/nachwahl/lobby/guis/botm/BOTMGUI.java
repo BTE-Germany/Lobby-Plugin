@@ -1,8 +1,7 @@
 package dev.nachwahl.lobby.guis.botm;
 
 import dev.nachwahl.lobby.Lobby;
-import dev.nachwahl.lobby.utils.ItemGenerator;
-import dev.triumphteam.gui.builder.item.ItemBuilder;
+import dev.triumphteam.gui.builder.item.PaperItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import eu.decentsoftware.holograms.api.DHAPI;
 import lombok.Getter;
@@ -33,14 +32,14 @@ public class BOTMGUI {
                         .disableAllInteractions()
                         .create();
 
-                this.gui.setItem(2, 3, ItemBuilder.from(Material.NETHER_STAR)
+                this.gui.setItem(2, 3, PaperItemBuilder.from(Material.NETHER_STAR)
                         .name(this.lobby.getLanguageAPI().getMessage(language, "botm-gui.add_entry"))
                         .asGuiItem(event -> {
                             player.closeInventory();
                             new AddEntryGUI(lobby, player);
                         }));
 
-                this.gui.setItem(2, 5, ItemBuilder.from(Material.ORANGE_BANNER)
+                this.gui.setItem(2, 5, PaperItemBuilder.from(Material.ORANGE_BANNER)
                         .name(this.lobby.getLanguageAPI().getMessage(language, "botm-gui.create_hologram"))
                         .asGuiItem(event -> {
                             if (DHAPI.getHologram("BOTM") == null) {
@@ -63,7 +62,7 @@ public class BOTMGUI {
                             }
                         }));
 
-                this.gui.setItem(2, 7, ItemBuilder.from(Material.PAPER)
+                this.gui.setItem(2, 7, PaperItemBuilder.from(Material.PAPER)
                         .name(this.lobby.getLanguageAPI().getMessage(language, "botm-gui.list_entries"))
                         .asGuiItem(event -> {
                             try {
@@ -73,7 +72,7 @@ public class BOTMGUI {
                             }
                         }));
 
-                this.gui.setItem(1, 9, ItemBuilder.from(Material.SUNFLOWER)
+                this.gui.setItem(1, 9, PaperItemBuilder.from(Material.SUNFLOWER)
                         .name(this.lobby.getLanguageAPI().getMessage(language, "botm-gui.reload"))
                         .asGuiItem(event -> {
                             try {
@@ -88,7 +87,7 @@ public class BOTMGUI {
                             }
                         }));
 
-                this.gui.getFiller().fill(ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());
+                this.gui.getFiller().fill(PaperItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());
                 this.gui.open(player);
         }));
     }

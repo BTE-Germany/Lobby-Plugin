@@ -2,7 +2,7 @@ package dev.nachwahl.lobby.utils;
 
 import dev.nachwahl.lobby.Lobby;
 import dev.nachwahl.lobby.language.LanguageAPI;
-import dev.triumphteam.gui.builder.item.ItemBuilder;
+import dev.triumphteam.gui.builder.item.PaperItemBuilder;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -27,8 +27,8 @@ public class HotbarItems {
     public void setHotbarItems(Player player) {
         Lobby.getInstance().getHologramAPI().sendDebugMsg(Component.text("Set Menu Items - language perm should be set"));
         this.languageAPI.getLanguage(player, language -> {
-            ItemStack navigator = ItemBuilder.from(Material.COMPASS).name(this.languageAPI.getMessage(language, "navigator.itemName")).build();
-            ItemStack account = ItemBuilder.from(ItemGenerator.customModel(Material.PAPER, "config")).name(this.languageAPI.getMessage(language, "account.itemName")).build();
+            ItemStack navigator = PaperItemBuilder.from(Material.COMPASS).name(this.languageAPI.getMessage(language, "navigator.itemName")).build();
+            ItemStack account = PaperItemBuilder.from(ItemGenerator.customModel(Material.PAPER, "config")).name(this.languageAPI.getMessage(language, "account.itemName")).build();
 
             player.getInventory().clear();
 
@@ -38,7 +38,7 @@ public class HotbarItems {
             setElytra(player, lobby);
 
             if (player.hasPermission("lobby.manage.edit")) {
-                ItemStack buildMode = ItemBuilder.from(Material.GOLDEN_AXE).name(this.languageAPI.getMessage(language, "manage.editMode")).build();
+                ItemStack buildMode = PaperItemBuilder.from(Material.GOLDEN_AXE).name(this.languageAPI.getMessage(language, "manage.editMode")).build();
                 player.getInventory().setItem(8, buildMode);
             }
         });
@@ -48,6 +48,6 @@ public class HotbarItems {
         if (player.getInventory().getChestplate() != null && player.getInventory().getChestplate().getType().equals(Material.ELYTRA)) return;
         if (!lobby.getElytraPlayers().containsKey(player.getUniqueId()))
             lobby.getElytraPlayers().put(player.getUniqueId(), player.getInventory().getChestplate());
-        player.getInventory().setChestplate(ItemBuilder.from(Material.ELYTRA).enchant(Enchantment.MENDING).build());
+        player.getInventory().setChestplate(PaperItemBuilder.from(Material.ELYTRA).enchant(Enchantment.MENDING).build());
     }
 }

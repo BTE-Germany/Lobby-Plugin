@@ -2,7 +2,7 @@ package dev.nachwahl.lobby.guis.botm;
 
 import dev.nachwahl.lobby.Lobby;
 import dev.nachwahl.lobby.utils.ItemGenerator;
-import dev.triumphteam.gui.builder.item.ItemBuilder;
+import dev.triumphteam.gui.builder.item.PaperItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -56,7 +56,7 @@ public class AddEntryGUI {
                         .disableAllInteractions()
                         .create();
 
-                this.gui.setItem(1, 2, ItemBuilder.from(Material.CLOCK)
+                this.gui.setItem(1, 2, PaperItemBuilder.from(Material.CLOCK)
                         .amount(month)
                         .name(this.lobby.getLanguageAPI().getMessage(language, "botm-gui.date.month"))
                         .asGuiItem(event -> {
@@ -77,7 +77,7 @@ public class AddEntryGUI {
                             EntryUtil.getEntry(player).setYear(year);
                             new AddEntryGUI(lobby, player);
                         }));
-                this.gui.setItem(2, 2, ItemBuilder.from(Material.CLOCK)
+                this.gui.setItem(2, 2, PaperItemBuilder.from(Material.CLOCK)
                         .amount(year)
                         .name(this.lobby.getLanguageAPI().getMessage(language, "botm-gui.date.year"))
                                 .asGuiItem(event -> {
@@ -90,7 +90,7 @@ public class AddEntryGUI {
                                     new AddEntryGUI(lobby, player);
                                 }));
 
-                this.gui.setItem(2, 4, ItemBuilder.from(Material.NAME_TAG)
+                this.gui.setItem(2, 4, PaperItemBuilder.from(Material.NAME_TAG)
                         .name(this.lobby.getLanguageAPI().getMessage(language, "botm-gui.name"))
                         .lore(Component.text("§7" + (EntryUtil.getEntry(player).getName() != null
                                 ? EntryUtil.getEntry(player).getName()
@@ -124,7 +124,7 @@ public class AddEntryGUI {
                     player1_head.setItemMeta(player1_meta);
                 }
 
-                this.gui.setItem(2, 6, ItemBuilder.from(player1_head)
+                this.gui.setItem(2, 6, PaperItemBuilder.from(player1_head)
                         .name(this.lobby.getLanguageAPI().getMessage(language, "botm-gui.player1"))
                         .lore(Component.text("§7" + (EntryUtil.getEntry(player).getPlayer1() != null
                                 ? EntryUtil.getEntry(player).getPlayer1()
@@ -145,7 +145,7 @@ public class AddEntryGUI {
                                     .plugin(this.lobby)
                                     .open(player);
                         }));
-
+              
                 ItemStack player2_head = new ItemStack(Material.PLAYER_HEAD);
                 OfflinePlayer offlinePlayer2 = null;
 
@@ -157,7 +157,7 @@ public class AddEntryGUI {
                     player2_head.setItemMeta(player2_meta);
                 }
 
-                this.gui.setItem(2, 7, ItemBuilder.from(player2_head)
+                this.gui.setItem(2, 7, PaperItemBuilder.from(player2_head)
                         .name(this.lobby.getLanguageAPI().getMessage(language, "botm-gui.player2"))
                         .lore(Component.text("§7" + (EntryUtil.getEntry(player).getPlayer2() != null
                                 ? EntryUtil.getEntry(player).getPlayer2()
@@ -191,7 +191,7 @@ public class AddEntryGUI {
                     player3_head.setItemMeta(player3_meta);
                 }
 
-                this.gui.setItem(2, 8, ItemBuilder.from(player3_head)
+                this.gui.setItem(2, 8, PaperItemBuilder.from(player3_head)
                         .name(this.lobby.getLanguageAPI().getMessage(language, "botm-gui.player3"))
                         .lore(Component.text("§7" + (EntryUtil.getEntry(player).getPlayer3() != null
                                 ? EntryUtil.getEntry(player).getPlayer3()
@@ -214,7 +214,7 @@ public class AddEntryGUI {
                                     .open(player);
                         }));
 
-                this.gui.setItem(3, 9, ItemBuilder.from(ItemGenerator.customModel(Material.PAPER, "stars"))
+                this.gui.setItem(3, 9, PaperItemBuilder.from(ItemGenerator.customModel(Material.PAPER, "stars"))
                         .name(this.lobby.getLanguageAPI().getMessage(language, "botm-gui.confirm"))
                         .asGuiItem(event -> {
 
@@ -256,7 +256,7 @@ public class AddEntryGUI {
                         }
                     }));
 
-                this.gui.getFiller().fill(ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());
+                this.gui.getFiller().fill(PaperItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());
 
                 this.gui.open(player);
         }));
