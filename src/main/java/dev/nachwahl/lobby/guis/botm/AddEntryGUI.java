@@ -1,5 +1,6 @@
 package dev.nachwahl.lobby.guis.botm;
 
+import co.aikar.idb.DbRow;
 import dev.nachwahl.lobby.Lobby;
 import dev.nachwahl.lobby.utils.ItemGenerator;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
@@ -8,6 +9,8 @@ import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.node.types.InheritanceNode;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -16,11 +19,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
+
+import static org.bukkit.Bukkit.getServer;
 
 public class AddEntryGUI {
 
@@ -224,9 +232,27 @@ public class AddEntryGUI {
                                 return;
                             }
 
+                            //Luckperms Prefix
+                            RegisteredServiceProvider<LuckPerms> rsp = getServer().getServicesManager().getRegistration(LuckPerms.class);
+                            LuckPerms luckPerms = rsp.getProvider();
+
+                            List<DbRow> dbRows = null;
+                            try {
+                                dbRows = lobby.getDatabase().getResults("SELECT player1_uuid, month, year FROM botm ORDER BY year DESC, month DESC LIMIT 1");
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                            if (!dbRows.isEmpty()) {
+                                DbRow row = dbRows.get(0);
+                                UUID old_winner = UUID.fromString(row.getString("player1_uuid"));
+                                luckPerms.getUserManager().modifyUser(old_winner, user -> {
+                                    user.data().remove(InheritanceNode.builder("botm").build());
+                                });
+                            }
+
                             event.getInventory().close();
                             try {
-                                boolean success =lobby.getBotmScoreAPI().addEntry(
+                                boolean success = lobby.getBotmScoreAPI().addEntry(
                                         EntryUtil.getEntry(player).getName(),
                                         EntryUtil.getEntry(player).getYear(),
                                         EntryUtil.getEntry(player).getMonth(),
@@ -235,25 +261,31 @@ public class AddEntryGUI {
                                         EntryUtil.getEntry(player).getPlayer3());
 
                                 if (success) {
-                            EntryUtil.entries.remove(player);
-                            this.lobby.getLanguageAPI().sendMessageToPlayer(player, "botm.added");
+                                    this.lobby.getLanguageAPI().sendMessageToPlayer(player, "botm.added");
 
-                            try {
-                                this.lobby.getBotmScoreAPI().reload(player);
-                            } catch (SQLException e) {
-                                throw new RuntimeException(e);
-                            } catch (ExecutionException e) {
-                                throw new RuntimeException(e);
-                            } catch (InterruptedException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }else {
+                                    luckPerms.getUserManager().modifyUser(
+                                    Bukkit.getOfflinePlayer(EntryUtil.getEntry(player).getPlayer1()).getUniqueId(),
+                                    user -> {
+                                        user.data().add(InheritanceNode.builder("botm").build());
+                                    });
+                                    EntryUtil.entries.remove(player);
+
+                                    try {
+                                        this.lobby.getBotmScoreAPI().reload(player);
+                                    } catch (SQLException e) {
+                                        throw new RuntimeException(e);
+                                    } catch (ExecutionException e) {
+                                        throw new RuntimeException(e);
+                                    } catch (InterruptedException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }else {
                                 // Entry already exists for this month and year
                                 this.lobby.getLanguageAPI().sendMessageToPlayer(player, "botm.duplicate");
+                                }
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
                             }
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
-                        }
                     }));
 
                 this.gui.getFiller().fill(ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());
