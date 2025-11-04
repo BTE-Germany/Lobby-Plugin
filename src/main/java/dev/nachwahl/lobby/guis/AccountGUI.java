@@ -3,7 +3,7 @@ package dev.nachwahl.lobby.guis;
 import dev.nachwahl.lobby.Lobby;
 import dev.nachwahl.lobby.language.Language;
 import dev.nachwahl.lobby.utils.ItemGenerator;
-import dev.triumphteam.gui.builder.item.ItemBuilder;
+import dev.triumphteam.gui.builder.item.PaperItemBuilder;
 import dev.triumphteam.gui.builder.item.SkullBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import net.kyori.adventure.text.Component;
@@ -31,7 +31,7 @@ public class AccountGUI {
                     .disableAllInteractions()
                     .create();
 
-            this.gui.setItem(1, 5, ItemBuilder.skull().owner(Bukkit.getOfflinePlayer(player.getUniqueId()))
+            this.gui.setItem(1, 5, PaperItemBuilder.skull().owner(Bukkit.getOfflinePlayer(player.getUniqueId()))
                     .name(this.lobby.getLanguageAPI().getMessage(language, "account.skull.name", Placeholder.parsed("name", player.getName())))
                     .asGuiItem(event -> {
                     }));
@@ -40,18 +40,18 @@ public class AccountGUI {
             // Player Visibility
 
             this.gui.setItem(3, 2,
-                    ItemBuilder.from(Material.TINTED_GLASS).name(
+                    PaperItemBuilder.from(Material.TINTED_GLASS).name(
                             this.lobby.getLanguageAPI().getMessage(language, "account.players.name")).asGuiItem()
             );
 
             this.lobby.getUserSettingsAPI().getBooleanSetting(player, "playerVisibility", (setting) -> {
                 this.gui.setItem(4, 2,
-                        ItemBuilder.skull().texture(setting ? HEAD_ON : HEAD_OFF)
+                        PaperItemBuilder.skull().texture(setting ? HEAD_ON : HEAD_OFF)
                                 .name(this.lobby.getLanguageAPI().getMessage(language, setting ? "account.on" : "account.off"))
                                 .asGuiItem(event -> {
                                     this.lobby.getUserSettingsAPI().toggleSetting(player, "playerVisibility", (i) -> {
                                         this.lobby.getUserSettingsAPI().getBooleanSetting(player, "playerVisibility", (newSetting) -> {
-                                            this.gui.updateItem(4, 2, ItemBuilder.skull().texture(newSetting ? HEAD_ON : HEAD_OFF).name(this.lobby.getLanguageAPI().getMessage(language, newSetting ? "account.on" : "account.off")).build());
+                                            this.gui.updateItem(4, 2, PaperItemBuilder.skull().texture(newSetting ? HEAD_ON : HEAD_OFF).name(this.lobby.getLanguageAPI().getMessage(language, newSetting ? "account.on" : "account.off")).build());
 
                                             Bukkit.getOnlinePlayers().forEach((p) -> {
                                                 if (newSetting == false) {
@@ -73,16 +73,16 @@ public class AccountGUI {
 
             // Language Item
 
-            this.gui.setItem(3, 4, ItemBuilder.skull().texture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOThkYWExZTNlZDk0ZmYzZTMzZTFkNGM2ZTQzZjAyNGM0N2Q3OGE1N2JhNGQzOGU3NWU3YzkyNjQxMDYifX19").name(this.lobby.getLanguageAPI().getMessage(language, "account.language.name")).asGuiItem());
+            this.gui.setItem(3, 4, PaperItemBuilder.skull().texture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOThkYWExZTNlZDk0ZmYzZTMzZTFkNGM2ZTQzZjAyNGM0N2Q3OGE1N2JhNGQzOGU3NWU3YzkyNjQxMDYifX19").name(this.lobby.getLanguageAPI().getMessage(language, "account.language.name")).asGuiItem());
 /*Ü
-            ItemBu languageItem = ItemBuilder.skull().texture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWU3ODk5YjQ4MDY4NTg2OTdlMjgzZjA4NGQ5MTczZmU0ODc4ODY0NTM3NzQ2MjZiMjRiZDhjZmVjYzc3YjNmIn19fQ==");
+            ItemBu languageItem = PaperItemBuilder.skull().texture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWU3ODk5YjQ4MDY4NTg2OTdlMjgzZjA4NGQ5MTczZmU0ODc4ODY0NTM3NzQ2MjZiMjRiZDhjZmVjYzc3YjNmIn19fQ==");
             if (this.lobby.getLanguageAPI().getLanguage(player).equals(Language.ENGLISH)) {
-                languageItem = ItemBuilder.skull().texture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGNhYzk3NzRkYTEyMTcyNDg1MzJjZTE0N2Y3ODMxZjY3YTEyZmRjY2ExY2YwY2I0YjM4NDhkZTZiYzk0YjQifX19");
+                languageItem = PaperItemBuilder.skull().texture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGNhYzk3NzRkYTEyMTcyNDg1MzJjZTE0N2Y3ODMxZjY3YTEyZmRjY2ExY2YwY2I0YjM4NDhkZTZiYzk0YjQifX19");
             }*/
-            ItemBuilder languageItem = ItemBuilder.from(ItemGenerator.customModel(Material.PAPER, "de_flag"));
+            PaperItemBuilder languageItem = PaperItemBuilder.from(ItemGenerator.customModel(Material.PAPER, "de_flag"));
 
             if (this.lobby.getLanguageAPI().getLanguage(player).equals(Language.ENGLISH)) {
-                languageItem = ItemBuilder.from(ItemGenerator.customModel(Material.PAPER, "us_flag"));
+                languageItem = PaperItemBuilder.from(ItemGenerator.customModel(Material.PAPER, "us_flag"));
             }
 
             this.gui.setItem(4, 4,
@@ -95,18 +95,18 @@ public class AccountGUI {
             // Real Time
 
             this.gui.setItem(3, 6,
-                    ItemBuilder.from(Material.CLOCK).name(
+                    PaperItemBuilder.from(Material.CLOCK).name(
                             this.lobby.getLanguageAPI().getMessage(language, "account.realtime.name")).asGuiItem()
             );
 
             this.lobby.getUserSettingsAPI().getBooleanSetting(player, "realTime", (setting) -> {
                 this.gui.setItem(4, 6,
-                        ItemBuilder.skull().texture(setting ? HEAD_ON : HEAD_OFF)
+                        PaperItemBuilder.skull().texture(setting ? HEAD_ON : HEAD_OFF)
                                 .name(this.lobby.getLanguageAPI().getMessage(language, setting ? "account.on" : "account.off"))
                                 .asGuiItem(event -> {
                                     this.lobby.getUserSettingsAPI().toggleSetting(player, "realTime", (i) -> {
                                         this.lobby.getUserSettingsAPI().getBooleanSetting(player, "realTime", (newSetting) -> {
-                                            this.gui.updateItem(4, 6, ItemBuilder.skull().texture(newSetting ? HEAD_ON : HEAD_OFF).name(this.lobby.getLanguageAPI().getMessage(language, newSetting ? "account.on" : "account.off")).build());
+                                            this.gui.updateItem(4, 6, PaperItemBuilder.skull().texture(newSetting ? HEAD_ON : HEAD_OFF).name(this.lobby.getLanguageAPI().getMessage(language, newSetting ? "account.on" : "account.off")).build());
 
                                             Bukkit.getOnlinePlayers().forEach((p) -> {
                                                 if (!newSetting) {
@@ -124,24 +124,24 @@ public class AccountGUI {
             // Pickup Item
 
             this.gui.setItem(3, 8,
-                    ItemBuilder.from(Material.PLAYER_HEAD).name(
+                    PaperItemBuilder.from(Material.PLAYER_HEAD).name(
                             this.lobby.getLanguageAPI().getMessage(language, "account.pickup.name")).asGuiItem()
             );
 
             this.lobby.getUserSettingsAPI().getBooleanSetting(player, "playerPickup", (setting) -> {
                 this.gui.setItem(4, 8,
-                        ItemBuilder.skull().texture(setting ? HEAD_ON : HEAD_OFF)
+                        PaperItemBuilder.skull().texture(setting ? HEAD_ON : HEAD_OFF)
                                 .name(this.lobby.getLanguageAPI().getMessage(language, setting ? "account.on" : "account.off"))
                                 .asGuiItem(event -> {
                                     this.lobby.getUserSettingsAPI().toggleSetting(player, "playerPickup", (i) -> {
                                         this.lobby.getUserSettingsAPI().getBooleanSetting(player, "playerPickup", (newSetting) -> {
-                                            this.gui.updateItem(4, 8, ItemBuilder.skull().texture(newSetting ? HEAD_ON : HEAD_OFF).name(this.lobby.getLanguageAPI().getMessage(language, newSetting ? "account.on" : "account.off")).build());
+                                            this.gui.updateItem(4, 8, PaperItemBuilder.skull().texture(newSetting ? HEAD_ON : HEAD_OFF).name(this.lobby.getLanguageAPI().getMessage(language, newSetting ? "account.on" : "account.off")).build());
                                         });
                                     });
                                 }));
             });
 
-            this.gui.getFiller().fill(ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());
+            this.gui.getFiller().fill(PaperItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());
             Bukkit.getScheduler().runTask(this.lobby, () -> this.gui.open(player));
 
 

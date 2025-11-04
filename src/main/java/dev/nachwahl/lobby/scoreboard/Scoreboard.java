@@ -59,6 +59,9 @@ public class Scoreboard {
                 lines.add(cosmetics.getLanguageAPI().getMessage(language, "scoreboard.playtime"));
                 lines.add(Component.text("ꭑ " + formatPlaytime(playtime)));
                 lines.add(Component.empty());
+                lines.add(cosmetics.getLanguageAPI().getMessage(language, "scoreboard.sponsoredby"));
+                lines.add(Component.text("௶"));
+                lines.add(Component.empty());
             });
         });
 
