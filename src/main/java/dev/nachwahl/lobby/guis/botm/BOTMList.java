@@ -115,7 +115,7 @@ public class BOTMList {
                             .lore(offlinePlayer2.getLastSeen() == 0 ? this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.offline_player_error") : null)
                             .asGuiItem()
                     );
-                }else{
+                } else {
                     this.gui.setItem(i + 1, 6, ItemBuilder.from(Material.STRUCTURE_VOID)
                             .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.noplayer"))
                             .asGuiItem()
@@ -137,7 +137,7 @@ public class BOTMList {
                             .lore(offlinePlayer3.getLastSeen() == 0 ? this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.offline_player_error") : null)
                             .asGuiItem()
                     );
-                }else{
+                } else {
                     this.gui.setItem(i + 1, 7, ItemBuilder.from(Material.STRUCTURE_VOID)
                             .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.noplayer"))
                             .asGuiItem()
@@ -160,13 +160,13 @@ public class BOTMList {
 
                             try {
                                 new BOTMList(this.lobbyPlugin, player, currentPage - 1);
-                            }catch (SQLException e){
+                            } catch (SQLException e) {
                                 this.lobbyPlugin.getLanguageAPI().sendMessageToPlayer(player, "botm.list.error");
                             }
 
                         })
                 );
-            }else {
+            } else {
                 this.gui.setItem(1, 1, ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE)
                         .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.unavailable"))
                         .asGuiItem()
@@ -180,13 +180,13 @@ public class BOTMList {
 
                             try {
                                 new BOTMList(this.lobbyPlugin, player, currentPage + 1);
-                            }catch (SQLException e){
+                            } catch (SQLException e) {
                                 this.lobbyPlugin.getLanguageAPI().sendMessageToPlayer(player, "botm.list.error");
                             }
 
                         })
                 );
-            }else {
+            } else {
                 this.gui.setItem(1, 9, ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE)
                         .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.unavailable"))
                         .asGuiItem()

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>dev.nachwahl</groupId>
-    <artifactId>lobbyPlugin</artifactId>
+    <artifactId>lobby</artifactId>
     <version>1.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -39,19 +39,19 @@
                     <relocations>
                         <relocation>
                             <pattern>co.aikar.commands</pattern>
-                            <shadedPattern>dev.nachwahl.lobbyPlugin.acf</shadedPattern> <!-- Replace this -->
+                            <shadedPattern>dev.nachwahl.lobby.acf</shadedPattern> <!-- Replace this -->
                         </relocation>
                         <relocation>
                             <pattern>co.aikar.locales</pattern>
-                            <shadedPattern>dev.nachwahl.lobbyPlugin.locales</shadedPattern> <!-- Replace this -->
+                            <shadedPattern>dev.nachwahl.lobby.locales</shadedPattern> <!-- Replace this -->
                         </relocation>
                         <relocation>
                             <pattern>dev.triumphteam.gui</pattern>
-                            <shadedPattern>dev.nachwahl.lobbyPlugin.gui</shadedPattern> <!-- Replace package here here -->
+                            <shadedPattern>dev.nachwahl.lobby.gui</shadedPattern> <!-- Replace package here here -->
                         </relocation>
                         <relocation>
                             <pattern>co.aikar.idb</pattern>
-                            <shadedPattern>dev.nachwahl.lobbyPlugin.idb</shadedPattern>
+                            <shadedPattern>dev.nachwahl.lobby.idb</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>fr.mrmicky.fastboard</pattern>

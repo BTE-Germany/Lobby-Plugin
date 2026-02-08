@@ -45,7 +45,8 @@ public class HotbarItems {
     }
 
     public static void setElytra(@NotNull Player player, LobbyPlugin lobbyPlugin) {
-        if (player.getInventory().getChestplate() != null && player.getInventory().getChestplate().getType().equals(Material.ELYTRA)) return;
+        if (player.getInventory().getChestplate() != null && player.getInventory().getChestplate().getType().equals(Material.ELYTRA))
+            return;
         if (!lobbyPlugin.getElytraPlayers().containsKey(player.getUniqueId()))
             lobbyPlugin.getElytraPlayers().put(player.getUniqueId(), player.getInventory().getChestplate());
         player.getInventory().setChestplate(PaperItemBuilder.from(Material.ELYTRA).enchant(Enchantment.MENDING).build());

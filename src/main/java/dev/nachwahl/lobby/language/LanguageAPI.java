@@ -162,7 +162,8 @@ public class LanguageAPI {
                 LobbyPlugin.getInstance().getHologramAPI().sendDebugMsg(Component.text("Set Local - Try add perm"));
                 user.data().add(Node.builder(permission).build());
                 LobbyPlugin.getInstance().getHologramAPI().sendDebugMsg(Component.text("Set Local - Try remove perm"));
-                if (removePermission != null && player.hasPermission(removePermission)) user.data().remove(Node.builder(permission).build());
+                if (removePermission != null && player.hasPermission(removePermission))
+                    user.data().remove(Node.builder(permission).build());
                 LobbyPlugin.getInstance().getHologramAPI().sendDebugMsg(Component.text("Set Local - Everything worked fine"));
             });
         }

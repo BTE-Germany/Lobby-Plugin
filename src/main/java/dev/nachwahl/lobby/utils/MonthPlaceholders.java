@@ -36,6 +36,6 @@ public class MonthPlaceholders extends PlaceholderExpansion {
 
     @Override
     public String onPlaceholderRequest(org.bukkit.entity.Player player, String identifier) {
-       return lobbyPlugin.getLanguageAPI().getMessageString(lobbyPlugin.getLanguageAPI().getLanguage(player), identifier);
+        return lobbyPlugin.getLanguageAPI().getMessageString(lobbyPlugin.getLanguageAPI().getLanguage(player), identifier);
     }
 }

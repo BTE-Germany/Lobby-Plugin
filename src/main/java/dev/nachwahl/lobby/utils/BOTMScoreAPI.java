@@ -9,9 +9,9 @@ import eu.decentsoftware.holograms.api.DHAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
-import org.bukkit.OfflinePlayer;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -22,9 +22,6 @@ import java.net.http.HttpResponse;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 public class BOTMScoreAPI {
@@ -79,7 +76,7 @@ public class BOTMScoreAPI {
     public int getScore(String playerName) throws SQLException {
         String uuid = Bukkit.getOfflinePlayer(playerName).getUniqueId().toString();
         DbRow row = this.lobbyPlugin.getDatabase().getFirstRow(
-            "SELECT COUNT(*) AS cnt FROM botm WHERE player1_uuid = ? OR player2_uuid = ? OR player3_uuid = ?",
+                "SELECT COUNT(*) AS cnt FROM botm WHERE player1_uuid = ? OR player2_uuid = ? OR player3_uuid = ?",
                 uuid.toString(), uuid.toString(), uuid.toString()
         );
         if (row != null) {
@@ -129,14 +126,14 @@ public class BOTMScoreAPI {
 
             // Add the top entries to the hologram
             outer:
-            for (int i = 0; i < entries; i++){
+            for (int i = 0; i < entries; i++) {
                 UUID uuid = UUID.fromString(scores.get(i).getKey());
                 for (int j = 0; j <= i; j++) {
                     if (j == i) {
                         lines.add(ChatColor.GOLD + "1. " + ChatColor.WHITE + lobbyPlugin.getBotmScoreAPI().getPlayerName(uuid).get() + ": " + ChatColor.GOLD + scores.get(i).getValue());
                         continue outer;
                     }
-                    if(scores.get(i).getValue().equals(scores.get(i - (j + 1)).getValue())) continue;
+                    if (scores.get(i).getValue().equals(scores.get(i - (j + 1)).getValue())) continue;
                     lines.add(ChatColor.GOLD + String.valueOf((i - j) + 1) + ". " + ChatColor.WHITE + lobbyPlugin.getBotmScoreAPI().getPlayerName(uuid).get() + ": " + ChatColor.GOLD + scores.get(i).getValue());
                     continue outer;
                 }

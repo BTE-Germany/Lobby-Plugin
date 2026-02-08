@@ -66,30 +66,30 @@ public class CinematicUtil {
 
                 Location location = plugin.getLocationAPI().parseLocation(dataFile.getString(pointPath + ".location"));
                 double ticksToPoint = dataFile.getDouble(pointPath + ".speed", 0);
-                String title = dataFile.getString(pointPath + ".title",null);
-                String subtitle = dataFile.getString(pointPath + ".subtitle",null);
-                String chatMessage = dataFile.getString(pointPath + ".chatMessage",null);
-                String soundString = dataFile.getString(pointPath + ".sound",null);
+                String title = dataFile.getString(pointPath + ".title", null);
+                String subtitle = dataFile.getString(pointPath + ".subtitle", null);
+                String chatMessage = dataFile.getString(pointPath + ".chatMessage", null);
+                String soundString = dataFile.getString(pointPath + ".sound", null);
                 Sound sound;
-                if(soundString != null){
+                if (soundString != null) {
                     sound = Sound.valueOf(soundString);
-                }else{
+                } else {
                     sound = null;
                 }
 
-                pathPoints.add(new PathPoint(location, ticksToPoint,title,subtitle,chatMessage,sound));
+                pathPoints.add(new PathPoint(location, ticksToPoint, title, subtitle, chatMessage, sound));
             }
         }
 
         return pathPoints;
     }
 
-   public List<String> getCinematicList() {
-       File file = new File(plugin.getDataFolder() + File.separator + "cinematics.yml");
-       if (!file.exists()) {
-           file = createFile();
-       }
-       dataFile = YamlConfiguration.loadConfiguration(file);
+    public List<String> getCinematicList() {
+        File file = new File(plugin.getDataFolder() + File.separator + "cinematics.yml");
+        if (!file.exists()) {
+            file = createFile();
+        }
+        dataFile = YamlConfiguration.loadConfiguration(file);
         List<String> cinematicList = new ArrayList<>();
         String path = "cinematics";
         if (dataFile.isConfigurationSection(path)) {
@@ -124,27 +124,27 @@ public class CinematicUtil {
         }
     }
 
-   public void addCinematicPathPoint(String cinematicName, PathPoint pathPoint) {
-       File file = new File(plugin.getDataFolder() + File.separator + "cinematics.yml");
-       if (!file.exists()) {
-           file = createFile();
-       }
-       dataFile = YamlConfiguration.loadConfiguration(file);
-       String path = "cinematics." + cinematicName + ".points";
+    public void addCinematicPathPoint(String cinematicName, PathPoint pathPoint) {
+        File file = new File(plugin.getDataFolder() + File.separator + "cinematics.yml");
+        if (!file.exists()) {
+            file = createFile();
+        }
+        dataFile = YamlConfiguration.loadConfiguration(file);
+        String path = "cinematics." + cinematicName + ".points";
 
 
-       String pointPath = path + "." + (getCinematicPath(cinematicName).size() + 1);
+        String pointPath = path + "." + (getCinematicPath(cinematicName).size() + 1);
 
-       dataFile.set(pointPath + ".location", plugin.getLocationAPI().parseLocation(pathPoint.getLocation()));
-       dataFile.set(pointPath + ".speed", pathPoint.getTicksToPoint());
+        dataFile.set(pointPath + ".location", plugin.getLocationAPI().parseLocation(pathPoint.getLocation()));
+        dataFile.set(pointPath + ".speed", pathPoint.getTicksToPoint());
 
 
-       try {
-           saveFile();
-       } catch (IOException e) {
-           e.printStackTrace();
-       }
-   }
+        try {
+            saveFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void deleteCinematicPathPoint(String cinematicName, int index) {
         File file = new File(plugin.getDataFolder() + File.separator + "cinematics.yml");

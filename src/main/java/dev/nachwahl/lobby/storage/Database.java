@@ -2,8 +2,8 @@ package dev.nachwahl.lobby.storage;
 
 import co.aikar.idb.DB;
 import co.aikar.idb.DatabaseOptions;
-import co.aikar.idb.PooledDatabaseOptions;
 import co.aikar.idb.DbRow;
+import co.aikar.idb.PooledDatabaseOptions;
 import dev.nachwahl.lobby.LobbyPlugin;
 import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -38,7 +38,7 @@ public class Database {
 
         this.database = new HikariPooledDatabaseCustom(poolOptions);
         DB.setGlobalDatabase(this.database);
-        
+
         // Initialize and migrate database schema if needed
         try {
             initializeBOTMTable();
@@ -62,7 +62,7 @@ public class Database {
     private void initializeBOTMTable() throws SQLException {
         // Check if botm table exists
         boolean tableExists = checkTableExists("botm");
-        
+
         if (!tableExists) {
             // Create new table with current schema
             createNewBOTMTable();
@@ -72,7 +72,7 @@ public class Database {
 
         // Table exists, check if it has old or new structure
         boolean hasOldStructure = checkOldBOTMStructure();
-        
+
         if (hasOldStructure) {
             // Migrate from old structure to new structure
             migrateBOTMTable();
@@ -99,10 +99,10 @@ public class Database {
         try {
             List<DbRow> columns = this.database.getResults("SHOW COLUMNS FROM botm LIKE 'uuid'");
             boolean hasUuidColumn = !columns.isEmpty();
-            
+
             List<DbRow> scoreColumns = this.database.getResults("SHOW COLUMNS FROM botm LIKE 'score'");
             boolean hasScoreColumn = !scoreColumns.isEmpty();
-            
+
             return hasUuidColumn || hasScoreColumn;
         } catch (SQLException e) {
             // If we can't check columns, assume it's not old structure
@@ -124,7 +124,7 @@ public class Database {
                 "player3_uuid VARCHAR(36) NULL, " +
                 "UNIQUE KEY unique_month_year (year, month)" +
                 ")";
-        
+
         this.database.executeUpdate(createTableSQL);
     }
 
@@ -134,13 +134,13 @@ public class Database {
     private void migrateBOTMTable() throws SQLException {
         // Create backup table with old data
         this.database.executeUpdate("CREATE TABLE IF NOT EXISTS botm_backup AS SELECT * FROM botm");
-        
+
         // Drop the old table
         this.database.executeUpdate("DROP TABLE botm");
-        
+
         // Create new table with current schema
         createNewBOTMTable();
-        
+
         this.lobbyPlugin.getLogger().info("Old BOTM data has been backed up to 'botm_backup' table. " +
                 "The old simple scoring system has been replaced with the new monthly BOTM system. " +
                 "Manual data migration may be required if you want to preserve historical data.");
@@ -157,7 +157,7 @@ public class Database {
         addColumnIfNotExists("botm", "player1_uuid", "VARCHAR(36) NOT NULL DEFAULT ''");
         addColumnIfNotExists("botm", "player2_uuid", "VARCHAR(36) NULL");
         addColumnIfNotExists("botm", "player3_uuid", "VARCHAR(36) NULL");
-        
+
         // Add unique constraint if it doesn't exist
         try {
             this.database.executeUpdate("ALTER TABLE botm ADD UNIQUE KEY unique_month_year (year, month)");

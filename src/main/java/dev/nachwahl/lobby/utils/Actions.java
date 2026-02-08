@@ -8,7 +8,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class Actions {
-    private Actions() {}
+    private Actions() {
+    }
 
     public static void performJoinActions(@NotNull LobbyPlugin lobbyPlugin, Player player) {
         lobbyPlugin.getHotbarItems().setHotbarItems(player);

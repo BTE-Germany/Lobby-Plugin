@@ -22,11 +22,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerResourcePackStatusEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
@@ -55,7 +51,8 @@ public class PlayerEvents implements Listener {
         if (this.lobbyPlugin.getConfig().getString("resourcepack") != null) {
             if (player.getResourcePackStatus() == PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED && LobbyPlugin.getInstance().getHologramAPI().debugPlayer != null) {
                 LobbyPlugin.getInstance().getHologramAPI().sendDebugMsg(Component.text("Skipped resourcepack loading because its already loaded"));
-            } else player.setResourcePack("https://cdn.bte-germany.de/general/resourcepacks/resourcepack_bteg_" + this.lobbyPlugin.getConfig().getString("resourcepack") + ".zip", this.lobbyPlugin.getConfig().getString("resourcepack"), true, this.lobbyPlugin.getMiniMessage().deserialize("<red><b>Bitte akzeptiere unser Resourcepack um auf dem Server spielen zu können.\nPlease accept our resourcepack to play on our server.</b></red>"));
+            } else
+                player.setResourcePack("https://cdn.bte-germany.de/general/resourcepacks/resourcepack_bteg_" + this.lobbyPlugin.getConfig().getString("resourcepack") + ".zip", this.lobbyPlugin.getConfig().getString("resourcepack"), true, this.lobbyPlugin.getMiniMessage().deserialize("<red><b>Bitte akzeptiere unser Resourcepack um auf dem Server spielen zu können.\nPlease accept our resourcepack to play on our server.</b></red>"));
         }
         this.lobbyPlugin.getUserSettingsAPI().setDefaultSettings(player);
         DbRow user = this.lobbyPlugin.getDatabase().getFirstRow("SELECT * FROM privacy WHERE minecraftUUID = ?", player.getUniqueId().toString());
@@ -68,7 +65,7 @@ public class PlayerEvents implements Listener {
         }
 
         // Init scoreboard
-        if(player.hasPermission("lobby.scoreboard")) {
+        if (player.hasPermission("lobby.scoreboard")) {
             this.lobbyPlugin.getScoreboard().initScoreboard(player);
         }
 

@@ -1,9 +1,9 @@
 package dev.nachwahl.lobby.hologram;
 
+import de.oliver.fancyholograms.api.FancyHologramsPlugin;
+import de.oliver.fancyholograms.api.HologramManager;
 import de.oliver.fancyholograms.api.data.TextHologramData;
 import de.oliver.fancyholograms.api.data.property.Visibility;
-import de.oliver.fancyholograms.api.HologramManager;
-import de.oliver.fancyholograms.api.FancyHologramsPlugin;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;

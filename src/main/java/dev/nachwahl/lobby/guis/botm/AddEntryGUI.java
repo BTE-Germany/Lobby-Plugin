@@ -45,250 +45,250 @@ public class AddEntryGUI {
     public AddEntryGUI(LobbyPlugin lobbyPlugin, Player player) {
         this.lobbyPlugin = lobbyPlugin;
 
-        if(!EntryUtil.entries.containsKey(player)) {
+        if (!EntryUtil.entries.containsKey(player)) {
             EntryUtil.addEntry(player, month, year);
-        }else {
+        } else {
             month = EntryUtil.getEntry(player).getMonth();
             year = EntryUtil.getEntry(player).getYear();
         }
 
         Bukkit.getScheduler().runTask(this.lobbyPlugin, () ->
 
-            this.lobbyPlugin.getLanguageAPI().getLanguage(player, language -> {
+                this.lobbyPlugin.getLanguageAPI().getLanguage(player, language -> {
 
-                this.gui = Gui.gui()
-                        .title(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.add_entry"))
-                        .rows(3)
-                        .disableAllInteractions()
-                        .create();
+                    this.gui = Gui.gui()
+                            .title(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.add_entry"))
+                            .rows(3)
+                            .disableAllInteractions()
+                            .create();
 
-                this.gui.setItem(1, 2, PaperItemBuilder.from(Material.CLOCK)
-                        .amount(month)
-                        .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.date.month"))
-                        .asGuiItem(event -> {
-                            if (event.getClick() == ClickType.LEFT) {
-                                month++;
-                                if (month > 12) {
-                                    month = 1;
-                                    year++;
-                                }
-                            } else if (event.getClick() == ClickType.RIGHT) {
-                                month--;
-                                if (month < 1) {
-                                    month = 12;
-                                    year--;
-                                }
-                            }
-                            EntryUtil.getEntry(player).setMonth(month);
-                            EntryUtil.getEntry(player).setYear(year);
-                            new AddEntryGUI(lobbyPlugin, player);
-                        }));
-                this.gui.setItem(2, 2, PaperItemBuilder.from(Material.CLOCK)
-                        .amount(year)
-                        .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.date.year"))
-                                .asGuiItem(event -> {
-                                    if (event.getClick() == ClickType.LEFT) {
+                    this.gui.setItem(1, 2, PaperItemBuilder.from(Material.CLOCK)
+                            .amount(month)
+                            .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.date.month"))
+                            .asGuiItem(event -> {
+                                if (event.getClick() == ClickType.LEFT) {
+                                    month++;
+                                    if (month > 12) {
+                                        month = 1;
                                         year++;
-                                    } else if (event.getClick() == ClickType.RIGHT) {
+                                    }
+                                } else if (event.getClick() == ClickType.RIGHT) {
+                                    month--;
+                                    if (month < 1) {
+                                        month = 12;
                                         year--;
                                     }
-                                    EntryUtil.getEntry(player).setYear(year);
-                                    new AddEntryGUI(lobbyPlugin, player);
-                                }));
-
-                this.gui.setItem(2, 4, PaperItemBuilder.from(Material.NAME_TAG)
-                        .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.name"))
-                        .lore(Component.text("§7" + (EntryUtil.getEntry(player).getName() != null
-                                ? EntryUtil.getEntry(player).getName()
-                                : LegacyComponentSerializer.legacySection().serialize(
-                                this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.name_not_set")
-                        )
-                        )))
-                        .asGuiItem(event -> {
-                            new AnvilGUI.Builder()
-                                    .onClick((slot, snapshot) -> {
-                                           if (slot == AnvilGUI.Slot.OUTPUT) {
-                                               EntryUtil.getEntry(player).setName(snapshot.getText());
-                                               new AddEntryGUI(lobbyPlugin, player);
-                                           }
-                                            return AnvilGUI.Response.close();
-                                    })
-                                    .title(LegacyComponentSerializer.legacySection().serialize(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.entry_name_title")))
-                                    .text(LegacyComponentSerializer.legacySection().serialize(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.entry_name")))
-                                    .plugin(this.lobbyPlugin)
-                                    .open(player);
-                        }));
-
-                ItemStack player1_head = new ItemStack(Material.PLAYER_HEAD);
-                OfflinePlayer offlinePlayer1 = null;
-
-                if (EntryUtil.getEntry(player).getPlayer1() != null) {
-                    offlinePlayer1 = Bukkit.getOfflinePlayer(EntryUtil.getEntry(player).getPlayer1());
-                    SkullMeta player1_meta = (SkullMeta) player1_head.getItemMeta();
-                    player1_meta.displayName(Component.text(EntryUtil.getEntry(player).getPlayer1()));
-                    player1_meta.setOwningPlayer(offlinePlayer1);
-                    player1_head.setItemMeta(player1_meta);
-                }
-
-                this.gui.setItem(2, 6, PaperItemBuilder.from(player1_head)
-                        .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.player1"))
-                        .lore(Component.text("§7" + (EntryUtil.getEntry(player).getPlayer1() != null
-                                ? EntryUtil.getEntry(player).getPlayer1()
-                                : LegacyComponentSerializer.legacySection().serialize(
-                                this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.player_not_set")
-                        ))))
-                        .asGuiItem(event -> {
-                            new AnvilGUI.Builder()
-                                    .onClick((slot, snapshot) -> {
-                                        if (slot == AnvilGUI.Slot.OUTPUT) {
-                                            EntryUtil.getEntry(player).setPlayer1(snapshot.getText());
-                                            new AddEntryGUI(lobbyPlugin, player);
-                                        }
-                                        return AnvilGUI.Response.close();
-                                    })
-                                    .title(LegacyComponentSerializer.legacySection().serialize(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.entry_player1_title")))
-                                    .text(LegacyComponentSerializer.legacySection().serialize(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.entry_player1")))
-                                    .plugin(this.lobbyPlugin)
-                                    .open(player);
-                        }));
-              
-                ItemStack player2_head = new ItemStack(Material.PLAYER_HEAD);
-                OfflinePlayer offlinePlayer2 = null;
-
-                if (EntryUtil.getEntry(player).getPlayer2() != null) {
-                    offlinePlayer2 = Bukkit.getOfflinePlayer(EntryUtil.getEntry(player).getPlayer2());
-                    SkullMeta player2_meta = (SkullMeta) player2_head.getItemMeta();
-                    player2_meta.displayName(Component.text(EntryUtil.getEntry(player).getPlayer2()));
-                    player2_meta.setOwningPlayer(offlinePlayer2);
-                    player2_head.setItemMeta(player2_meta);
-                }
-
-                this.gui.setItem(2, 7, PaperItemBuilder.from(player2_head)
-                        .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.player2"))
-                        .lore(Component.text("§7" + (EntryUtil.getEntry(player).getPlayer2() != null
-                                ? EntryUtil.getEntry(player).getPlayer2()
-                                : LegacyComponentSerializer.legacySection().serialize(
-                                this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.player_not_set")
-                        )
-                        )))
-                        .asGuiItem(event -> {
-                            new AnvilGUI.Builder()
-                                    .onClick((slot, snapshot) -> {
-                                        if (slot == AnvilGUI.Slot.OUTPUT) {
-                                            EntryUtil.getEntry(player).setPlayer2(snapshot.getText());
-                                            new AddEntryGUI(lobbyPlugin, player);
-                                        }
-                                        return AnvilGUI.Response.close();
-                                    })
-                                    .title(LegacyComponentSerializer.legacySection().serialize(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.entry_player2_title")))
-                                    .text(LegacyComponentSerializer.legacySection().serialize(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.entry_player2")))
-                                    .plugin(this.lobbyPlugin)
-                                    .open(player);
-                        }));
-
-                ItemStack player3_head = new ItemStack(Material.PLAYER_HEAD);
-                OfflinePlayer offlinePlayer3 = null;
-
-                if (EntryUtil.getEntry(player).getPlayer3() != null) {
-                    offlinePlayer3 = Bukkit.getOfflinePlayer(EntryUtil.getEntry(player).getPlayer3());
-                    SkullMeta player3_meta = (SkullMeta) player3_head.getItemMeta();
-                    player3_meta.displayName(Component.text(EntryUtil.getEntry(player).getPlayer3()));
-                    player3_meta.setOwningPlayer(offlinePlayer3);
-                    player3_head.setItemMeta(player3_meta);
-                }
-
-                this.gui.setItem(2, 8, PaperItemBuilder.from(player3_head)
-                        .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.player3"))
-                        .lore(Component.text("§7" + (EntryUtil.getEntry(player).getPlayer3() != null
-                                ? EntryUtil.getEntry(player).getPlayer3()
-                                : LegacyComponentSerializer.legacySection().serialize(
-                                this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.player_not_set")
-                        )
-                        )))
-                        .asGuiItem(event -> {
-                            new AnvilGUI.Builder()
-                                    .onClick((slot, snapshot) -> {
-                                        if (slot == AnvilGUI.Slot.OUTPUT) {
-                                            EntryUtil.getEntry(player).setPlayer3(snapshot.getText());
-                                            new AddEntryGUI(lobbyPlugin, player);
-                                        }
-                                        return AnvilGUI.Response.close();
-                                    })
-                                    .title(LegacyComponentSerializer.legacySection().serialize(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.entry_player3_title")))
-                                    .text(LegacyComponentSerializer.legacySection().serialize(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.entry_player3")))
-                                    .plugin(this.lobbyPlugin)
-                                    .open(player);
-                        }));
-
-                this.gui.setItem(3, 9, PaperItemBuilder.from(ItemGenerator.customModel(Material.PAPER, "stars"))
-                        .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.confirm"))
-                        .asGuiItem(event -> {
-
-                            if(EntryUtil.getEntry(player).getName() == null ||
-                               EntryUtil.getEntry(player).getPlayer1() == null) {
-                                this.lobbyPlugin.getLanguageAPI().sendMessageToPlayer(player, "botm.incomplete");
-                                return;
-                            }
-
-                            //Luckperms Prefix
-                            RegisteredServiceProvider<LuckPerms> rsp = getServer().getServicesManager().getRegistration(LuckPerms.class);
-                            LuckPerms luckPerms = rsp.getProvider();
-
-                            List<DbRow> dbRows = null;
-                            try {
-                                dbRows = lobbyPlugin.getDatabase().getResults("SELECT player1_uuid, month, year FROM botm ORDER BY year DESC, month DESC LIMIT 1");
-                            } catch (SQLException e) {
-                                throw new RuntimeException(e);
-                            }
-                            if (!dbRows.isEmpty()) {
-                                DbRow row = dbRows.get(0);
-                                UUID old_winner = UUID.fromString(row.getString("player1_uuid"));
-                                luckPerms.getUserManager().modifyUser(old_winner, user -> {
-                                    user.data().remove(InheritanceNode.builder("botm").build());
-                                });
-                            }
-
-                            event.getInventory().close();
-                            try {
-                                boolean success = lobbyPlugin.getBotmScoreAPI().addEntry(
-                                        EntryUtil.getEntry(player).getName(),
-                                        EntryUtil.getEntry(player).getYear(),
-                                        EntryUtil.getEntry(player).getMonth(),
-                                        EntryUtil.getEntry(player).getPlayer1(),
-                                        EntryUtil.getEntry(player).getPlayer2(),
-                                        EntryUtil.getEntry(player).getPlayer3());
-
-                                if (success) {
-                                    this.lobbyPlugin.getLanguageAPI().sendMessageToPlayer(player, "botm.added");
-
-                                    luckPerms.getUserManager().modifyUser(
-                                    Bukkit.getOfflinePlayer(EntryUtil.getEntry(player).getPlayer1()).getUniqueId(),
-                                    user -> {
-                                        user.data().add(InheritanceNode.builder("botm").build());
-                                    });
-                                    EntryUtil.entries.remove(player);
-
-                                    try {
-                                        this.lobbyPlugin.getBotmScoreAPI().reload(player);
-                                    } catch (SQLException e) {
-                                        throw new RuntimeException(e);
-                                    } catch (ExecutionException e) {
-                                        throw new RuntimeException(e);
-                                    } catch (InterruptedException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                }else {
-                                // Entry already exists for this month and year
-                                this.lobbyPlugin.getLanguageAPI().sendMessageToPlayer(player, "botm.duplicate");
                                 }
-                            } catch (SQLException e) {
-                                throw new RuntimeException(e);
-                            }
-                    }));
+                                EntryUtil.getEntry(player).setMonth(month);
+                                EntryUtil.getEntry(player).setYear(year);
+                                new AddEntryGUI(lobbyPlugin, player);
+                            }));
+                    this.gui.setItem(2, 2, PaperItemBuilder.from(Material.CLOCK)
+                            .amount(year)
+                            .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.date.year"))
+                            .asGuiItem(event -> {
+                                if (event.getClick() == ClickType.LEFT) {
+                                    year++;
+                                } else if (event.getClick() == ClickType.RIGHT) {
+                                    year--;
+                                }
+                                EntryUtil.getEntry(player).setYear(year);
+                                new AddEntryGUI(lobbyPlugin, player);
+                            }));
 
-                this.gui.getFiller().fill(PaperItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());
+                    this.gui.setItem(2, 4, PaperItemBuilder.from(Material.NAME_TAG)
+                            .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.name"))
+                            .lore(Component.text("§7" + (EntryUtil.getEntry(player).getName() != null
+                                    ? EntryUtil.getEntry(player).getName()
+                                    : LegacyComponentSerializer.legacySection().serialize(
+                                    this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.name_not_set")
+                            )
+                            )))
+                            .asGuiItem(event -> {
+                                new AnvilGUI.Builder()
+                                        .onClick((slot, snapshot) -> {
+                                            if (slot == AnvilGUI.Slot.OUTPUT) {
+                                                EntryUtil.getEntry(player).setName(snapshot.getText());
+                                                new AddEntryGUI(lobbyPlugin, player);
+                                            }
+                                            return AnvilGUI.Response.close();
+                                        })
+                                        .title(LegacyComponentSerializer.legacySection().serialize(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.entry_name_title")))
+                                        .text(LegacyComponentSerializer.legacySection().serialize(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.entry_name")))
+                                        .plugin(this.lobbyPlugin)
+                                        .open(player);
+                            }));
 
-                this.gui.open(player);
-        }));
+                    ItemStack player1_head = new ItemStack(Material.PLAYER_HEAD);
+                    OfflinePlayer offlinePlayer1 = null;
+
+                    if (EntryUtil.getEntry(player).getPlayer1() != null) {
+                        offlinePlayer1 = Bukkit.getOfflinePlayer(EntryUtil.getEntry(player).getPlayer1());
+                        SkullMeta player1_meta = (SkullMeta) player1_head.getItemMeta();
+                        player1_meta.displayName(Component.text(EntryUtil.getEntry(player).getPlayer1()));
+                        player1_meta.setOwningPlayer(offlinePlayer1);
+                        player1_head.setItemMeta(player1_meta);
+                    }
+
+                    this.gui.setItem(2, 6, PaperItemBuilder.from(player1_head)
+                            .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.player1"))
+                            .lore(Component.text("§7" + (EntryUtil.getEntry(player).getPlayer1() != null
+                                    ? EntryUtil.getEntry(player).getPlayer1()
+                                    : LegacyComponentSerializer.legacySection().serialize(
+                                    this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.player_not_set")
+                            ))))
+                            .asGuiItem(event -> {
+                                new AnvilGUI.Builder()
+                                        .onClick((slot, snapshot) -> {
+                                            if (slot == AnvilGUI.Slot.OUTPUT) {
+                                                EntryUtil.getEntry(player).setPlayer1(snapshot.getText());
+                                                new AddEntryGUI(lobbyPlugin, player);
+                                            }
+                                            return AnvilGUI.Response.close();
+                                        })
+                                        .title(LegacyComponentSerializer.legacySection().serialize(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.entry_player1_title")))
+                                        .text(LegacyComponentSerializer.legacySection().serialize(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.entry_player1")))
+                                        .plugin(this.lobbyPlugin)
+                                        .open(player);
+                            }));
+
+                    ItemStack player2_head = new ItemStack(Material.PLAYER_HEAD);
+                    OfflinePlayer offlinePlayer2 = null;
+
+                    if (EntryUtil.getEntry(player).getPlayer2() != null) {
+                        offlinePlayer2 = Bukkit.getOfflinePlayer(EntryUtil.getEntry(player).getPlayer2());
+                        SkullMeta player2_meta = (SkullMeta) player2_head.getItemMeta();
+                        player2_meta.displayName(Component.text(EntryUtil.getEntry(player).getPlayer2()));
+                        player2_meta.setOwningPlayer(offlinePlayer2);
+                        player2_head.setItemMeta(player2_meta);
+                    }
+
+                    this.gui.setItem(2, 7, PaperItemBuilder.from(player2_head)
+                            .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.player2"))
+                            .lore(Component.text("§7" + (EntryUtil.getEntry(player).getPlayer2() != null
+                                    ? EntryUtil.getEntry(player).getPlayer2()
+                                    : LegacyComponentSerializer.legacySection().serialize(
+                                    this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.player_not_set")
+                            )
+                            )))
+                            .asGuiItem(event -> {
+                                new AnvilGUI.Builder()
+                                        .onClick((slot, snapshot) -> {
+                                            if (slot == AnvilGUI.Slot.OUTPUT) {
+                                                EntryUtil.getEntry(player).setPlayer2(snapshot.getText());
+                                                new AddEntryGUI(lobbyPlugin, player);
+                                            }
+                                            return AnvilGUI.Response.close();
+                                        })
+                                        .title(LegacyComponentSerializer.legacySection().serialize(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.entry_player2_title")))
+                                        .text(LegacyComponentSerializer.legacySection().serialize(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.entry_player2")))
+                                        .plugin(this.lobbyPlugin)
+                                        .open(player);
+                            }));
+
+                    ItemStack player3_head = new ItemStack(Material.PLAYER_HEAD);
+                    OfflinePlayer offlinePlayer3 = null;
+
+                    if (EntryUtil.getEntry(player).getPlayer3() != null) {
+                        offlinePlayer3 = Bukkit.getOfflinePlayer(EntryUtil.getEntry(player).getPlayer3());
+                        SkullMeta player3_meta = (SkullMeta) player3_head.getItemMeta();
+                        player3_meta.displayName(Component.text(EntryUtil.getEntry(player).getPlayer3()));
+                        player3_meta.setOwningPlayer(offlinePlayer3);
+                        player3_head.setItemMeta(player3_meta);
+                    }
+
+                    this.gui.setItem(2, 8, PaperItemBuilder.from(player3_head)
+                            .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.player3"))
+                            .lore(Component.text("§7" + (EntryUtil.getEntry(player).getPlayer3() != null
+                                    ? EntryUtil.getEntry(player).getPlayer3()
+                                    : LegacyComponentSerializer.legacySection().serialize(
+                                    this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.player_not_set")
+                            )
+                            )))
+                            .asGuiItem(event -> {
+                                new AnvilGUI.Builder()
+                                        .onClick((slot, snapshot) -> {
+                                            if (slot == AnvilGUI.Slot.OUTPUT) {
+                                                EntryUtil.getEntry(player).setPlayer3(snapshot.getText());
+                                                new AddEntryGUI(lobbyPlugin, player);
+                                            }
+                                            return AnvilGUI.Response.close();
+                                        })
+                                        .title(LegacyComponentSerializer.legacySection().serialize(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.entry_player3_title")))
+                                        .text(LegacyComponentSerializer.legacySection().serialize(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.entry_player3")))
+                                        .plugin(this.lobbyPlugin)
+                                        .open(player);
+                            }));
+
+                    this.gui.setItem(3, 9, PaperItemBuilder.from(ItemGenerator.customModel(Material.PAPER, "stars"))
+                            .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm-gui.confirm"))
+                            .asGuiItem(event -> {
+
+                                if (EntryUtil.getEntry(player).getName() == null ||
+                                        EntryUtil.getEntry(player).getPlayer1() == null) {
+                                    this.lobbyPlugin.getLanguageAPI().sendMessageToPlayer(player, "botm.incomplete");
+                                    return;
+                                }
+
+                                //Luckperms Prefix
+                                RegisteredServiceProvider<LuckPerms> rsp = getServer().getServicesManager().getRegistration(LuckPerms.class);
+                                LuckPerms luckPerms = rsp.getProvider();
+
+                                List<DbRow> dbRows = null;
+                                try {
+                                    dbRows = lobbyPlugin.getDatabase().getResults("SELECT player1_uuid, month, year FROM botm ORDER BY year DESC, month DESC LIMIT 1");
+                                } catch (SQLException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                if (!dbRows.isEmpty()) {
+                                    DbRow row = dbRows.get(0);
+                                    UUID old_winner = UUID.fromString(row.getString("player1_uuid"));
+                                    luckPerms.getUserManager().modifyUser(old_winner, user -> {
+                                        user.data().remove(InheritanceNode.builder("botm").build());
+                                    });
+                                }
+
+                                event.getInventory().close();
+                                try {
+                                    boolean success = lobbyPlugin.getBotmScoreAPI().addEntry(
+                                            EntryUtil.getEntry(player).getName(),
+                                            EntryUtil.getEntry(player).getYear(),
+                                            EntryUtil.getEntry(player).getMonth(),
+                                            EntryUtil.getEntry(player).getPlayer1(),
+                                            EntryUtil.getEntry(player).getPlayer2(),
+                                            EntryUtil.getEntry(player).getPlayer3());
+
+                                    if (success) {
+                                        this.lobbyPlugin.getLanguageAPI().sendMessageToPlayer(player, "botm.added");
+
+                                        luckPerms.getUserManager().modifyUser(
+                                                Bukkit.getOfflinePlayer(EntryUtil.getEntry(player).getPlayer1()).getUniqueId(),
+                                                user -> {
+                                                    user.data().add(InheritanceNode.builder("botm").build());
+                                                });
+                                        EntryUtil.entries.remove(player);
+
+                                        try {
+                                            this.lobbyPlugin.getBotmScoreAPI().reload(player);
+                                        } catch (SQLException e) {
+                                            throw new RuntimeException(e);
+                                        } catch (ExecutionException e) {
+                                            throw new RuntimeException(e);
+                                        } catch (InterruptedException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    } else {
+                                        // Entry already exists for this month and year
+                                        this.lobbyPlugin.getLanguageAPI().sendMessageToPlayer(player, "botm.duplicate");
+                                    }
+                                } catch (SQLException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }));
+
+                    this.gui.getFiller().fill(PaperItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());
+
+                    this.gui.open(player);
+                }));
     }
 }

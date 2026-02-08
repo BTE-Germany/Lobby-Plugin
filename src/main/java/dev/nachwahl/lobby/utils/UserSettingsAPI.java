@@ -90,7 +90,8 @@ public class UserSettingsAPI {
                 callback.accept(cache);
             }
         } catch (Exception e) {
-            LobbyPlugin.getInstance().getComponentLogger().error("Error accored when getting Player Settings.", e);;
+            LobbyPlugin.getInstance().getComponentLogger().error("Error accored when getting Player Settings.", e);
+            ;
         }
     }
 
@@ -109,8 +110,11 @@ public class UserSettingsAPI {
     }
 
     public void setDefaultSettings(Player player) {
-        this.setSettingIfNotExistant(player, "playerVisibility", "1", i -> {});
-        this.setSettingIfNotExistant(player, "realTime", "1", i -> {});
-        this.setSettingIfNotExistant(player, "playerPickup", "0", i -> {});
+        this.setSettingIfNotExistant(player, "playerVisibility", "1", i -> {
+        });
+        this.setSettingIfNotExistant(player, "realTime", "1", i -> {
+        });
+        this.setSettingIfNotExistant(player, "playerPickup", "0", i -> {
+        });
     }
 }

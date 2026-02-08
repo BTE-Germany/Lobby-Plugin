@@ -45,7 +45,7 @@ public class BOTMConfirm {
                         } catch (InterruptedException e) {
                             throw new RuntimeException(e);
                         }
-            }));
+                    }));
 
             this.gui.setItem(2, 7, ItemBuilder.from(Material.RED_WOOL)
                     .name(lobbyPlugin.getLanguageAPI().getMessage(language, "botm.confirm.no"))
@@ -56,7 +56,7 @@ public class BOTMConfirm {
                             this.lobbyPlugin.getLanguageAPI().sendMessageToPlayer(player, "botm.list.error");
                             throw new RuntimeException(e);
                         }
-            }));
+                    }));
 
             this.gui.getFiller().fill(ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());
 

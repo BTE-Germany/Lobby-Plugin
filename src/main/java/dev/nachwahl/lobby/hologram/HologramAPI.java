@@ -2,6 +2,7 @@ package dev.nachwahl.lobby.hologram;
 
 import dev.nachwahl.lobby.LobbyPlugin;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -9,13 +10,12 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
-import net.kyori.adventure.text.Component;
-import java.util.Objects;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
 public class HologramAPI {
@@ -35,8 +35,8 @@ public class HologramAPI {
 
     public HologramAPI(LobbyPlugin plugin) {
         this.plugin = plugin;
-            holograms = new ArrayList<>();
-            customHolograms = new HashMap<>();
+        holograms = new ArrayList<>();
+        customHolograms = new HashMap<>();
     }
 
     public void loadData() {
@@ -59,7 +59,7 @@ public class HologramAPI {
             if (world == null) return;
 
             holograms.add(new Hologram(new org.bukkit.Location(world, Double.parseDouble(location[1]), Double.parseDouble(location[2]),
-                Double.parseDouble(location[3])), englishText, germanText, key));
+                    Double.parseDouble(location[3])), englishText, germanText, key));
         }
     }
 
@@ -77,7 +77,7 @@ public class HologramAPI {
                 dataFile = YamlConfiguration.loadConfiguration(file);
                 dataFile.set(SECTION + ".example.location", "world/10/100/10");
                 dataFile.set(SECTION + ".example.english", "Test Hologram;");
-                dataFile.set( SECTION + ".example.german", "Test Hologram in deutsch;");
+                dataFile.set(SECTION + ".example.german", "Test Hologram in deutsch;");
                 saveFile();
                 return file;
             } catch (IOException e) {

@@ -39,7 +39,7 @@ public class TutorialGUI {
                     .asGuiItem(event -> {
                         event.getInventory().close();
                         player.sendMessage(this.lobbyPlugin.getLanguageAPI().getMessage(language, "help.apply.message")
-                            .clickEvent(net.kyori.adventure.text.event.ClickEvent.openUrl("https://buildtheearth.net/teams/de/apply")));
+                                .clickEvent(net.kyori.adventure.text.event.ClickEvent.openUrl("https://buildtheearth.net/teams/de/apply")));
                     }));
 
 

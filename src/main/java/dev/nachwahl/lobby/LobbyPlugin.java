@@ -92,12 +92,12 @@ public final class LobbyPlugin extends JavaPlugin implements PluginMessageListen
         this.cinematicUtil = new CinematicUtil(this);
         cinematicUtil.createFile();
 
-        if(Bukkit.getPluginManager().getPlugin("BTEG-Cosmetics") != null) {
+        if (Bukkit.getPluginManager().getPlugin("BTEG-Cosmetics") != null) {
             Cosmetics cosmetics = (Cosmetics) Bukkit.getServer().getPluginManager().getPlugin("BTEG-Cosmetics");
             this.cosmeticsInstance = cosmetics;
             scoreboard = new Scoreboard(this, cosmetics);
             Bukkit.getLogger().info("Cosmetics Plugin gefunden.");
-        }else{
+        } else {
             Bukkit.getLogger().severe("Cosmetics Plugin nicht gefunden.");
         }
 
@@ -105,7 +105,7 @@ public final class LobbyPlugin extends JavaPlugin implements PluginMessageListen
             new LobbyPlaceholderExpansion(this).register();
         }
 
-        for(Player player : Bukkit.getOnlinePlayers()){
+        for (Player player : Bukkit.getOnlinePlayers()) {
             scoreboard.initScoreboard(player);
         }
 
@@ -213,9 +213,6 @@ public final class LobbyPlugin extends JavaPlugin implements PluginMessageListen
         this.manager.registerCommand(new CinematicCommand(cinematicUtil));
         this.manager.registerCommand(new BOTMCommand(this));
     }
-
-
-
 
 
     @Override

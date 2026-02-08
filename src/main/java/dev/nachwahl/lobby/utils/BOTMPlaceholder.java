@@ -57,19 +57,19 @@ public class BOTMPlaceholder extends PlaceholderExpansion {
                 List<Pair<Integer, Map.Entry<String, Integer>>> ranking = new java.util.ArrayList<>();
                 int rank = 1;
                 int count = 0;
-                for(Map.Entry<String, Integer>score : scores) {
+                for (Map.Entry<String, Integer> score : scores) {
                     count++;
-                    if(scores.indexOf(score) == 0) {
+                    if (scores.indexOf(score) == 0) {
                         ranking.add(Pair.of(rank, score));
                         continue;
                     }
-                    if(!Objects.equals(score.getValue(), scores.get(scores.indexOf(score) - 1).getValue())) {
+                    if (!Objects.equals(score.getValue(), scores.get(scores.indexOf(score) - 1).getValue())) {
                         rank = count;
                     }
                     ranking.add(Pair.of(rank, score));
                 }
 
-                for(Map.Entry<Integer, Map.Entry<String, Integer>>rankedEntry : ranking) {
+                for (Map.Entry<Integer, Map.Entry<String, Integer>> rankedEntry : ranking) {
                     if (rankedEntry.getValue().getKey().equals(uuid.toString())) {
                         position = String.valueOf(rankedEntry.getKey());
                         break;

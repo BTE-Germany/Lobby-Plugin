@@ -70,7 +70,7 @@ public class MiniGameBlockUtil {
                 saveFile();
                 return file;
             } catch (IOException e) {
-                LobbyPlugin.getInstance().getComponentLogger().error(Component.text("Error accorded while writing " +  FILE_NAME + " file."), e);
+                LobbyPlugin.getInstance().getComponentLogger().error(Component.text("Error accorded while writing " + FILE_NAME + " file."), e);
             }
         }
         return null;

@@ -1,7 +1,10 @@
 package dev.nachwahl.lobby.cinematic;
 
 import com.destroystokyo.paper.Title;
-import org.bukkit.*;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
@@ -28,7 +31,7 @@ public class PlayerCinematic {
     private double totalDistance = 0;
     private boolean useDefinedTime = true;
 
-    public PlayerCinematic(Plugin plugin){
+    public PlayerCinematic(Plugin plugin) {
         this.plugin = plugin;
     }
 
@@ -47,12 +50,12 @@ public class PlayerCinematic {
     private void runNextInterpolation(@NotNull Player player, boolean isLinear) {
         GameMode previousGameMode = player.getGameMode();
         player.setGameMode(GameMode.SPECTATOR);
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS,9999,2,false,false));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 9999, 2, false, false));
         if (currentPointIndex < cameraPoints.size() - 1) {
             CompletableFuture<Void> future;
             PathPoint originPoint = cameraPoints.get(currentPointIndex);
             PathPoint targetPoint = cameraPoints.get(currentPointIndex + 1);
-            if(isLinear) {
+            if (isLinear) {
                 future = runLinearInterpolationTask(player, originPoint, targetPoint, true);
             } else {
                 future = runLinearInterpolationTask(player, originPoint, targetPoint, false);
@@ -78,11 +81,11 @@ public class PlayerCinematic {
         String chatMessage = originPoint.getChatMessage();
         Sound sound = originPoint.getSound();
 
-        if(title != null && subtitle != null) {
+        if (title != null && subtitle != null) {
             Title.builder().title(title).subtitle(subtitle).fadeIn(20).fadeOut(30).build().send(player);
         }
-        if(chatMessage != null) player.sendMessage(chatMessage);
-        if(sound != null) player.playSound(player, sound,70,0);
+        if (chatMessage != null) player.sendMessage(chatMessage);
+        if (sound != null) player.playSound(player, sound, 70, 0);
 
         CompletableFuture<Void> future = new CompletableFuture<>();
         Location originLocation = originPoint.getLocation();
@@ -91,12 +94,12 @@ public class PlayerCinematic {
         double distanceBetweenPoints = targetLocation.distance(originLocation);
         double ticks = targetPoint.getTicksToPoint();
 
-        if(totalTicks == 0) {
+        if (totalTicks == 0) {
             useDefinedTime = false;
             // wenn keine ticks angegeben wird distanz zwischen punkten berechnet und diese mit 10 multipliziert
             if (ticks == 0 || ticks == 20.0) {
                 totalTicks = distanceBetweenPoints * 10; // 40 normal value
-            }else{
+            } else {
                 totalTicks = ticks;
             }
         }
@@ -113,7 +116,7 @@ public class PlayerCinematic {
                 if (!useDefinedTime) {
                     ticksForThisSegment = totalTicks;
                 }
-                System.out.println("Totalticks: "+ totalTicks+", Ticks-per-segment: "+ticksForThisSegment);
+                System.out.println("Totalticks: " + totalTicks + ", Ticks-per-segment: " + ticksForThisSegment);
                 if (currentTick <= ticksForThisSegment) {
                     double t = currentTick / ticksForThisSegment;
 /*
@@ -127,7 +130,7 @@ public class PlayerCinematic {
                     Location interpolatedLocation = new Location(world, x, y, z, yaw, pitch);
 
  */
-                    Location interpolatedLocation = interpolate(linear,originLocation, targetLocation, t); //kubic
+                    Location interpolatedLocation = interpolate(linear, originLocation, targetLocation, t); //kubic
                     player.teleport(interpolatedLocation);
 
                     currentTick++;
@@ -165,7 +168,7 @@ public class PlayerCinematic {
                 case "h":
                     return amount * 20L * 60L * 60L; // 20 Ticks pro Sekunde * 60 Sekunden pro Minute * 60 Minuten pro Stunde
             }
-        }else{
+        } else {
             return Integer.parseInt(timeString);
         }
 
@@ -173,20 +176,20 @@ public class PlayerCinematic {
         return 0;
     }
 
-    private Location interpolate(boolean linear,Location start, Location end, double t) {
+    private Location interpolate(boolean linear, Location start, Location end, double t) {
         double x;
         double y;
         double z;
         float yaw;
         float pitch;
 
-        if(linear){
+        if (linear) {
             x = lerp(start.getX(), end.getX(), t);
             y = lerp(start.getY(), end.getY(), t);
             z = lerp(start.getZ(), end.getZ(), t);
             yaw = (float) lerp(start.getYaw(), end.getYaw(), t);
             pitch = (float) lerp(start.getPitch(), end.getPitch(), t);
-        }else {
+        } else {
             double[] coefficients = calculateSplineCoefficients(start, end);
             double t2 = t * t;
             double t3 = t2 * t;

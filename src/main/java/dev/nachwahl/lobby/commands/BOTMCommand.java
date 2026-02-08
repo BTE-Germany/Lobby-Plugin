@@ -1,7 +1,9 @@
 package dev.nachwahl.lobby.commands;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.*;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Default;
 import dev.nachwahl.lobby.LobbyPlugin;
 import dev.nachwahl.lobby.guis.botm.BOTMGUI;
 import org.bukkit.command.CommandSender;
