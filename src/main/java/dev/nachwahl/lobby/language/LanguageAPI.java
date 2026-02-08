@@ -12,16 +12,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -181,23 +179,10 @@ public class LanguageAPI {
         }
     }
 
-    public void setLanguage(Language language, @NotNull Player player) {
-        this.lobbyPlugin.getDatabase().getFirstRowAsync("SELECT * FROM langUsers WHERE uuid = ?", player.getUniqueId().toString()).thenAccept(row -> {
-            if (row == null) {
-                this.lobbyPlugin.getDatabase().executeUpdateAsync("INSERT INTO langUsers (uuid, lang) VALUES (?, ?)", player.getUniqueId().toString(), language.getLang()).thenAccept(integer -> {
-                    this.languageCache.put(player.getUniqueId(), language);
-                    this.lobbyPlugin.getLanguageAPI().sendMessageToPlayer(player, "languageChanged");
-                    LobbyPlugin.getInstance().getHologramAPI().sendDebugMsg(Component.text("INSERT LANG Set Language Permission to " + getPermissionFromLanguage(language)));
-                    this.lobbyPlugin.getHotbarItems().setHotbarItems(player);
-                });
-            } else {
-                this.lobbyPlugin.getDatabase().executeUpdateAsync("UPDATE langUsers SET lang = ? WHERE uuid = ?", language.getLang(), player.getUniqueId().toString()).thenAccept(integer -> {
-                    this.languageCache.put(player.getUniqueId(), language);
-                    this.lobbyPlugin.getLanguageAPI().sendMessageToPlayer(player, "languageChanged");
-                    LobbyPlugin.getInstance().getHologramAPI().sendDebugMsg(Component.text("INSERT LANG Set Language Permission to " + getPermissionFromLanguage(language)));
-                    this.lobbyPlugin.getHotbarItems().setHotbarItems(player);
-                });
-            }
-        });
+    public void setLanguage(@NonNull Language language, @NotNull Player player) {
+        this.lobbyPlugin.getCosmeticsInstance().getLanguageAPI().setLanguage(player, dev.nachwahl.cosmetics.storage.api.language.Language.fromString(language.getLang()));
+        if (Objects.equals(this.lobbyPlugin.getCosmeticsInstance().getLanguageAPI().getLanguage(player).getLang(), language.getLang())) {
+            this.languageCache.put(player.getUniqueId(), language);
+        }
     }
 }

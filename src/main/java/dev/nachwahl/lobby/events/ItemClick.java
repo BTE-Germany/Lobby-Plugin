@@ -94,15 +94,15 @@ public class ItemClick implements Listener {
 
         }
 
-        if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
-            if (!player.getPassengers().isEmpty()) {
-                Player passenger = (Player) player.getPassengers().get(0);
-                player.removePassenger(passenger);
+        if ((event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) && !player.getPassengers().isEmpty()) {
+                Player passenger = (Player) player.getPassengers().stream().filter(Player.class::isInstance).findFirst().orElse(null);
 
+                if (passenger == null) return;
+                player.removePassenger(passenger);
                 Vector v = passenger.getLocation().getDirection().multiply(2D).setY(2D);
                 passenger.setVelocity(v);
             }
-        }
+
     }
 
     @EventHandler
