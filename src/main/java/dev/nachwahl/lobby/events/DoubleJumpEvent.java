@@ -1,6 +1,6 @@
 package dev.nachwahl.lobby.events;
 
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -12,10 +12,10 @@ import org.bukkit.util.Vector;
 
 public class DoubleJumpEvent implements Listener {
 
-    private Lobby lobby;
+    private LobbyPlugin lobbyPlugin;
 
-    public DoubleJumpEvent(Lobby lobby) {
-        this.lobby = lobby;
+    public DoubleJumpEvent(LobbyPlugin lobbyPlugin) {
+        this.lobbyPlugin = lobbyPlugin;
     }
 
     @EventHandler

@@ -1,6 +1,6 @@
 package dev.nachwahl.lobby.leaderboards;
 
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import dev.nachwahl.lobby.language.Language;
 import dev.nachwahl.lobby.plan.user.User;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -15,8 +15,8 @@ import java.util.concurrent.TimeUnit;
 public class PlaytimeLeaderboard extends Leaderboard {
 
 
-    public PlaytimeLeaderboard(Lobby lobby, String loc) throws SQLException {
-        super(lobby, loc);
+    public PlaytimeLeaderboard(LobbyPlugin lobbyPlugin, String loc) throws SQLException {
+        super(lobbyPlugin, loc);
     }
 
     @Override

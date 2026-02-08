@@ -1,6 +1,6 @@
 package dev.nachwahl.lobby.quests;
 
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -70,7 +70,7 @@ public class Quest {
         this.playerContents = player.getInventory().getContents();
         this.startLocation = player.getLocation();
         player.getInventory().clear();
-        Lobby.getInstance().getEditModePlayers().add(player);
+        LobbyPlugin.getInstance().getEditModePlayers().add(player);
     }
 
     public void stopQuest() {
@@ -78,8 +78,8 @@ public class Quest {
         this.player.getInventory().setArmorContents(playerArmor);
         this.player.getInventory().setContents(playerContents);
         this.player.teleport(this.startLocation);
-        Lobby.getInstance().getQuestManager().removeQuest(this);
-        Lobby.getInstance().getEditModePlayers().remove(player);
+        LobbyPlugin.getInstance().getQuestManager().removeQuest(this);
+        LobbyPlugin.getInstance().getEditModePlayers().remove(player);
     }
 
     public void resetQuest() {

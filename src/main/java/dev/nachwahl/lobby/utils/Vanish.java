@@ -1,6 +1,6 @@
 package dev.nachwahl.lobby.utils;
 
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -41,10 +41,10 @@ public class Vanish {
     private void updateVisibility(Player player, boolean show) {
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (show) {
-                p.showPlayer(Lobby.getInstance(), player);
+                p.showPlayer(LobbyPlugin.getInstance(), player);
             } else {
                 if (!p.hasPermission("lobby.vanish")) {
-                    p.hidePlayer(Lobby.getInstance(), player);
+                    p.hidePlayer(LobbyPlugin.getInstance(), player);
                 }
             }
         }

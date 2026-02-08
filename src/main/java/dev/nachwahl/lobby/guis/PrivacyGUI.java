@@ -1,6 +1,6 @@
 package dev.nachwahl.lobby.guis;
 
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import dev.nachwahl.lobby.utils.Actions;
 import dev.triumphteam.gui.builder.item.PaperItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
@@ -16,10 +16,10 @@ import java.sql.SQLException;
 public class PrivacyGUI {
 
     private final Gui gui;
-    private final Lobby lobby;
+    private final LobbyPlugin lobbyPlugin;
 
-    public PrivacyGUI(Player player, Lobby lobby) {
-        this.lobby = lobby;
+    public PrivacyGUI(Player player, LobbyPlugin lobbyPlugin) {
+        this.lobbyPlugin = lobbyPlugin;
         var mm = MiniMessage.miniMessage();
         this.gui = Gui.gui()
                 .title(mm.deserialize("<color:#383838>▶</color> <color:#0058e6><i>Datenschutz</i> </color> <color:#383838>/</color> <color:#0058e6><i>Privacy</i> </color> <color:#383838>◀</color>"))
@@ -42,10 +42,10 @@ public class PrivacyGUI {
                 .name(mm.deserialize("<color:#3dff2b><b>Akzeptieren / Accept</b></color>"))
                 .asGuiItem(event -> {
                     try {
-                        this.lobby.getDatabase().executeInsert("INSERT INTO privacy (minecraftUUID) VALUES (?)", player.getUniqueId().toString());
+                        this.lobbyPlugin.getDatabase().executeInsert("INSERT INTO privacy (minecraftUUID) VALUES (?)", player.getUniqueId().toString());
 
-                        Actions.performJoinActions(lobby, player);
-                        new LanguageGUI(this.lobby, player);
+                        Actions.performJoinActions(lobbyPlugin, player);
+                        new LanguageGUI(this.lobbyPlugin, player);
                     } catch (SQLException exception) {
                         exception.printStackTrace();
                     }

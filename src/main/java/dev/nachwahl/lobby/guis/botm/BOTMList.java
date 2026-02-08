@@ -1,8 +1,7 @@
 package dev.nachwahl.lobby.guis.botm;
 
 import co.aikar.idb.DbRow;
-import dev.nachwahl.lobby.Lobby;
-import dev.nachwahl.lobby.utils.BOTMScoreAPI;
+import dev.nachwahl.lobby.LobbyPlugin;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import lombok.Getter;
@@ -13,7 +12,6 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.sql.SQLException;
@@ -25,19 +23,19 @@ public class BOTMList {
 
     @Getter
     public static Gui gui;
-    private final Lobby lobby;
+    private final LobbyPlugin lobbyPlugin;
 
-    public BOTMList(Lobby lobby, Player player, int page) throws SQLException {
-        this.lobby = lobby;
+    public BOTMList(LobbyPlugin lobbyPlugin, Player player, int page) throws SQLException {
+        this.lobbyPlugin = lobbyPlugin;
 
-        List<DbRow> botmEntries = lobby.getDatabase().getResults("SELECT * FROM botm ORDER BY year DESC, month DESC");
+        List<DbRow> botmEntries = lobbyPlugin.getDatabase().getResults("SELECT * FROM botm ORDER BY year DESC, month DESC");
         int currentPage = page;
         int maxPage = (int) Math.ceil((double) botmEntries.size() / 6);
 
-        this.lobby.getLanguageAPI().getLanguage(player, language -> {
+        this.lobbyPlugin.getLanguageAPI().getLanguage(player, language -> {
 
             this.gui = Gui.gui()
-                    .title(this.lobby.getLanguageAPI().getMessage(language, "botm.list.title"))
+                    .title(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.title"))
                     .rows(6)
                     .disableAllInteractions()
                     .create();
@@ -54,16 +52,16 @@ public class BOTMList {
                 String player2_name = null;
                 String player3_name = null;
                 try {
-                    player1_name = this.lobby.getBotmScoreAPI().getPlayerName(UUID.fromString(entry.getString("player1_uuid"))).get();
-                    player2_name = entry.getString("player2_uuid") != null ? this.lobby.getBotmScoreAPI().getPlayerName(UUID.fromString(entry.getString("player2_uuid"))).get() : null;
-                    player3_name = entry.getString("player3_uuid") != null ? this.lobby.getBotmScoreAPI().getPlayerName(UUID.fromString(entry.getString("player3_uuid"))).get() : null;
+                    player1_name = this.lobbyPlugin.getBotmScoreAPI().getPlayerName(UUID.fromString(entry.getString("player1_uuid"))).get();
+                    player2_name = entry.getString("player2_uuid") != null ? this.lobbyPlugin.getBotmScoreAPI().getPlayerName(UUID.fromString(entry.getString("player2_uuid"))).get() : null;
+                    player3_name = entry.getString("player3_uuid") != null ? this.lobbyPlugin.getBotmScoreAPI().getPlayerName(UUID.fromString(entry.getString("player3_uuid"))).get() : null;
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 } catch (ExecutionException e) {
                     throw new RuntimeException(e);
                 }
 
-                Component year_component = this.lobby.getLanguageAPI().getMessage(language, "botm.list.item.year");
+                Component year_component = this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.year");
                 String year_text = PlainTextComponentSerializer.plainText().serialize(year_component) + ": 20" + year;
 
                 this.gui.setItem(i + 1, 2, ItemBuilder.from(Material.CLOCK)
@@ -72,8 +70,8 @@ public class BOTMList {
                         .asGuiItem()
                 );
 
-                Component month_component_1 = this.lobby.getLanguageAPI().getMessage(language, "botm.list.item.month");
-                Component month_component_2 = this.lobby.getLanguageAPI().getMessage(language, "month." + month);
+                Component month_component_1 = this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.month");
+                Component month_component_2 = this.lobbyPlugin.getLanguageAPI().getMessage(language, "month." + month);
                 String month_text = PlainTextComponentSerializer.plainText().serialize(month_component_1) + ": " + PlainTextComponentSerializer.plainText().serialize(month_component_2);
 
 
@@ -98,7 +96,7 @@ public class BOTMList {
 
                 this.gui.setItem(i + 1, 5, ItemBuilder.from(player1_head)
                         .name(Component.text(player1_name))
-                        .lore(offlinePlayer1.getLastSeen() == 0 ? this.lobby.getLanguageAPI().getMessage(language, "botm.list.item.offline_player_error") : null)
+                        .lore(offlinePlayer1.getLastSeen() == 0 ? this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.offline_player_error") : null)
                         .asGuiItem()
                 );
 
@@ -114,12 +112,12 @@ public class BOTMList {
 
                     this.gui.setItem(i + 1, 6, ItemBuilder.from(player2_head)
                             .name(Component.text(player2_name))
-                            .lore(offlinePlayer2.getLastSeen() == 0 ? this.lobby.getLanguageAPI().getMessage(language, "botm.list.item.offline_player_error") : null)
+                            .lore(offlinePlayer2.getLastSeen() == 0 ? this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.offline_player_error") : null)
                             .asGuiItem()
                     );
                 }else{
                     this.gui.setItem(i + 1, 6, ItemBuilder.from(Material.STRUCTURE_VOID)
-                            .name(this.lobby.getLanguageAPI().getMessage(language, "botm.list.item.noplayer"))
+                            .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.noplayer"))
                             .asGuiItem()
                     );
                 }
@@ -136,20 +134,20 @@ public class BOTMList {
 
                     this.gui.setItem(i + 1, 7, ItemBuilder.from(player3_head)
                             .name(Component.text(player3_name))
-                            .lore(offlinePlayer3.getLastSeen() == 0 ? this.lobby.getLanguageAPI().getMessage(language, "botm.list.item.offline_player_error") : null)
+                            .lore(offlinePlayer3.getLastSeen() == 0 ? this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.offline_player_error") : null)
                             .asGuiItem()
                     );
                 }else{
                     this.gui.setItem(i + 1, 7, ItemBuilder.from(Material.STRUCTURE_VOID)
-                            .name(this.lobby.getLanguageAPI().getMessage(language, "botm.list.item.noplayer"))
+                            .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.noplayer"))
                             .asGuiItem()
                     );
                 }
 
                 this.gui.setItem(i + 1, 8, ItemBuilder.from(Material.BARRIER)
-                        .name(this.lobby.getLanguageAPI().getMessage(language, "botm.list.item.delete"))
+                        .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.delete"))
                         .asGuiItem(event -> {
-                            new BOTMConfirm(this.lobby, player, currentPage, year, month);
+                            new BOTMConfirm(this.lobbyPlugin, player, currentPage, year, month);
                         })
                 );
 
@@ -157,40 +155,40 @@ public class BOTMList {
 
             if (currentPage > 1) {
                 this.gui.setItem(1, 1, ItemBuilder.from(Material.ARROW)
-                        .name(this.lobby.getLanguageAPI().getMessage(language, "botm.list.item.previous"))
+                        .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.previous"))
                         .asGuiItem(event -> {
 
                             try {
-                                new BOTMList(this.lobby, player, currentPage - 1);
+                                new BOTMList(this.lobbyPlugin, player, currentPage - 1);
                             }catch (SQLException e){
-                                this.lobby.getLanguageAPI().sendMessageToPlayer(player, "botm.list.error");
+                                this.lobbyPlugin.getLanguageAPI().sendMessageToPlayer(player, "botm.list.error");
                             }
 
                         })
                 );
             }else {
                 this.gui.setItem(1, 1, ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE)
-                        .name(this.lobby.getLanguageAPI().getMessage(language, "botm.list.item.unavailable"))
+                        .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.unavailable"))
                         .asGuiItem()
                 );
             }
 
             if (currentPage < maxPage) {
                 this.gui.setItem(1, 9, ItemBuilder.from(Material.ARROW)
-                        .name(this.lobby.getLanguageAPI().getMessage(language, "botm.list.item.next"))
+                        .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.next"))
                         .asGuiItem(event -> {
 
                             try {
-                                new BOTMList(this.lobby, player, currentPage + 1);
+                                new BOTMList(this.lobbyPlugin, player, currentPage + 1);
                             }catch (SQLException e){
-                                this.lobby.getLanguageAPI().sendMessageToPlayer(player, "botm.list.error");
+                                this.lobbyPlugin.getLanguageAPI().sendMessageToPlayer(player, "botm.list.error");
                             }
 
                         })
                 );
             }else {
                 this.gui.setItem(1, 9, ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE)
-                        .name(this.lobby.getLanguageAPI().getMessage(language, "botm.list.item.unavailable"))
+                        .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.unavailable"))
                         .asGuiItem()
                 );
             }

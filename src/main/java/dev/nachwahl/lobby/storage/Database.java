@@ -1,11 +1,10 @@
 package dev.nachwahl.lobby.storage;
 
-import co.aikar.idb.BukkitDB;
 import co.aikar.idb.DB;
 import co.aikar.idb.DatabaseOptions;
 import co.aikar.idb.PooledDatabaseOptions;
 import co.aikar.idb.DbRow;
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -14,22 +13,22 @@ import java.util.List;
 
 public class Database {
 
-    private final Lobby lobby;
+    private final LobbyPlugin lobbyPlugin;
     @Getter
     private co.aikar.idb.Database database;
 
-    public Database(Lobby lobby) {
-        this.lobby = lobby;
+    public Database(LobbyPlugin lobbyPlugin) {
+        this.lobbyPlugin = lobbyPlugin;
     }
 
     public void connect() {
-        FileConfiguration config = this.lobby.getConfig();
+        FileConfiguration config = this.lobbyPlugin.getConfig();
         //this.database = BukkitDB.createHikariDatabase(this.lobby, config.getString("mysql.username"), config.getString("mysql.password"), config.getString("mysql.database"), config.getString("mysql.host") + ":" + config.getString("mysql.port"));
 
         DatabaseOptions options = DatabaseOptions
                 .builder()
-                .poolName(this.lobby.getDescription().getName() + " DB")
-                .logger(this.lobby.getLogger())
+                .poolName(this.lobbyPlugin.getDescription().getName() + " DB")
+                .logger(this.lobbyPlugin.getLogger())
                 .mysql(config.getString("mysql.username"), config.getString("mysql.password"), config.getString("mysql.database"), config.getString("mysql.host") + ":" + config.getString("mysql.port"))
                 .build();
         PooledDatabaseOptions poolOptions = PooledDatabaseOptions
@@ -44,7 +43,7 @@ public class Database {
         try {
             initializeBOTMTable();
         } catch (SQLException e) {
-            this.lobby.getLogger().severe("Failed to initialize BOTM database: " + e.getMessage());
+            this.lobbyPlugin.getLogger().severe("Failed to initialize BOTM database: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -67,7 +66,7 @@ public class Database {
         if (!tableExists) {
             // Create new table with current schema
             createNewBOTMTable();
-            this.lobby.getLogger().info("Created new BOTM table with current schema.");
+            this.lobbyPlugin.getLogger().info("Created new BOTM table with current schema.");
             return;
         }
 
@@ -77,11 +76,11 @@ public class Database {
         if (hasOldStructure) {
             // Migrate from old structure to new structure
             migrateBOTMTable();
-            this.lobby.getLogger().info("Successfully migrated BOTM table from old schema to new schema.");
+            this.lobbyPlugin.getLogger().info("Successfully migrated BOTM table from old schema to new schema.");
         } else {
             // Check if current structure is complete, add missing columns if needed
             ensureNewBOTMStructure();
-            this.lobby.getLogger().info("BOTM table schema is up to date.");
+            this.lobbyPlugin.getLogger().info("BOTM table schema is up to date.");
         }
     }
 
@@ -142,7 +141,7 @@ public class Database {
         // Create new table with current schema
         createNewBOTMTable();
         
-        this.lobby.getLogger().info("Old BOTM data has been backed up to 'botm_backup' table. " +
+        this.lobbyPlugin.getLogger().info("Old BOTM data has been backed up to 'botm_backup' table. " +
                 "The old simple scoring system has been replaced with the new monthly BOTM system. " +
                 "Manual data migration may be required if you want to preserve historical data.");
     }
@@ -174,7 +173,7 @@ public class Database {
         List<DbRow> columns = this.database.getResults("SHOW COLUMNS FROM " + tableName + " LIKE ?", columnName);
         if (columns.isEmpty()) {
             this.database.executeUpdate("ALTER TABLE " + tableName + " ADD COLUMN " + columnName + " " + columnDefinition);
-            this.lobby.getLogger().info("Added column '" + columnName + "' to table '" + tableName + "'");
+            this.lobbyPlugin.getLogger().info("Added column '" + columnName + "' to table '" + tableName + "'");
         }
     }
 }

@@ -1,6 +1,6 @@
 package dev.nachwahl.lobby.quests.listener;
 
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import dev.nachwahl.lobby.quests.Quest;
 import dev.nachwahl.lobby.quests.car.CarQuest;
 import dev.nachwahl.lobby.quests.mine.MineQuest;
@@ -13,7 +13,7 @@ public class BlockPlaceEvent implements Listener {
     public void placeBlockEvent(org.bukkit.event.block.BlockPlaceEvent event) {
         Player player = event.getPlayer();
         Quest quest;
-        if ((quest = Lobby.getInstance().getQuestManager().getQuestFromPlayer(player)) != null) {
+        if ((quest = LobbyPlugin.getInstance().getQuestManager().getQuestFromPlayer(player)) != null) {
             if (quest instanceof MineQuest) {
                 event.setCancelled(true);
             } else if (quest instanceof CarQuest) {

@@ -2,7 +2,7 @@ package dev.nachwahl.lobby.language;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -28,23 +28,23 @@ import java.util.function.Consumer;
 
 public class LanguageAPI {
     public static final Language DEFAULT = Language.GERMAN;
-    private final Lobby lobby;
+    private final LobbyPlugin lobbyPlugin;
     private final HashMap<Language, HashMap<String, String>> messages = new HashMap<>();
     private final Cache<UUID, Language> languageCache = CacheBuilder.newBuilder()
             .expireAfterWrite(2, TimeUnit.MINUTES)
             .build();
 
     @SneakyThrows
-    public LanguageAPI(Lobby lobby) {
-        this.lobby = lobby;
+    public LanguageAPI(LobbyPlugin lobbyPlugin) {
+        this.lobbyPlugin = lobbyPlugin;
 
-        File languageFilesFolder = new File(this.lobby.getDataFolder(), "languageFiles");
+        File languageFilesFolder = new File(this.lobbyPlugin.getDataFolder(), "languageFiles");
 
         if (!languageFilesFolder.exists()) {
-            this.lobby.getLogger().info("Creating not existing language folder: " + languageFilesFolder.getAbsolutePath());
+            this.lobbyPlugin.getLogger().info("Creating not existing language folder: " + languageFilesFolder.getAbsolutePath());
             languageFilesFolder.mkdirs();
         } else {
-            this.lobby.getLogger().info("Found existing language folder: " + languageFilesFolder.getAbsolutePath());
+            this.lobbyPlugin.getLogger().info("Found existing language folder: " + languageFilesFolder.getAbsolutePath());
         }
 
         for (Language language : Language.values()) {
@@ -55,27 +55,27 @@ public class LanguageAPI {
             InputStream stream;
 
             if (!languageFile.exists()) {
-                stream = Lobby.class.getClassLoader().getResourceAsStream("lang_" + language.getLang() + ".properties");
+                stream = LobbyPlugin.class.getClassLoader().getResourceAsStream("lang_" + language.getLang() + ".properties");
             } else {
                 stream = new FileInputStream(languageFile);
             }
 
             if (stream == null) {
-                this.lobby.getLogger().severe("Stream for language file of " + language.getLang() + " null!");
+                this.lobbyPlugin.getLogger().severe("Stream for language file of " + language.getLang() + " null!");
                 continue;
             }
 
             properties.load(new InputStreamReader(stream, StandardCharsets.UTF_8));
-            this.lobby.getLogger().info("Loading language file: " + "lang_" + language.getLang() + ".properties");
+            this.lobbyPlugin.getLogger().info("Loading language file: " + "lang_" + language.getLang() + ".properties");
             properties.forEach((key, message) -> this.messages.get(language).put((String) key, (String) message));
         }
     }
 
     public Component getMessage(Language language, String messageKey, TagResolver... placeholders) {
         if (this.messages.get(language).containsKey(messageKey)) {
-            return this.lobby.getMiniMessage().deserialize(this.messages.get(language).get(messageKey), placeholders);
+            return this.lobbyPlugin.getMiniMessage().deserialize(this.messages.get(language).get(messageKey), placeholders);
         } else if (this.messages.get(DEFAULT).containsKey(messageKey)) {
-            return this.lobby.getMiniMessage().deserialize(this.messages.get(DEFAULT).get(messageKey), placeholders);
+            return this.lobbyPlugin.getMiniMessage().deserialize(this.messages.get(DEFAULT).get(messageKey), placeholders);
         } else {
             return Component.text("Missing translation: " + messageKey);
         }
@@ -96,14 +96,14 @@ public class LanguageAPI {
      * Holt die Sprache aus der Datenbank und führt das Callback aus. Gleichzeitig wird die Language Permission gesetzt,
      */
     public void getLanguage(@NotNull Player player, Consumer<Language> languageCallback) {
-        Lobby.getInstance().getHologramAPI().sendDebugMsg(Component.text("Get Language Callback START"));
+        LobbyPlugin.getInstance().getHologramAPI().sendDebugMsg(Component.text("Get Language Callback START"));
         Language cached = this.languageCache.getIfPresent(player.getUniqueId());
         if (cached != null) {
             setLocalePermission(player, cached);
             languageCallback.accept(cached);
             return;
         }
-        this.lobby.getDatabase().getFirstRowAsync("SELECT * FROM langUsers WHERE uuid = ?", player.getUniqueId().toString())
+        this.lobbyPlugin.getDatabase().getFirstRowAsync("SELECT * FROM langUsers WHERE uuid = ?", player.getUniqueId().toString())
                 .thenAccept(dbRow -> {
                     if (dbRow == null) {
                         setLocalePermission(player, Language.ENGLISH);
@@ -149,21 +149,21 @@ public class LanguageAPI {
 
     private void setLocalePermission(@NotNull Player player, @NotNull Language language) {
         String permission = getPermissionFromLanguage(language);
-        Lobby.getInstance().getHologramAPI().sendDebugMsg(Component.text("Set Local Permission " + permission));
+        LobbyPlugin.getInstance().getHologramAPI().sendDebugMsg(Component.text("Set Local Permission " + permission));
         if (player.hasPermission(permission)) return;
         RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
         if (provider != null) {
-            Lobby.getInstance().getHologramAPI().sendDebugMsg(Component.text("Set Local Permission - provider is not null & player dont have alread the permission"));
+            LobbyPlugin.getInstance().getHologramAPI().sendDebugMsg(Component.text("Set Local Permission - provider is not null & player dont have alread the permission"));
             LuckPerms api = provider.getProvider();
             String removePermission = getPermissionFromLanguage(getOppositeLanguage(language));
 
             // Load, modify, then save
             api.getUserManager().modifyUser(player.getUniqueId(), user -> {
-                Lobby.getInstance().getHologramAPI().sendDebugMsg(Component.text("Set Local - Try add perm"));
+                LobbyPlugin.getInstance().getHologramAPI().sendDebugMsg(Component.text("Set Local - Try add perm"));
                 user.data().add(Node.builder(permission).build());
-                Lobby.getInstance().getHologramAPI().sendDebugMsg(Component.text("Set Local - Try remove perm"));
+                LobbyPlugin.getInstance().getHologramAPI().sendDebugMsg(Component.text("Set Local - Try remove perm"));
                 if (removePermission != null && player.hasPermission(removePermission)) user.data().remove(Node.builder(permission).build());
-                Lobby.getInstance().getHologramAPI().sendDebugMsg(Component.text("Set Local - Everything worked fine"));
+                LobbyPlugin.getInstance().getHologramAPI().sendDebugMsg(Component.text("Set Local - Everything worked fine"));
             });
         }
     }
@@ -181,20 +181,20 @@ public class LanguageAPI {
     }
 
     public void setLanguage(Language language, @NotNull Player player) {
-        this.lobby.getDatabase().getFirstRowAsync("SELECT * FROM langUsers WHERE uuid = ?", player.getUniqueId().toString()).thenAccept(row -> {
+        this.lobbyPlugin.getDatabase().getFirstRowAsync("SELECT * FROM langUsers WHERE uuid = ?", player.getUniqueId().toString()).thenAccept(row -> {
             if (row == null) {
-                this.lobby.getDatabase().executeUpdateAsync("INSERT INTO langUsers (uuid, lang) VALUES (?, ?)", player.getUniqueId().toString(), language.getLang()).thenAccept(integer -> {
+                this.lobbyPlugin.getDatabase().executeUpdateAsync("INSERT INTO langUsers (uuid, lang) VALUES (?, ?)", player.getUniqueId().toString(), language.getLang()).thenAccept(integer -> {
                     this.languageCache.put(player.getUniqueId(), language);
-                    this.sendMessageToPlayer(player, "languageChanged");
-                    Lobby.getInstance().getHologramAPI().sendDebugMsg(Component.text("INSERT LANG Set Language Permission to " + getPermissionFromLanguage(language)));
-                    this.lobby.getHotbarItems().setHotbarItems(player);
+                    this.lobbyPlugin.getLanguageAPI().sendMessageToPlayer(player, "languageChanged");
+                    LobbyPlugin.getInstance().getHologramAPI().sendDebugMsg(Component.text("INSERT LANG Set Language Permission to " + getPermissionFromLanguage(language)));
+                    this.lobbyPlugin.getHotbarItems().setHotbarItems(player);
                 });
             } else {
-                this.lobby.getDatabase().executeUpdateAsync("UPDATE langUsers SET lang = ? WHERE uuid = ?", language.getLang(), player.getUniqueId().toString()).thenAccept(integer -> {
+                this.lobbyPlugin.getDatabase().executeUpdateAsync("UPDATE langUsers SET lang = ? WHERE uuid = ?", language.getLang(), player.getUniqueId().toString()).thenAccept(integer -> {
                     this.languageCache.put(player.getUniqueId(), language);
-                    this.sendMessageToPlayer(player, "languageChanged");
-                    Lobby.getInstance().getHologramAPI().sendDebugMsg(Component.text("INSERT LANG Set Language Permission to " + getPermissionFromLanguage(language)));
-                    this.lobby.getHotbarItems().setHotbarItems(player);
+                    this.lobbyPlugin.getLanguageAPI().sendMessageToPlayer(player, "languageChanged");
+                    LobbyPlugin.getInstance().getHologramAPI().sendDebugMsg(Component.text("INSERT LANG Set Language Permission to " + getPermissionFromLanguage(language)));
+                    this.lobbyPlugin.getHotbarItems().setHotbarItems(player);
                 });
             }
         });

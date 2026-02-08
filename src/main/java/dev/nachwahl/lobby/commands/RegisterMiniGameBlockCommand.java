@@ -5,7 +5,7 @@ import co.aikar.commands.annotation.*;
 import de.oliver.fancyholograms.api.FancyHologramsPlugin;
 import de.oliver.fancyholograms.api.HologramManager;
 import de.oliver.fancyholograms.api.data.TextHologramData;
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import dev.nachwahl.lobby.utils.MiniGameBlockUtil;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -19,7 +19,7 @@ import java.util.List;
 public class RegisterMiniGameBlockCommand extends BaseCommand {
 
     @Dependency
-    private Lobby lobby;
+    private LobbyPlugin lobbyPlugin;
 
     @CommandPermission("lobby.manage.minigames")
     @Syntax("<game>")
@@ -29,11 +29,11 @@ public class RegisterMiniGameBlockCommand extends BaseCommand {
         Location location = player.getTargetBlockExact(3).getLocation();
         Location locHD = new Location(player.getWorld(), location.getBlockX() + 0.5, location.getBlockY() + 3.5, location.getBlockZ() + 0.5);
 
-        List<String> list = lobby.getMiniGameBlockUtil().getList(args[0].toLowerCase());
-        list.add(lobby.getLocationAPI().parseLocation(location));
-        lobby.getMiniGameBlockUtil().getDataFile().set(args[0].toLowerCase(), list);
+        List<String> list = lobbyPlugin.getMiniGameBlockUtil().getList(args[0].toLowerCase());
+        list.add(lobbyPlugin.getLocationAPI().parseLocation(location));
+        lobbyPlugin.getMiniGameBlockUtil().getDataFile().set(args[0].toLowerCase(), list);
         try {
-            lobby.getMiniGameBlockUtil().saveFile();
+            lobbyPlugin.getMiniGameBlockUtil().saveFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -53,13 +53,13 @@ public class RegisterMiniGameBlockCommand extends BaseCommand {
         Location location = player.getTargetBlockExact(3).getLocation();
         Location locHD = new Location(player.getWorld(), location.getBlockX() + 0.5, location.getBlockY() + 3.5, location.getBlockZ() + 0.5);
 
-        for (String s : lobby.getMiniGameBlockUtil().getList(args[0].toLowerCase())) {
-            if (lobby.getLocationAPI().parseLocation(s).getBlock().getLocation().equals(location.getBlock().getLocation())) {
-                List<String> list1 = lobby.getMiniGameBlockUtil().getList(args[0].toLowerCase());
+        for (String s : lobbyPlugin.getMiniGameBlockUtil().getList(args[0].toLowerCase())) {
+            if (lobbyPlugin.getLocationAPI().parseLocation(s).getBlock().getLocation().equals(location.getBlock().getLocation())) {
+                List<String> list1 = lobbyPlugin.getMiniGameBlockUtil().getList(args[0].toLowerCase());
                 list1.remove(s);
-                lobby.getMiniGameBlockUtil().getDataFile().set(args[0].toLowerCase(), list1);
+                lobbyPlugin.getMiniGameBlockUtil().getDataFile().set(args[0].toLowerCase(), list1);
                 try {
-                    lobby.getMiniGameBlockUtil().saveFile();
+                    lobbyPlugin.getMiniGameBlockUtil().saveFile();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

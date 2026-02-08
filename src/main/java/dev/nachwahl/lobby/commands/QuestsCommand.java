@@ -4,7 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Dependency;
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import dev.nachwahl.lobby.quests.Quest;
 import dev.nachwahl.lobby.quests.QuestType;
 import dev.nachwahl.lobby.quests.Queue;
@@ -17,19 +17,19 @@ import org.bukkit.entity.Player;
 public class QuestsCommand extends BaseCommand {
 
     @Dependency
-    private Lobby lobby;
+    private LobbyPlugin lobbyPlugin;
 
     @Default
     public boolean onCommand(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            if (Lobby.getInstance().getQuestManager().getQuestFromPlayer(player) != null) {
+            if (LobbyPlugin.getInstance().getQuestManager().getQuestFromPlayer(player) != null) {
                 player.sendMessage("Du bist bereits in einer Quest!");
                 return false;
             } else {
                 Quest quest;
                 if (args[0].equals("mine")) {
-                    quest = Lobby.getInstance().getPoolManager().getFreeQuest(QuestType.MINE);
+                    quest = LobbyPlugin.getInstance().getPoolManager().getFreeQuest(QuestType.MINE);
                     if (quest != null) {
                         if (quest instanceof MineQuest) {
                             MineQuest mineQuest = (MineQuest) quest;
@@ -40,7 +40,7 @@ public class QuestsCommand extends BaseCommand {
                         player.sendMessage(MineQuest.prefix + "Konnte kein freies Spiel finden, Du wurdest der Warteschlange hinzugefügt.");
                     }
                 } else if (args[0].equals("car")) {
-                    quest = Lobby.getInstance().getPoolManager().getFreeQuest(QuestType.CAR);
+                    quest = LobbyPlugin.getInstance().getPoolManager().getFreeQuest(QuestType.CAR);
                     if (quest != null) {
                         if (quest instanceof CarQuest) {
                             CarQuest carQuest = (CarQuest) quest;

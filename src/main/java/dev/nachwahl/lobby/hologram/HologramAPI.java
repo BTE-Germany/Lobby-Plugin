@@ -1,6 +1,6 @@
 package dev.nachwahl.lobby.hologram;
 
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -31,9 +31,9 @@ public class HologramAPI {
 
     public UUID debugPlayer; // TODO Remove when Lobby Holograms works fine again
 
-    private final Lobby plugin;
+    private final LobbyPlugin plugin;
 
-    public HologramAPI(Lobby plugin) {
+    public HologramAPI(LobbyPlugin plugin) {
         this.plugin = plugin;
             holograms = new ArrayList<>();
             customHolograms = new HashMap<>();
@@ -81,7 +81,7 @@ public class HologramAPI {
                 saveFile();
                 return file;
             } catch (IOException e) {
-                Lobby.getInstance().getComponentLogger().error(Component.text("Error accorded while writing " + FILE_NAME + " file."), e);
+                LobbyPlugin.getInstance().getComponentLogger().error(Component.text("Error accorded while writing " + FILE_NAME + " file."), e);
             }
         }
         return null;

@@ -1,6 +1,6 @@
 package dev.nachwahl.lobby.guis;
 
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import dev.nachwahl.lobby.utils.ItemGenerator;
 import dev.triumphteam.gui.builder.item.PaperItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
@@ -12,41 +12,41 @@ import org.bukkit.entity.Player;
 public class NavigatorGUI {
 
     private Gui gui;
-    private final Lobby lobby;
+    private final LobbyPlugin lobbyPlugin;
 
-    public NavigatorGUI(Lobby lobby, Player player) {
-        this.lobby = lobby;
-        this.lobby.getLanguageAPI().getLanguage(player, language -> {
+    public NavigatorGUI(LobbyPlugin lobbyPlugin, Player player) {
+        this.lobbyPlugin = lobbyPlugin;
+        this.lobbyPlugin.getLanguageAPI().getLanguage(player, language -> {
             this.gui = Gui.gui()
-                    .title(this.lobby.getLanguageAPI().getMessage(language, "navigator.title"))
+                    .title(this.lobbyPlugin.getLanguageAPI().getMessage(language, "navigator.title"))
                     .rows(3)
                     .disableAllInteractions()
                     .create();
 
 
             this.gui.setItem(2, 3, PaperItemBuilder.from(ItemGenerator.customModel(Material.PAPER, "plot"))
-                    .name(this.lobby.getLanguageAPI().getMessage(language, "navigator.plots.name"))
+                    .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "navigator.plots.name"))
                     .asGuiItem(event -> {
-                        this.lobby.getBungeeConnector().sendToServer(player, this.lobby.getConfig().getString("server.Plot"), true);
+                        this.lobbyPlugin.getBungeeConnector().sendToServer(player, this.lobbyPlugin.getConfig().getString("server.Plot"), true);
                     }));
 
 
             this.gui.setItem(2, 5, PaperItemBuilder.from(Material.COMPASS)
-                    .name(this.lobby.getLanguageAPI().getMessage(language, "navigator.warps.name"))
+                    .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "navigator.warps.name"))
                     .asGuiItem(event -> {
                         player.performCommand("nwarp");
                         event.getInventory().close();
                     }));
 
             this.gui.setItem(2, 7, PaperItemBuilder.from(ItemGenerator.customModel(Material.PAPER, "map"))
-                    .name(this.lobby.getLanguageAPI().getMessage(language, "navigator.terra.name"))
+                    .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "navigator.terra.name"))
                     .asGuiItem(event -> {
                         event.getInventory().close();
-                        new ServerGUI(lobby, player);
+                        new ServerGUI(lobbyPlugin, player);
                     }));
 
             this.gui.getFiller().fill(PaperItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());
-            Bukkit.getScheduler().runTask(this.lobby, () -> this.gui.open(player));
+            Bukkit.getScheduler().runTask(this.lobbyPlugin, () -> this.gui.open(player));
 
         });
     }

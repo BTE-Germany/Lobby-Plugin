@@ -3,7 +3,7 @@ package dev.nachwahl.lobby.leaderboards;
 import co.aikar.idb.Database;
 import co.aikar.idb.DbRow;
 import dev.nachwahl.cosmetics.Cosmetics;
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import eu.decentsoftware.holograms.api.holograms.HologramPage;
@@ -21,8 +21,8 @@ public class JnRLeaderboard {
     private final ScheduledExecutorService scheduledExecutorService;
     private static final String DH_TAG = "jnr";
 
-    public JnRLeaderboard(Lobby lobby) {
-        this.database = lobby.getDatabase();
+    public JnRLeaderboard(LobbyPlugin lobbyPlugin) {
+        this.database = lobbyPlugin.getDatabase();
         this.scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         this.scheduledExecutorService.scheduleAtFixedRate(this::update, 5, 30, TimeUnit.SECONDS);
     }

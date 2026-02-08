@@ -3,7 +3,7 @@ package dev.nachwahl.lobby.utils;
 import co.aikar.idb.DbRow;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -18,19 +18,19 @@ public class LocationAPI {
     private final Cache<String, Location> locationCache = CacheBuilder.newBuilder()
             .expireAfterWrite(5, TimeUnit.MINUTES)
             .build();
-    private final Lobby lobby;
+    private final LobbyPlugin lobbyPlugin;
 
-    public LocationAPI(Lobby lobby) {
-        this.lobby = lobby;
+    public LocationAPI(LobbyPlugin lobbyPlugin) {
+        this.lobbyPlugin = lobbyPlugin;
     }
 
     public void setLocation(Location location, String name) {
         locationCache.put(name, location);
-        this.lobby.getDatabase().getFirstRowAsync("SELECT * FROM locations WHERE name = ?", name).thenAccept(dbRow -> {
+        this.lobbyPlugin.getDatabase().getFirstRowAsync("SELECT * FROM locations WHERE name = ?", name).thenAccept(dbRow -> {
             if (dbRow == null) {
-                this.lobby.getDatabase().executeUpdateAsync("INSERT INTO locations (name, location) VALUES (?, ?)", name, stringifyLocation(location));
+                this.lobbyPlugin.getDatabase().executeUpdateAsync("INSERT INTO locations (name, location) VALUES (?, ?)", name, stringifyLocation(location));
             } else {
-                this.lobby.getDatabase().executeUpdateAsync("UPDATE locations SET location = ? WHERE name = ?", stringifyLocation(location), name);
+                this.lobbyPlugin.getDatabase().executeUpdateAsync("UPDATE locations SET location = ? WHERE name = ?", stringifyLocation(location), name);
             }
         });
     }
@@ -38,9 +38,9 @@ public class LocationAPI {
     public void getLocation(String name, Consumer<Location> callback) {
         Location cache = locationCache.getIfPresent(name);
         if (cache == null) {
-            this.lobby.getDatabase().getFirstRowAsync("SELECT * FROM locations WHERE name = ?", name).thenAccept(dbRow -> {
+            this.lobbyPlugin.getDatabase().getFirstRowAsync("SELECT * FROM locations WHERE name = ?", name).thenAccept(dbRow -> {
                 if (dbRow == null) {
-                    callback.accept(new Location(this.lobby.getServer().getWorlds().get(0), 0, 0, 0));
+                    callback.accept(new Location(this.lobbyPlugin.getServer().getWorlds().get(0), 0, 0, 0));
                 } else {
                     locationCache.put(name, parseLocation((String) dbRow.get("location")));
                     callback.accept(parseLocation((String) dbRow.get("location")));
@@ -54,9 +54,9 @@ public class LocationAPI {
     public Location getLocation(String name) throws SQLException {
         Location cache = locationCache.getIfPresent(name);
         if (cache == null) {
-            DbRow dbRow = this.lobby.getDatabase().getFirstRow("SELECT * FROM locations WHERE name = ?", name);
+            DbRow dbRow = this.lobbyPlugin.getDatabase().getFirstRow("SELECT * FROM locations WHERE name = ?", name);
             if (dbRow == null) {
-                return new Location(this.lobby.getServer().getWorlds().get(0), 0, 0, 0);
+                return new Location(this.lobbyPlugin.getServer().getWorlds().get(0), 0, 0, 0);
             } else {
                 locationCache.put(name, parseLocation((String) dbRow.get("location")));
                 return parseLocation((String) dbRow.get("location"));
@@ -69,21 +69,21 @@ public class LocationAPI {
     public void teleportToLocation(Player player, String name, Boolean showConfirmMessage) {
         Location cache = locationCache.getIfPresent(name);
         if (cache == null) {
-            this.lobby.getDatabase().getFirstRowAsync("SELECT * FROM locations WHERE name = ?", name).thenAccept(dbRow -> {
+            this.lobbyPlugin.getDatabase().getFirstRowAsync("SELECT * FROM locations WHERE name = ?", name).thenAccept(dbRow -> {
                 if (dbRow == null) {
-                    this.lobby.getLanguageAPI().sendMessageToPlayer(player, "location.notFound", Placeholder.parsed("name", name));
+                    this.lobbyPlugin.getLanguageAPI().sendMessageToPlayer(player, "location.notFound", Placeholder.parsed("name", name));
                 } else {
                     locationCache.put(name, parseLocation(dbRow.getString("location")));
-                    Bukkit.getScheduler().runTask(this.lobby, () -> player.teleport(parseLocation(dbRow.getString("location"))));
+                    Bukkit.getScheduler().runTask(this.lobbyPlugin, () -> player.teleport(parseLocation(dbRow.getString("location"))));
                     if (showConfirmMessage) {
-                        this.lobby.getLanguageAPI().sendMessageToPlayer(player, "location.teleport", Placeholder.parsed("name", name));
+                        this.lobbyPlugin.getLanguageAPI().sendMessageToPlayer(player, "location.teleport", Placeholder.parsed("name", name));
                     }
                 }
             });
         } else {
             player.teleport(cache);
             if (showConfirmMessage) {
-                this.lobby.getLanguageAPI().sendMessageToPlayer(player, "location.teleport", Placeholder.parsed("name", name));
+                this.lobbyPlugin.getLanguageAPI().sendMessageToPlayer(player, "location.teleport", Placeholder.parsed("name", name));
             }
 
         }
@@ -100,7 +100,7 @@ public class LocationAPI {
     public Location parseLocation(String location, String splitter) {
         String[] splitLocation = location.split(splitter);
         Location loc = new Location(
-                this.lobby.getServer().getWorld(splitLocation[0]),
+                this.lobbyPlugin.getServer().getWorld(splitLocation[0]),
                 Double.parseDouble(splitLocation[1]),
                 Double.parseDouble(splitLocation[2]),
                 Double.parseDouble(splitLocation[3])

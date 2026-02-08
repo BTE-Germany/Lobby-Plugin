@@ -1,11 +1,10 @@
 package dev.nachwahl.lobby.quests.mine;
 
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import dev.nachwahl.lobby.quests.*;
 import org.bukkit.Location;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -36,7 +35,7 @@ public class MineQuest extends Quest {
         this.blockCount.put("MAX_" + VeinType.IRON, 0);
         this.blockCount.put("MAX_" + VeinType.GOLD, 0);
 
-        Lobby.getInstance().getQuestManager().addQuest(this);
+        LobbyPlugin.getInstance().getQuestManager().addQuest(this);
     }
 
     public void setMineArena(MineArena mineArena) {
@@ -107,10 +106,10 @@ public class MineQuest extends Quest {
         }
         this.mineArena.setArenaStatus(Arena.ArenaStatus.WAITING);
         this.mineArena.setFree(true);
-        Lobby.getInstance().getQuestManager().removeQuest(this);
+        LobbyPlugin.getInstance().getQuestManager().removeQuest(this);
         Player player;
         if ((player = Queue.getNextPlayerInQueue(QuestType.MINE)) != null) {
-            Quest quest = Lobby.getInstance().getPoolManager().getFreeQuest(QuestType.MINE);
+            Quest quest = LobbyPlugin.getInstance().getPoolManager().getFreeQuest(QuestType.MINE);
             if (quest != null) {
                 if (quest instanceof MineQuest) {
                     MineQuest mineQuest = (MineQuest) quest;

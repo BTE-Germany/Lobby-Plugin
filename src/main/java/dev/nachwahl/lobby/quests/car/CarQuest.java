@@ -1,6 +1,6 @@
 package dev.nachwahl.lobby.quests.car;
 
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import dev.nachwahl.lobby.quests.*;
 import org.bukkit.Location;
 import org.bukkit.*;
@@ -21,7 +21,7 @@ public class CarQuest extends Quest {
         this.placedBlocks = new ArrayList<>();
 
 
-        Lobby.getInstance().getQuestManager().addQuest(this);
+        LobbyPlugin.getInstance().getQuestManager().addQuest(this);
     }
 
     public void setCarArena(CarArena carArena) {
@@ -71,10 +71,10 @@ public class CarQuest extends Quest {
         }
         this.carArena.setArenaStatus(Arena.ArenaStatus.WAITING);
         this.carArena.setFree(true);
-        Lobby.getInstance().getQuestManager().removeQuest(this);
+        LobbyPlugin.getInstance().getQuestManager().removeQuest(this);
         Player player;
         if ((player = Queue.getNextPlayerInQueue(QuestType.MINE)) != null) {
-            Quest quest = Lobby.getInstance().getPoolManager().getFreeQuest(QuestType.MINE);
+            Quest quest = LobbyPlugin.getInstance().getPoolManager().getFreeQuest(QuestType.MINE);
             if (quest != null) {
                 if (quest instanceof CarQuest) {
                     CarQuest carQuest = (CarQuest) quest;

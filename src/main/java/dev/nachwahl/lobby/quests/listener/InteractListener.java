@@ -1,6 +1,6 @@
 package dev.nachwahl.lobby.quests.listener;
 
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import dev.nachwahl.lobby.quests.Quest;
 import dev.nachwahl.lobby.quests.car.CarQuest;
 import org.bukkit.Material;
@@ -19,7 +19,7 @@ public class InteractListener implements Listener {
     public void onInteractEvent(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         Quest quest;
-        if ((quest = Lobby.getInstance().getQuestManager().getQuestFromPlayer(player)) != null) {
+        if ((quest = LobbyPlugin.getInstance().getQuestManager().getQuestFromPlayer(player)) != null) {
             if (quest instanceof CarQuest) {
                 CarQuest carQuest = (CarQuest) quest;
                 if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {

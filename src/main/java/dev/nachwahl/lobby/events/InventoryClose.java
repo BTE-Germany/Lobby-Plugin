@@ -1,6 +1,6 @@
 package dev.nachwahl.lobby.events;
 
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,10 +11,10 @@ import java.sql.SQLException;
 
 public class InventoryClose implements Listener {
 
-    private Lobby lobby;
+    private LobbyPlugin lobbyPlugin;
 
-    public InventoryClose(Lobby lobby) {
-        this.lobby = lobby;
+    public InventoryClose(LobbyPlugin lobbyPlugin) {
+        this.lobbyPlugin = lobbyPlugin;
     }
 
     @EventHandler

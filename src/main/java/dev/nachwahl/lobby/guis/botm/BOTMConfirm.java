@@ -1,6 +1,6 @@
 package dev.nachwahl.lobby.guis.botm;
 
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import lombok.Getter;
@@ -15,30 +15,30 @@ public class BOTMConfirm {
 
     @Getter
     private Gui gui;
-    private final Lobby lobby;
+    private final LobbyPlugin lobbyPlugin;
 
 
-    public BOTMConfirm(Lobby lobby, Player player, int currentPage, int year, int month) {
-        this.lobby = lobby;
+    public BOTMConfirm(LobbyPlugin lobbyPlugin, Player player, int currentPage, int year, int month) {
+        this.lobbyPlugin = lobbyPlugin;
 
-        this.lobby.getLanguageAPI().getLanguage(player, language -> {
+        this.lobbyPlugin.getLanguageAPI().getLanguage(player, language -> {
 
             this.gui = Gui.gui()
 
-                    .title(lobby.getLanguageAPI().getMessage(language, "botm.confirm.confirm_delete"))
+                    .title(lobbyPlugin.getLanguageAPI().getMessage(language, "botm.confirm.confirm_delete"))
                     .rows(3)
                     .disableAllInteractions()
                     .create();
 
             this.gui.setItem(2, 3, ItemBuilder.from(Material.LIME_WOOL)
-                    .name(lobby.getLanguageAPI().getMessage(language, "botm.confirm.yes"))
+                    .name(lobbyPlugin.getLanguageAPI().getMessage(language, "botm.confirm.yes"))
                     .asGuiItem(event -> {
                         try {
-                            this.lobby.getDatabase().executeUpdate("DELETE FROM botm WHERE year = ? AND month = ?", year, month);
-                            this.lobby.getBotmScoreAPI().reload(player);
-                            new BOTMList(this.lobby, player, currentPage);
+                            this.lobbyPlugin.getDatabase().executeUpdate("DELETE FROM botm WHERE year = ? AND month = ?", year, month);
+                            this.lobbyPlugin.getBotmScoreAPI().reload(player);
+                            new BOTMList(this.lobbyPlugin, player, currentPage);
                         } catch (SQLException e) {
-                            this.lobby.getLanguageAPI().sendMessageToPlayer(player, "botm.list.error");
+                            this.lobbyPlugin.getLanguageAPI().sendMessageToPlayer(player, "botm.list.error");
                             throw new RuntimeException(e);
                         } catch (ExecutionException e) {
                             throw new RuntimeException(e);
@@ -48,12 +48,12 @@ public class BOTMConfirm {
             }));
 
             this.gui.setItem(2, 7, ItemBuilder.from(Material.RED_WOOL)
-                    .name(lobby.getLanguageAPI().getMessage(language, "botm.confirm.no"))
+                    .name(lobbyPlugin.getLanguageAPI().getMessage(language, "botm.confirm.no"))
                     .asGuiItem(event -> {
                         try {
-                            new BOTMList(this.lobby, player, currentPage);
+                            new BOTMList(this.lobbyPlugin, player, currentPage);
                         } catch (SQLException e) {
-                            this.lobby.getLanguageAPI().sendMessageToPlayer(player, "botm.list.error");
+                            this.lobbyPlugin.getLanguageAPI().sendMessageToPlayer(player, "botm.list.error");
                             throw new RuntimeException(e);
                         }
             }));

@@ -4,7 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Dependency;
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import dev.nachwahl.lobby.guis.LanguageGUI;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -13,11 +13,11 @@ import org.bukkit.entity.Player;
 public class LanguageCommand extends BaseCommand {
 
     @Dependency
-    private Lobby lobby;
+    private LobbyPlugin lobbyPlugin;
 
     @Default
     public void onLanguageCommand(CommandSender sender) {
         Player player = (Player) sender;
-        new LanguageGUI(lobby, player);
+        new LanguageGUI(lobbyPlugin, player);
     }
 }

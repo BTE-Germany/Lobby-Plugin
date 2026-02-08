@@ -4,7 +4,6 @@ import co.aikar.commands.PaperCommandManager;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 import dev.nachwahl.cosmetics.Cosmetics;
-import dev.nachwahl.cosmetics.utils.CosmeticsAPI;
 import dev.nachwahl.lobby.commands.*;
 import dev.nachwahl.lobby.events.*;
 import dev.nachwahl.lobby.hologram.HologramAPI;
@@ -29,7 +28,6 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
@@ -43,10 +41,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Getter
-public final class Lobby extends JavaPlugin implements PluginMessageListener {
+public final class LobbyPlugin extends JavaPlugin implements PluginMessageListener {
 
     @Getter
-    private static Lobby instance;
+    private static LobbyPlugin instance;
     private final ArrayList<Player> editModePlayers = new ArrayList<>();
     private final HashMap<UUID, ItemStack> elytraPlayers = new HashMap<>();
     private PaperCommandManager manager;
@@ -74,6 +72,9 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
     @Getter
     private Scoreboard scoreboard;
 
+    @Getter
+    private Cosmetics cosmeticsInstance;
+
     @Override
     public void onEnable() {
         instance = this;
@@ -93,6 +94,7 @@ public final class Lobby extends JavaPlugin implements PluginMessageListener {
 
         if(Bukkit.getPluginManager().getPlugin("BTEG-Cosmetics") != null) {
             Cosmetics cosmetics = (Cosmetics) Bukkit.getServer().getPluginManager().getPlugin("BTEG-Cosmetics");
+            this.cosmeticsInstance = cosmetics;
             scoreboard = new Scoreboard(this, cosmetics);
             Bukkit.getLogger().info("Cosmetics Plugin gefunden.");
         }else{

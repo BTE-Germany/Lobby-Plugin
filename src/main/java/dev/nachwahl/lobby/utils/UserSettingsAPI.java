@@ -2,7 +2,7 @@ package dev.nachwahl.lobby.utils;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,10 +28,10 @@ public class UserSettingsAPI {
     private final Cache<UserSetting, String> settingsCache = CacheBuilder.newBuilder()
             .expireAfterWrite(5, TimeUnit.MINUTES)
             .build();
-    private final Lobby lobby;
+    private final LobbyPlugin lobbyPlugin;
 
-    public UserSettingsAPI(Lobby lobby) {
-        this.lobby = lobby;
+    public UserSettingsAPI(LobbyPlugin lobbyPlugin) {
+        this.lobbyPlugin = lobbyPlugin;
     }
 
     public void setSetting(@NotNull Player player, String key, String value, Consumer<Integer> callback) {
@@ -42,20 +42,20 @@ public class UserSettingsAPI {
 
         settingsCache.put(new UserSetting(player.getUniqueId(), key), value);
 
-        this.lobby.getDatabase().getFirstRowAsync("SELECT * FROM playersettings WHERE uuid = ? AND `key` = ?", player.getUniqueId().toString(), key).thenAccept(dbRow -> {
+        this.lobbyPlugin.getDatabase().getFirstRowAsync("SELECT * FROM playersettings WHERE uuid = ? AND `key` = ?", player.getUniqueId().toString(), key).thenAccept(dbRow -> {
             if (dbRow == null) {
-                this.lobby.getDatabase().executeUpdateAsync("INSERT INTO playersettings (uuid, `key`, value) VALUES (?, ?, ?)", player.getUniqueId().toString(), key, value).exceptionally((e) -> {
-                    this.lobby.getLogger().log(Level.SEVERE, e.getMessage());
+                this.lobbyPlugin.getDatabase().executeUpdateAsync("INSERT INTO playersettings (uuid, `key`, value) VALUES (?, ?, ?)", player.getUniqueId().toString(), key, value).exceptionally((e) -> {
+                    this.lobbyPlugin.getLogger().log(Level.SEVERE, e.getMessage());
                     return null;
                 }).thenAccept(callback);
             } else {
-                this.lobby.getDatabase().executeUpdateAsync("UPDATE playersettings SET value = ? WHERE uuid = ? AND `key` = ?", value, player.getUniqueId().toString(), key).exceptionally((e) -> {
-                    this.lobby.getLogger().log(Level.SEVERE, e.getMessage());
+                this.lobbyPlugin.getDatabase().executeUpdateAsync("UPDATE playersettings SET value = ? WHERE uuid = ? AND `key` = ?", value, player.getUniqueId().toString(), key).exceptionally((e) -> {
+                    this.lobbyPlugin.getLogger().log(Level.SEVERE, e.getMessage());
                     return null;
                 }).thenAccept(callback);
             }
         }).exceptionally(e -> {
-            this.lobby.getLogger().log(Level.SEVERE, e.getMessage());
+            this.lobbyPlugin.getLogger().log(Level.SEVERE, e.getMessage());
             return null;
         });
     }
@@ -75,7 +75,7 @@ public class UserSettingsAPI {
             String cache = settingsCache.getIfPresent(new UserSetting(player.getUniqueId(), key));
 
             if (cache == null) {
-                this.lobby.getDatabase().getFirstRowAsync("SELECT * FROM playersettings WHERE uuid = ? AND `key` = ?", player.getUniqueId().toString(), key).thenAccept(dbRow -> {
+                this.lobbyPlugin.getDatabase().getFirstRowAsync("SELECT * FROM playersettings WHERE uuid = ? AND `key` = ?", player.getUniqueId().toString(), key).thenAccept(dbRow -> {
                     if (dbRow == null) {
                         callback.accept(null);
                     } else {
@@ -83,14 +83,14 @@ public class UserSettingsAPI {
                         callback.accept(dbRow.getString("value"));
                     }
                 }).exceptionally((e) -> {
-                    this.lobby.getLogger().log(Level.SEVERE, e.getMessage());
+                    this.lobbyPlugin.getLogger().log(Level.SEVERE, e.getMessage());
                     return null;
                 });
             } else {
                 callback.accept(cache);
             }
         } catch (Exception e) {
-            Lobby.getInstance().getComponentLogger().error("Error accored when getting Player Settings.", e);;
+            LobbyPlugin.getInstance().getComponentLogger().error("Error accored when getting Player Settings.", e);;
         }
     }
 

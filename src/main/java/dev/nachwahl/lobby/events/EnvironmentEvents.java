@@ -1,7 +1,7 @@
 package dev.nachwahl.lobby.events;
 
 import com.destroystokyo.paper.event.block.BlockDestroyEvent;
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -13,10 +13,10 @@ import org.bukkit.event.weather.WeatherChangeEvent;
 
 public class EnvironmentEvents implements Listener {
 
-    private Lobby lobby;
+    private LobbyPlugin lobbyPlugin;
 
-    public EnvironmentEvents(Lobby lobby) {
-        this.lobby = lobby;
+    public EnvironmentEvents(LobbyPlugin lobbyPlugin) {
+        this.lobbyPlugin = lobbyPlugin;
     }
 
     @EventHandler
@@ -31,21 +31,21 @@ public class EnvironmentEvents implements Listener {
 
     @EventHandler
     public void onBlockDestroy(BlockBreakEvent event) {
-        if (!this.lobby.getEditModePlayers().contains(event.getPlayer())) {
+        if (!this.lobbyPlugin.getEditModePlayers().contains(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onBlockBuild(BlockPlaceEvent event) {
-        if (!this.lobby.getEditModePlayers().contains(event.getPlayer())) {
+        if (!this.lobbyPlugin.getEditModePlayers().contains(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (!this.lobby.getEditModePlayers().contains(event.getPlayer())) {
+        if (!this.lobbyPlugin.getEditModePlayers().contains(event.getPlayer())) {
             event.setCancelled(true);
         }
     }

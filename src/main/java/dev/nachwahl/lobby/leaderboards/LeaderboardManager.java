@@ -1,6 +1,6 @@
 package dev.nachwahl.lobby.leaderboards;
 
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import lombok.Getter;
 
 import java.sql.SQLException;
@@ -10,17 +10,17 @@ public class LeaderboardManager {
     @Getter
     private PlaytimeLeaderboard playtimeLeaderboard;
 
-    private Lobby lobby;
+    private LobbyPlugin lobbyPlugin;
 
-    public LeaderboardManager(Lobby lobby) throws SQLException {
-        this.lobby = lobby;
+    public LeaderboardManager(LobbyPlugin lobbyPlugin) throws SQLException {
+        this.lobbyPlugin = lobbyPlugin;
 
         // Reduces performance on startup (loads Plan players)
         //load();
     }
 
     public void load() throws SQLException {
-        playtimeLeaderboard = new PlaytimeLeaderboard(lobby, "lb.playtime");
+        playtimeLeaderboard = new PlaytimeLeaderboard(lobbyPlugin, "lb.playtime");
 
     }
 

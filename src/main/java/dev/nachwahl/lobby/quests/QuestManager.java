@@ -1,6 +1,6 @@
 package dev.nachwahl.lobby.quests;
 
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import dev.nachwahl.lobby.quests.car.CarArena;
 import dev.nachwahl.lobby.quests.mine.MineArena;
 import org.bukkit.Location;
@@ -53,7 +53,7 @@ public class QuestManager {
 
     public void setPools() throws SQLException {
         Pool pool = new Pool(QuestType.MINE);
-        Location mineQuest0Location = Lobby.getInstance().getLocationAPI().getLocation("quests.mine.0");
+        Location mineQuest0Location = LobbyPlugin.getInstance().getLocationAPI().getLocation("quests.mine.0");
 
         Block block = new Block((int) mineQuest0Location.getX(), (int) mineQuest0Location.getY(), (int) mineQuest0Location.getZ(), mineQuest0Location.getWorld().getName());
         MineArena mineArena = new MineArena(block, 32);
@@ -75,7 +75,7 @@ public class QuestManager {
 
         Pool pool1 = new Pool(QuestType.CAR);
 
-        Location carQuest0Location = Lobby.getInstance().getLocationAPI().getLocation("quests.car.0");
+        Location carQuest0Location = LobbyPlugin.getInstance().getLocationAPI().getLocation("quests.car.0");
 
         System.out.println(carQuest0Location);
         System.out.println((int) carQuest0Location.getX() + " " + (((int) carQuest0Location.getY()) - 1) + " " + (int) carQuest0Location.getZ());
@@ -90,9 +90,9 @@ public class QuestManager {
 
         pool1.addArena(carArena);
 
-        Lobby.getInstance().getPoolManager().addPool(pool1);
+        LobbyPlugin.getInstance().getPoolManager().addPool(pool1);
 
-        Lobby.getInstance().getPoolManager().addPool(pool);
+        LobbyPlugin.getInstance().getPoolManager().addPool(pool);
 
 
         Queue.initQueues();

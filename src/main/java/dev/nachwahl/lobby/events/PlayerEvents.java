@@ -1,8 +1,7 @@
 package dev.nachwahl.lobby.events;
 
 import co.aikar.idb.DbRow;
-import dev.nachwahl.lobby.Lobby;
-import dev.nachwahl.lobby.commands.BOTMCommand;
+import dev.nachwahl.lobby.LobbyPlugin;
 import dev.nachwahl.lobby.guis.PrivacyGUI;
 import dev.nachwahl.lobby.language.Language;
 import dev.nachwahl.lobby.utils.Actions;
@@ -34,15 +33,15 @@ import java.sql.SQLException;
 
 public class PlayerEvents implements Listener {
 
-    private Lobby lobby;
+    private LobbyPlugin lobbyPlugin;
 
-    public PlayerEvents(Lobby lobby) {
-        this.lobby = lobby;
+    public PlayerEvents(LobbyPlugin lobbyPlugin) {
+        this.lobbyPlugin = lobbyPlugin;
     }
 
     @EventHandler
     public void onInventoryChange(InventoryInteractEvent event) {
-        if (!this.lobby.getEditModePlayers().contains((Player) event.getWhoClicked())) {
+        if (!this.lobbyPlugin.getEditModePlayers().contains((Player) event.getWhoClicked())) {
             event.setCancelled(true);
         }
     }
@@ -52,32 +51,32 @@ public class PlayerEvents implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         player.setGameMode(GameMode.ADVENTURE);
-        Actions.performJoinActions(lobby, player);
-        if (this.lobby.getConfig().getString("resourcepack") != null) {
-            if (player.getResourcePackStatus() == PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED && Lobby.getInstance().getHologramAPI().debugPlayer != null) {
-                Lobby.getInstance().getHologramAPI().sendDebugMsg(Component.text("Skipped resourcepack loading because its already loaded"));
-            } else player.setResourcePack("https://cdn.bte-germany.de/general/resourcepacks/resourcepack_bteg_" + this.lobby.getConfig().getString("resourcepack") + ".zip", this.lobby.getConfig().getString("resourcepack"), true, this.lobby.getMiniMessage().deserialize("<red><b>Bitte akzeptiere unser Resourcepack um auf dem Server spielen zu können.\nPlease accept our resourcepack to play on our server.</b></red>"));
+        Actions.performJoinActions(lobbyPlugin, player);
+        if (this.lobbyPlugin.getConfig().getString("resourcepack") != null) {
+            if (player.getResourcePackStatus() == PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED && LobbyPlugin.getInstance().getHologramAPI().debugPlayer != null) {
+                LobbyPlugin.getInstance().getHologramAPI().sendDebugMsg(Component.text("Skipped resourcepack loading because its already loaded"));
+            } else player.setResourcePack("https://cdn.bte-germany.de/general/resourcepacks/resourcepack_bteg_" + this.lobbyPlugin.getConfig().getString("resourcepack") + ".zip", this.lobbyPlugin.getConfig().getString("resourcepack"), true, this.lobbyPlugin.getMiniMessage().deserialize("<red><b>Bitte akzeptiere unser Resourcepack um auf dem Server spielen zu können.\nPlease accept our resourcepack to play on our server.</b></red>"));
         }
-        this.lobby.getUserSettingsAPI().setDefaultSettings(player);
-        DbRow user = this.lobby.getDatabase().getFirstRow("SELECT * FROM privacy WHERE minecraftUUID = ?", player.getUniqueId().toString());
-        this.lobby.getLocationAPI().teleportToLocation(player, "spawn", false);
+        this.lobbyPlugin.getUserSettingsAPI().setDefaultSettings(player);
+        DbRow user = this.lobbyPlugin.getDatabase().getFirstRow("SELECT * FROM privacy WHERE minecraftUUID = ?", player.getUniqueId().toString());
+        this.lobbyPlugin.getLocationAPI().teleportToLocation(player, "spawn", false);
 
         event.joinMessage(Component.empty());
 
         if (user == null) {
-            new PrivacyGUI(player, this.lobby).getGui().open(player);
+            new PrivacyGUI(player, this.lobbyPlugin).getGui().open(player);
         }
 
         // Init scoreboard
         if(player.hasPermission("lobby.scoreboard")) {
-            this.lobby.getScoreboard().initScoreboard(player);
+            this.lobbyPlugin.getScoreboard().initScoreboard(player);
         }
 
-        if (DHAPI.getHologram("BOTM") == null && lobby.getLocationAPI().getLocation("botm") != null) {
+        if (DHAPI.getHologram("BOTM") == null && lobbyPlugin.getLocationAPI().getLocation("botm") != null) {
             try {
-                Location location = lobby.getLocationAPI().getLocation("botm");
+                Location location = lobbyPlugin.getLocationAPI().getLocation("botm");
                 if (location != null) {
-                    lobby.getBotmScoreAPI().create(location, lobby.getDatabase(), Language.GERMAN);
+                    lobbyPlugin.getBotmScoreAPI().create(location, lobbyPlugin.getDatabase(), Language.GERMAN);
                 }
             } catch (SQLException e) {
                 Bukkit.getLogger().warning("Es wurde keine Location für das BOTM Hologramm gefunden.");
@@ -90,8 +89,8 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
         event.quitMessage(Component.empty());
-        this.lobby.getVanish().remove(event.getPlayer());
-        this.lobby.getScoreboard().removeScoreboard(event.getPlayer());
+        this.lobbyPlugin.getVanish().remove(event.getPlayer());
+        this.lobbyPlugin.getScoreboard().removeScoreboard(event.getPlayer());
     }
 
     @EventHandler
@@ -112,7 +111,7 @@ public class PlayerEvents implements Listener {
     public void onItemPickup(EntityPickupItemEvent event) {
         if (event.getEntityType() == EntityType.PLAYER) {
             Player player = (Player) event.getEntity();
-            if (!this.lobby.getEditModePlayers().contains(player)) {
+            if (!this.lobbyPlugin.getEditModePlayers().contains(player)) {
                 event.setCancelled(true);
             }
         } else {
@@ -131,15 +130,15 @@ public class PlayerEvents implements Listener {
         if (player.getInventory().getChestplate() == null) return;
         if (player.getLocation().getY() > 150) {
             if (player.getInventory().getChestplate().getType().equals(Material.ELYTRA)) return;
-            if (!this.lobby.getElytraPlayers().containsKey(player.getUniqueId()))
-                this.lobby.getElytraPlayers().put(player.getUniqueId(), player.getInventory().getChestplate());
+            if (!this.lobbyPlugin.getElytraPlayers().containsKey(player.getUniqueId()))
+                this.lobbyPlugin.getElytraPlayers().put(player.getUniqueId(), player.getInventory().getChestplate());
             player.getInventory().setChestplate(PaperItemBuilder.from(Material.ELYTRA).enchant(Enchantment.MENDING).build());
             return;
         }
         ;
         if (player.getLocation().add(0, -1, 0).getBlock().getType() == Material.AIR) return;
-        if (!this.lobby.getElytraPlayers().containsKey(player.getUniqueId())) return;
-        ItemStack item = this.lobby.getElytraPlayers().remove(player.getUniqueId());
+        if (!this.lobbyPlugin.getElytraPlayers().containsKey(player.getUniqueId())) return;
+        ItemStack item = this.lobbyPlugin.getElytraPlayers().remove(player.getUniqueId());
         player.getInventory().setChestplate(item);
     }
 }

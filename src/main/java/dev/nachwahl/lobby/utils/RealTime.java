@@ -1,6 +1,6 @@
 package dev.nachwahl.lobby.utils;
 
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -42,12 +42,12 @@ public class RealTime {
     }
 
     private void runUpdate() {
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(Lobby.getInstance(), new Runnable() {
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(LobbyPlugin.getInstance(), new Runnable() {
             @Override
             public void run() {
                 time = getTime();
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    Lobby.getInstance().getUserSettingsAPI().getBooleanSetting(player, "realTime", (result) -> {
+                    LobbyPlugin.getInstance().getUserSettingsAPI().getBooleanSetting(player, "realTime", (result) -> {
                         if (result) {
                             player.setPlayerTime(time, false);
                         } else {

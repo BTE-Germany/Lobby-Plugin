@@ -1,6 +1,6 @@
 package dev.nachwahl.lobby.utils;
 
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import dev.nachwahl.lobby.cinematic.PathPoint;
 import lombok.Getter;
 import org.bukkit.Location;
@@ -18,9 +18,9 @@ public class CinematicUtil {
 
     @Getter
     private FileConfiguration dataFile;
-    private final Lobby plugin;
+    private final LobbyPlugin plugin;
 
-    public CinematicUtil(Lobby plugin) {
+    public CinematicUtil(LobbyPlugin plugin) {
         this.plugin = plugin;
     }
 

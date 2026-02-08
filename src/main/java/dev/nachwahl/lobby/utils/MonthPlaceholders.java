@@ -1,18 +1,17 @@
 package dev.nachwahl.lobby.utils;
 
 import co.aikar.commands.annotation.Dependency;
-import dev.nachwahl.lobby.Lobby;
-import dev.nachwahl.lobby.language.LanguageAPI;
+import dev.nachwahl.lobby.LobbyPlugin;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.jetbrains.annotations.NotNull;
 
 public class MonthPlaceholders extends PlaceholderExpansion {
 
     @Dependency
-    private static Lobby lobby;
+    private static LobbyPlugin lobbyPlugin;
 
-    public MonthPlaceholders(Lobby lobby) {
-        this.lobby = lobby;
+    public MonthPlaceholders(LobbyPlugin lobbyPlugin) {
+        this.lobbyPlugin = lobbyPlugin;
     }
 
     @Override
@@ -37,6 +36,6 @@ public class MonthPlaceholders extends PlaceholderExpansion {
 
     @Override
     public String onPlaceholderRequest(org.bukkit.entity.Player player, String identifier) {
-       return lobby.getLanguageAPI().getMessageString(lobby.getLanguageAPI().getLanguage(player), identifier);
+       return lobbyPlugin.getLanguageAPI().getMessageString(lobbyPlugin.getLanguageAPI().getLanguage(player), identifier);
     }
 }

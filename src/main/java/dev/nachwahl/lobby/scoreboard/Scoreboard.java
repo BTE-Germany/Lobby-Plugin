@@ -1,7 +1,7 @@
 package dev.nachwahl.lobby.scoreboard;
 
 import dev.nachwahl.cosmetics.Cosmetics;
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import fr.mrmicky.fastboard.adventure.FastBoard;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -11,12 +11,12 @@ import java.util.*;
 
 public class Scoreboard {
 
-    private final Lobby lobby;
+    private final LobbyPlugin lobbyPlugin;
     private final Cosmetics cosmetics;
     private final Map<UUID, FastBoard> scoreboards = new HashMap<>();
 
-    public Scoreboard(Lobby lobby, Cosmetics cosmetics) {
-        this.lobby = lobby;
+    public Scoreboard(LobbyPlugin lobbyPlugin, Cosmetics cosmetics) {
+        this.lobbyPlugin = lobbyPlugin;
         this.cosmetics = cosmetics;
     }
 
@@ -50,17 +50,17 @@ public class Scoreboard {
         }
 
         List<Component> lines = new ArrayList<>();
-        this.lobby.getLanguageAPI().getLanguage(player, language -> {
+        this.lobbyPlugin.getLanguageAPI().getLanguage(player, language -> {
             this.cosmetics.getGemsAPI().getBalance(player, gems -> {
                 long playtime = this.cosmetics.getPlaytimeHandler().getPlaytime(player.getUniqueId());
                 lines.add(Component.empty());
                 lines.add(Component.text("§7Gems"));
                 lines.add(Component.text("௴ " + gems));
                 lines.add(Component.empty());
-                lines.add(this.lobby.getLanguageAPI().getMessage(language, "scoreboard.playtime"));
+                lines.add(this.lobbyPlugin.getLanguageAPI().getMessage(language, "scoreboard.playtime"));
                 lines.add(Component.text("ꭑ " + formatPlaytime(playtime)));
                 lines.add(Component.empty());
-                lines.add(this.lobby.getLanguageAPI().getMessage(language, "scoreboard.sponsoredby"));
+                lines.add(this.lobbyPlugin.getLanguageAPI().getMessage(language, "scoreboard.sponsoredby"));
                 lines.add(Component.text("௶"));
                 lines.add(Component.empty());
             });

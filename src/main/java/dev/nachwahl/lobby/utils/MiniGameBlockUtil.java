@@ -4,7 +4,7 @@ import de.oliver.fancyholograms.api.FancyHologramsPlugin;
 import de.oliver.fancyholograms.api.HologramManager;
 import de.oliver.fancyholograms.api.data.TextHologramData;
 import de.oliver.fancyholograms.api.hologram.Hologram;
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
@@ -24,11 +24,11 @@ public class MiniGameBlockUtil {
     public static final String FILE_NAME = "minigameblocks.yml";
     @Getter
     private FileConfiguration dataFile;
-    private final Lobby plugin;
+    private final LobbyPlugin plugin;
 
     public static final String FORMATTING_CODE = "<blue><bold>";
 
-    public MiniGameBlockUtil(Lobby plugin) {
+    public MiniGameBlockUtil(LobbyPlugin plugin) {
         this.plugin = plugin;
 
         loadData();
@@ -70,15 +70,15 @@ public class MiniGameBlockUtil {
                 saveFile();
                 return file;
             } catch (IOException e) {
-                Lobby.getInstance().getComponentLogger().error(Component.text("Error accorded while writing " +  FILE_NAME + " file."), e);
+                LobbyPlugin.getInstance().getComponentLogger().error(Component.text("Error accorded while writing " +  FILE_NAME + " file."), e);
             }
         }
         return null;
     }
 
     public static void setGameTitleHoverTexts(@NotNull String game) {
-        for (String s : Lobby.getInstance().getMiniGameBlockUtil().getList(game.toLowerCase())) {
-            Location loc = Lobby.getInstance().getLocationAPI().parseLocation(s);
+        for (String s : LobbyPlugin.getInstance().getMiniGameBlockUtil().getList(game.toLowerCase())) {
+            Location loc = LobbyPlugin.getInstance().getLocationAPI().parseLocation(s);
             setGameTitleHoverText(game, loc);
         }
     }

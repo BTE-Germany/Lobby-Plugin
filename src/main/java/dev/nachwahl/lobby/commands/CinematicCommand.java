@@ -2,7 +2,7 @@ package dev.nachwahl.lobby.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import dev.nachwahl.lobby.cinematic.PathPoint;
 import dev.nachwahl.lobby.cinematic.PlayerCinematic;
 import dev.nachwahl.lobby.utils.CinematicUtil;
@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class CinematicCommand extends BaseCommand {
 
     @Dependency
-    private Lobby lobby;
+    private LobbyPlugin lobbyPlugin;
 
     private CinematicUtil cinematicUtil;
     private String commandCompletionStart;
@@ -35,7 +35,7 @@ public class CinematicCommand extends BaseCommand {
     public void onStartCommand(CommandSender sender, String[] args) {
         var mm = MiniMessage.miniMessage();
         sender.sendMessage(mm.deserialize("<green>Erfolgreich Cinematic gestartet.</green>"));
-        PlayerCinematic cinematic = new PlayerCinematic(lobby);
+        PlayerCinematic cinematic = new PlayerCinematic(lobbyPlugin);
         List<PathPoint> points = cinematicUtil.getCinematicPath(args[0]);
         if(args.length>1){
             if(args.length>2){

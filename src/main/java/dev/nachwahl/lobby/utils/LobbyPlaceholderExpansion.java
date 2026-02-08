@@ -2,7 +2,7 @@ package dev.nachwahl.lobby.utils;
 
 import co.aikar.idb.Database;
 import co.aikar.idb.DbRow;
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import dev.nachwahl.lobby.leaderboards.JnRLeaderboard;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
@@ -13,12 +13,12 @@ import java.sql.SQLException;
 
 public class LobbyPlaceholderExpansion extends PlaceholderExpansion {
 
-    private final Lobby lobby;
+    private final LobbyPlugin lobbyPlugin;
     private final Database database;
 
-    public LobbyPlaceholderExpansion(Lobby lobby) {
-        this.lobby = lobby;
-        this.database = lobby.getDatabase();
+    public LobbyPlaceholderExpansion(LobbyPlugin lobbyPlugin) {
+        this.lobbyPlugin = lobbyPlugin;
+        this.database = lobbyPlugin.getDatabase();
     }
 
     @Override
@@ -48,8 +48,8 @@ public class LobbyPlaceholderExpansion extends PlaceholderExpansion {
             try {
                 dbRow = this.database.getFirstRow("SELECT score, player, pos FROM (SELECT player, Row_Number() OVER(ORDER BY score DESC) AS pos, score FROM parkour_scores WHERE area = \"JnR\") AS filtered WHERE player = ?", player.getUniqueId().toString());
             } catch (SQLException e) {
-                this.lobby.getLogger().warning(e.toString());
-                return this.lobby.getLanguageAPI().getMessageString(this.lobby.getLanguageAPI().getLanguage(player), "placeholder.playtime.error");
+                this.lobbyPlugin.getLogger().warning(e.toString());
+                return this.lobbyPlugin.getLanguageAPI().getMessageString(this.lobbyPlugin.getLanguageAPI().getLanguage(player), "placeholder.playtime.error");
             }
 
             if (dbRow == null) {

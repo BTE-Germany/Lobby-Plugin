@@ -3,9 +3,7 @@ package dev.nachwahl.lobby.utils;
 import co.aikar.commands.annotation.Dependency;
 import co.aikar.idb.Database;
 import co.aikar.idb.DbRow;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import dev.nachwahl.lobby.language.Language;
 import eu.decentsoftware.holograms.api.DHAPI;
 import org.bukkit.Bukkit;
@@ -28,24 +26,23 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 public class BOTMScoreAPI {
 
     @Dependency
-    private static Lobby lobby;
+    private static LobbyPlugin lobbyPlugin;
 
     private final Map<UUID, String> playerNames = new HashMap<>();
 
     private static final int entries = 8;
 
-    public BOTMScoreAPI(Lobby lobby) {
-        this.lobby = lobby;
+    public BOTMScoreAPI(LobbyPlugin lobbyPlugin) {
+        this.lobbyPlugin = lobbyPlugin;
     }
 
 
     public boolean addEntry(String name, int year, int month, String player1_name, @Nullable String player2_name, @Nullable String player3_name) throws SQLException {
-        DbRow dbRow = this.lobby.getDatabase().getFirstRow(
+        DbRow dbRow = this.lobbyPlugin.getDatabase().getFirstRow(
                 "SELECT * FROM botm WHERE year = ? AND month = ?", year, month
         );
         if (dbRow != null) {
@@ -64,7 +61,7 @@ public class BOTMScoreAPI {
             player3_uuid = Bukkit.getOfflinePlayer(player3_name).getUniqueId();
         }
 
-        this.lobby.getDatabase().executeUpdate(
+        this.lobbyPlugin.getDatabase().executeUpdate(
                 "INSERT INTO botm (name, year, month, player1_uuid, player2_uuid, player3_uuid) VALUES (?, ?, ?, ?, ?, ?)",
                 name,
                 year,
@@ -81,7 +78,7 @@ public class BOTMScoreAPI {
      */
     public int getScore(String playerName) throws SQLException {
         String uuid = Bukkit.getOfflinePlayer(playerName).getUniqueId().toString();
-        DbRow row = this.lobby.getDatabase().getFirstRow(
+        DbRow row = this.lobbyPlugin.getDatabase().getFirstRow(
             "SELECT COUNT(*) AS cnt FROM botm WHERE player1_uuid = ? OR player2_uuid = ? OR player3_uuid = ?",
                 uuid.toString(), uuid.toString(), uuid.toString()
         );
@@ -92,7 +89,7 @@ public class BOTMScoreAPI {
     }
 
     public int getScore(UUID uuid) throws SQLException {
-        DbRow row = this.lobby.getDatabase().getFirstRow(
+        DbRow row = this.lobbyPlugin.getDatabase().getFirstRow(
                 "SELECT COUNT(*) AS cnt FROM botm WHERE player1_uuid = ? OR player2_uuid = ? OR player3_uuid = ?",
                 uuid.toString(), uuid.toString(), uuid.toString()
         );
@@ -122,11 +119,11 @@ public class BOTMScoreAPI {
             }
             DbRow row = dbRows.get(0);
 
-            int score = lobby.getBotmScoreAPI().getScore(UUID.fromString(row.getString("player1_uuid")));
+            int score = lobbyPlugin.getBotmScoreAPI().getScore(UUID.fromString(row.getString("player1_uuid")));
 
             String monthName = "%months_month." + row.getInt("month") + "%";
 
-            lines.add(ChatColor.GOLD + "" + monthName + " 20" + row.getInt("year") + " " + ChatColor.WHITE + lobby.getBotmScoreAPI().getPlayerName(UUID.fromString(row.getString("player1_uuid"))).get() + ": " + ChatColor.GOLD + score);
+            lines.add(ChatColor.GOLD + "" + monthName + " 20" + row.getInt("year") + " " + ChatColor.WHITE + lobbyPlugin.getBotmScoreAPI().getPlayerName(UUID.fromString(row.getString("player1_uuid"))).get() + ": " + ChatColor.GOLD + score);
 
             lines.add("");
 
@@ -136,11 +133,11 @@ public class BOTMScoreAPI {
                 UUID uuid = UUID.fromString(scores.get(i).getKey());
                 for (int j = 0; j <= i; j++) {
                     if (j == i) {
-                        lines.add(ChatColor.GOLD + "1. " + ChatColor.WHITE + lobby.getBotmScoreAPI().getPlayerName(uuid).get() + ": " + ChatColor.GOLD + scores.get(i).getValue());
+                        lines.add(ChatColor.GOLD + "1. " + ChatColor.WHITE + lobbyPlugin.getBotmScoreAPI().getPlayerName(uuid).get() + ": " + ChatColor.GOLD + scores.get(i).getValue());
                         continue outer;
                     }
                     if(scores.get(i).getValue().equals(scores.get(i - (j + 1)).getValue())) continue;
-                    lines.add(ChatColor.GOLD + String.valueOf((i - j) + 1) + ". " + ChatColor.WHITE + lobby.getBotmScoreAPI().getPlayerName(uuid).get() + ": " + ChatColor.GOLD + scores.get(i).getValue());
+                    lines.add(ChatColor.GOLD + String.valueOf((i - j) + 1) + ". " + ChatColor.WHITE + lobbyPlugin.getBotmScoreAPI().getPlayerName(uuid).get() + ": " + ChatColor.GOLD + scores.get(i).getValue());
                     continue outer;
                 }
             }
@@ -153,9 +150,9 @@ public class BOTMScoreAPI {
             // Create the hologram
             DHAPI.createHologram("BOTM", location, lines);
 
-            return lobby.getLanguageAPI().getMessageString(language, "botm.create.success");
+            return lobbyPlugin.getLanguageAPI().getMessageString(language, "botm.create.success");
         } else {
-            return lobby.getLanguageAPI().getMessageString(language, "botm.create.failed");
+            return lobbyPlugin.getLanguageAPI().getMessageString(language, "botm.create.failed");
 
         }
     }
@@ -165,7 +162,7 @@ public class BOTMScoreAPI {
             Location location = DHAPI.getHologram("BOTM").getLocation();
 
             DHAPI.removeHologram("BOTM");
-            create(location, this.lobby.getDatabase(), this.lobby.getLanguageAPI().getLanguage(player));
+            create(location, this.lobbyPlugin.getDatabase(), this.lobbyPlugin.getLanguageAPI().getLanguage(player));
         }
     }
 
@@ -199,7 +196,7 @@ public class BOTMScoreAPI {
             }
 
             if (response.statusCode() == 429) {
-                this.lobby.getLogger().warning(() -> "UUID to player name timeout for %s".formatted(uuid.toString()));
+                this.lobbyPlugin.getLogger().warning(() -> "UUID to player name timeout for %s".formatted(uuid.toString()));
                 return null;
             }
 
@@ -207,14 +204,14 @@ public class BOTMScoreAPI {
             this.playerNames.put(uuid, name);
             return name;
         } catch (IOException | InterruptedException e) {
-            this.lobby.getLogger().warning(() -> ("Loading name of unknown player %s failed. " + e.getMessage()).formatted(uuid.toString()));
+            this.lobbyPlugin.getLogger().warning(() -> ("Loading name of unknown player %s failed. " + e.getMessage()).formatted(uuid.toString()));
             this.playerNames.put(uuid, "<Unbekannter Spieler>");
             return "<Unbekannter Spieler>";
         }
     }
 
     public List<Map.Entry<String, Integer>> sortScores() throws SQLException {
-        List<DbRow> dbRows = lobby.getDatabase().getResults("SELECT * FROM botm");
+        List<DbRow> dbRows = lobbyPlugin.getDatabase().getResults("SELECT * FROM botm");
         Map<String, Integer> scores = new HashMap<>();
 
         for (DbRow row : dbRows) {

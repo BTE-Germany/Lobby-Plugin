@@ -1,10 +1,9 @@
 package dev.nachwahl.lobby.utils;
 
 import co.aikar.commands.annotation.Dependency;
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.apache.commons.lang3.tuple.Pair;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -14,15 +13,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class BOTMPlaceholder extends PlaceholderExpansion {
 
     @Dependency
-    private static Lobby lobby;
+    private static LobbyPlugin lobbyPlugin;
 
-    public BOTMPlaceholder(Lobby lobby) {
-        this.lobby = lobby;
+    public BOTMPlaceholder(LobbyPlugin lobbyPlugin) {
+        this.lobbyPlugin = lobbyPlugin;
     }
 
     @Override
@@ -52,9 +50,9 @@ public class BOTMPlaceholder extends PlaceholderExpansion {
             UUID uuid = player.getUniqueId();
 
             //Get Playername and score
-            String position = lobby.getLanguageAPI().getMessageString(this.lobby.getLanguageAPI().getLanguage(player), "botm.no_position");
+            String position = lobbyPlugin.getLanguageAPI().getMessageString(this.lobbyPlugin.getLanguageAPI().getLanguage(player), "botm.no_position");
             try {
-                List<Map.Entry<String, Integer>> scores = lobby.getBotmScoreAPI().sortScores();
+                List<Map.Entry<String, Integer>> scores = lobbyPlugin.getBotmScoreAPI().sortScores();
 
                 List<Pair<Integer, Map.Entry<String, Integer>>> ranking = new java.util.ArrayList<>();
                 int rank = 1;
@@ -85,7 +83,7 @@ public class BOTMPlaceholder extends PlaceholderExpansion {
             String playerName = player.getName();
             int score;
             try {
-                score = lobby.getBotmScoreAPI().getScore(uuid);
+                score = lobbyPlugin.getBotmScoreAPI().getScore(uuid);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

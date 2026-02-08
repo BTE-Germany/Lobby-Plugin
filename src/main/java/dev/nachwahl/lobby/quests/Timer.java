@@ -1,6 +1,6 @@
 package dev.nachwahl.lobby.quests;
 
-import dev.nachwahl.lobby.Lobby;
+import dev.nachwahl.lobby.LobbyPlugin;
 import dev.nachwahl.lobby.quests.car.CarQuest;
 import dev.nachwahl.lobby.quests.mine.MineQuest;
 import net.md_5.bungee.api.ChatMessageType;
@@ -28,7 +28,7 @@ public class Timer {
     }
 
     public void start() {
-        this.runnable = Bukkit.getScheduler().scheduleSyncRepeatingTask(Lobby.getInstance(), () -> {
+        this.runnable = Bukkit.getScheduler().scheduleSyncRepeatingTask(LobbyPlugin.getInstance(), () -> {
             this.player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.WHITE + getTimeLeft()));
             this.period = this.period - 1;
             if (this.period < 0) {
