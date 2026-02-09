@@ -48,11 +48,11 @@ public class PlayerEvents implements Listener {
         Player player = event.getPlayer();
         player.setGameMode(GameMode.ADVENTURE);
         Actions.performJoinActions(lobbyPlugin, player);
-        if (this.lobbyPlugin.getConfig().getString("resourcepack") != null) {
+        if (this.lobbyPlugin.getConfig().getString("resourcepackHash") != null) {
             if (player.getResourcePackStatus() == PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED && LobbyPlugin.getInstance().getHologramAPI().debugPlayer != null) {
                 LobbyPlugin.getInstance().getHologramAPI().sendDebugMsg(Component.text("Skipped resourcepack loading because its already loaded"));
             } else
-                player.setResourcePack("https://cdn.bte-germany.de/general/resourcepacks/resourcepack_bteg_" + this.lobbyPlugin.getConfig().getString("resourcepack") + ".zip", this.lobbyPlugin.getConfig().getString("resourcepack"), true, this.lobbyPlugin.getMiniMessage().deserialize("<red><b>Bitte akzeptiere unser Resourcepack um auf dem Server spielen zu können.\nPlease accept our resourcepack to play on our server.</b></red>"));
+                player.setResourcePack(this.lobbyPlugin.getConfig().getString("resourcepackUrl") + this.lobbyPlugin.getConfig().getString("resourcepackHash") + ".zip", this.lobbyPlugin.getConfig().getString("resourcepackHash"), true, this.lobbyPlugin.getMiniMessage().deserialize("<red><b>Bitte akzeptiere unser Resourcepack um auf dem Server spielen zu können.\nPlease accept our resourcepack to play on our server.</b></red>"));
         }
         this.lobbyPlugin.getUserSettingsAPI().setDefaultSettings(player);
         DbRow user = this.lobbyPlugin.getDatabase().getFirstRow("SELECT * FROM privacy WHERE minecraftUUID = ?", player.getUniqueId().toString());
