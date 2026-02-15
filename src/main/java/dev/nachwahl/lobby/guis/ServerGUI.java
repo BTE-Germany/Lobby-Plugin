@@ -16,6 +16,10 @@ public class ServerGUI {
     private final LobbyPlugin lobbyPlugin;
 
     public ServerGUI(LobbyPlugin lobbyPlugin, Player player) {
+        this(lobbyPlugin, player, true);
+    }
+
+    public ServerGUI(LobbyPlugin lobbyPlugin, Player player, boolean open) {
         this.lobbyPlugin = lobbyPlugin;
         this.lobbyPlugin.getLanguageAPI().getLanguage(player, language -> {
             this.gui = Gui.gui()
@@ -43,7 +47,10 @@ public class ServerGUI {
                     }));
 
             this.gui.getFiller().fill(PaperItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());
-            Bukkit.getScheduler().runTask(this.lobbyPlugin, () -> this.gui.open(player));
+
+            if (open) {
+                Bukkit.getScheduler().runTask(this.lobbyPlugin, () -> this.gui.open(player));
+            }
 
         });
     }
