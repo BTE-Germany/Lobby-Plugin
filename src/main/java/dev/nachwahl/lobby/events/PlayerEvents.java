@@ -24,6 +24,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
+import org.jspecify.annotations.NonNull;
 
 import java.sql.SQLException;
 
@@ -122,14 +123,14 @@ public class PlayerEvents implements Listener {
     }
 
     @EventHandler
-    public void onMove(PlayerMoveEvent event) {
+    public void onMove(@NonNull PlayerMoveEvent event) {
         Player player = event.getPlayer();
         if (player.getInventory().getChestplate() == null) return;
-        if (player.getLocation().getY() > 150) {
-            if (player.getInventory().getChestplate().getType().equals(Material.ELYTRA)) return;
-            if (!this.lobbyPlugin.getElytraPlayers().containsKey(player.getUniqueId()))
+        if (player.getLocation().getY() > 150) { // Parkour Plugin removes Elytra and put it's back so it's the only case where we have no elytra but are in the elytra players
+            if (!player.getInventory().getChestplate().getType().equals(Material.ELYTRA) && !this.lobbyPlugin.getElytraPlayers().containsKey(player.getUniqueId())) {
                 this.lobbyPlugin.getElytraPlayers().put(player.getUniqueId(), player.getInventory().getChestplate());
-            player.getInventory().setChestplate(PaperItemBuilder.from(Material.ELYTRA).enchant(Enchantment.MENDING).build());
+                player.getInventory().setChestplate(PaperItemBuilder.from(Material.ELYTRA).enchant(Enchantment.MENDING).build());
+            }
             return;
         }
         ;
