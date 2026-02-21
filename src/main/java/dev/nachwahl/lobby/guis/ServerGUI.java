@@ -10,16 +10,18 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import java.util.function.Consumer;
+
 public class ServerGUI {
 
     private Gui gui;
     private final LobbyPlugin lobbyPlugin;
 
     public ServerGUI(LobbyPlugin lobbyPlugin, Player player) {
-        this(lobbyPlugin, player, true);
+        this(lobbyPlugin, player, true, null);
     }
 
-    public ServerGUI(LobbyPlugin lobbyPlugin, Player player, boolean open) {
+    public ServerGUI(LobbyPlugin lobbyPlugin, Player player, boolean open, Consumer<Gui> callback) {
         this.lobbyPlugin = lobbyPlugin;
         this.lobbyPlugin.getLanguageAPI().getLanguage(player, language -> {
             this.gui = Gui.gui()
@@ -50,6 +52,10 @@ public class ServerGUI {
 
             if (open) {
                 Bukkit.getScheduler().runTask(this.lobbyPlugin, () -> this.gui.open(player));
+            }
+
+            if (callback != null) {
+                callback.accept(this.gui);
             }
 
         });

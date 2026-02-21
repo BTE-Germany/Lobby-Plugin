@@ -41,8 +41,10 @@ public class NavigatorGUI {
             this.gui.setItem(2, 7, PaperItemBuilder.from(ItemGenerator.customModel(Material.PAPER, "map"))
                     .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "navigator.terra.name"))
                     .asGuiItem(event -> {
-                        new ServerGUI(lobbyPlugin, player, false).getGui().getGuiItems().forEach((slot, item) -> {
-                            this.gui.setItem(slot, item);
+                        new ServerGUI(lobbyPlugin, player, false, gui -> {
+                            gui.getGuiItems().forEach((slot, item) -> {
+                                this.gui.setItem(slot, item);
+                            });
                         });
                         this.gui.update();
                     }));
