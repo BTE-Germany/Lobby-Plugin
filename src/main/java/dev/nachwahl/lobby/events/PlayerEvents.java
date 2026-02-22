@@ -9,7 +9,6 @@ import dev.triumphteam.gui.builder.item.PaperItemBuilder;
 import eu.decentsoftware.holograms.api.DHAPI;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -21,6 +20,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
@@ -30,22 +30,29 @@ import java.sql.SQLException;
 
 public class PlayerEvents implements Listener {
 
-    private LobbyPlugin lobbyPlugin;
+    private final LobbyPlugin lobbyPlugin;
 
     public PlayerEvents(LobbyPlugin lobbyPlugin) {
         this.lobbyPlugin = lobbyPlugin;
     }
 
     @EventHandler
-    public void onInventoryChange(InventoryInteractEvent event) {
-        if (!this.lobbyPlugin.getEditModePlayers().contains((Player) event.getWhoClicked())) {
+    public void onInventoryChange(@NonNull InventoryInteractEvent event) {
+        if (event.getWhoClicked() instanceof Player p && !this.lobbyPlugin.getEditModePlayers().contains(p)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onInventoryChange(@NonNull InventoryDragEvent event) {
+        if (event.getWhoClicked() instanceof Player p && !this.lobbyPlugin.getEditModePlayers().contains(p)) {
             event.setCancelled(true);
         }
     }
 
     @SneakyThrows
     @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
+    public void onJoin(@NonNull PlayerJoinEvent event) {
         Player player = event.getPlayer();
         player.setGameMode(GameMode.ADVENTURE);
         Actions.performJoinActions(lobbyPlugin, player);
@@ -77,7 +84,7 @@ public class PlayerEvents implements Listener {
                     lobbyPlugin.getBotmScoreAPI().create(location, lobbyPlugin.getDatabase(), Language.GERMAN);
                 }
             } catch (SQLException e) {
-                Bukkit.getLogger().warning("Es wurde keine Location für das BOTM Hologramm gefunden.");
+                lobbyPlugin.getLogger().warning("Es wurde keine Location für das BOTM Hologramm gefunden.");
                 throw new RuntimeException(e);
             }
         }
@@ -85,28 +92,28 @@ public class PlayerEvents implements Listener {
     }
 
     @EventHandler
-    public void onLeave(PlayerQuitEvent event) {
+    public void onLeave(@NonNull PlayerQuitEvent event) {
         event.quitMessage(Component.empty());
         this.lobbyPlugin.getVanish().remove(event.getPlayer());
         this.lobbyPlugin.getScoreboard().removeScoreboard(event.getPlayer());
     }
 
     @EventHandler
-    public void onDamage(EntityDamageEvent event) {
+    public void onDamage(@NonNull EntityDamageEvent event) {
         if (event.getEntityType() == EntityType.PLAYER) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void onHunger(FoodLevelChangeEvent event) {
+    public void onHunger(@NonNull FoodLevelChangeEvent event) {
         event.setCancelled(true);
         event.getEntity().setFoodLevel(20);
         event.getEntity().setHealth(20);
     }
 
     @EventHandler
-    public void onItemPickup(EntityPickupItemEvent event) {
+    public void onItemPickup(@NonNull EntityPickupItemEvent event) {
         if (event.getEntityType() == EntityType.PLAYER) {
             Player player = (Player) event.getEntity();
             if (!this.lobbyPlugin.getEditModePlayers().contains(player)) {
@@ -118,7 +125,7 @@ public class PlayerEvents implements Listener {
     }
 
     @EventHandler
-    public void onItemDrop(PlayerDropItemEvent event) {
+    public void onItemDrop(@NonNull PlayerDropItemEvent event) {
         event.setCancelled(true);
     }
 
@@ -133,7 +140,7 @@ public class PlayerEvents implements Listener {
             }
             return;
         }
-        ;
+
         if (player.getLocation().add(0, -1, 0).getBlock().getType() == Material.AIR) return;
         if (!this.lobbyPlugin.getElytraPlayers().containsKey(player.getUniqueId())) return;
         ItemStack item = this.lobbyPlugin.getElytraPlayers().remove(player.getUniqueId());
