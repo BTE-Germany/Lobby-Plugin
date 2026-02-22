@@ -20,8 +20,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NonNull;
@@ -37,15 +37,24 @@ public class PlayerEvents implements Listener {
     }
 
     @EventHandler
-    public void onInventoryChange(@NonNull InventoryInteractEvent event) {
+    public void onInventoryChange(@NonNull InventoryClickEvent event) {
+        lobbyPlugin.getLogger().info("InventoryClickEvent");
+        if (event.getWhoClicked() instanceof Player p && !this.lobbyPlugin.getEditModePlayers().contains(p)) {
+            event.setCancelled(true);
+            lobbyPlugin.getLogger().info("InventoryClickEvent cancelled");
+        }
+    }
+
+    @EventHandler
+    public void onInventoryDrag(@NonNull InventoryDragEvent event) {
         if (event.getWhoClicked() instanceof Player p && !this.lobbyPlugin.getEditModePlayers().contains(p)) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void onInventoryChange(@NonNull InventoryDragEvent event) {
-        if (event.getWhoClicked() instanceof Player p && !this.lobbyPlugin.getEditModePlayers().contains(p)) {
+    public void onInventoryDrag(@NonNull PlayerSwapHandItemsEvent event) {
+        if (!this.lobbyPlugin.getEditModePlayers().contains(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
