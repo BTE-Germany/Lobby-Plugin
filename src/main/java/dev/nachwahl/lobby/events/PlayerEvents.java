@@ -38,10 +38,8 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void onInventoryChange(@NonNull InventoryClickEvent event) {
-        lobbyPlugin.getLogger().info("InventoryClickEvent");
         if (event.getWhoClicked() instanceof Player p && !this.lobbyPlugin.getEditModePlayers().contains(p)) {
             event.setCancelled(true);
-            lobbyPlugin.getLogger().info("InventoryClickEvent cancelled");
         }
     }
 
