@@ -31,4 +31,8 @@ public class ItemGenerator {
         return item;
     }
 
+    public static ItemStack customModelEmpty() {
+        return customModel(Material.PAPER, "empty");
+    }
+
 }
