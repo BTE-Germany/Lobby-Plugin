@@ -59,7 +59,7 @@ dependencies {
 }
 
 group = "dev.nachwahl"
-version = "1.0.2" // -SNAPSHOT
+version = "1.0.3-SNAPSHOT"
 description = "Lobby"
 java.sourceCompatibility = JavaVersion.VERSION_25
 
@@ -101,4 +101,18 @@ sonar {
         )
         property("sonar.projectName", "Lobby-Plugin")
     }
+}
+
+tasks.processResources {
+    // work around IDEA-296490
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    with(copySpec {
+        from("src/main/resources/plugin.yml") {
+            expand(
+                mapOf(
+                    "version" to project.version,
+                )
+            )
+        }
+    })
 }

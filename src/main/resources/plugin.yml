@@ -1,5 +1,5 @@
 name: Lobby
-version: '${project.version}'
+version: '${version}'
 main: dev.nachwahl.lobby.LobbyPlugin
 api-version: '1.21'
 authors: [ Nachwahl,Nudlsupp ]
