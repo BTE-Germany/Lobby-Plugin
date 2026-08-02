@@ -2,7 +2,7 @@ package dev.nachwahl.lobby.guis.botm;
 
 import co.aikar.idb.DbRow;
 import dev.nachwahl.lobby.LobbyPlugin;
-import dev.triumphteam.gui.builder.item.ItemBuilder;
+import dev.triumphteam.gui.builder.item.PaperItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -64,7 +64,7 @@ public class BOTMList {
                 Component year_component = this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.year");
                 String year_text = PlainTextComponentSerializer.plainText().serialize(year_component) + ": 20" + year;
 
-                this.gui.setItem(i + 1, 2, ItemBuilder.from(Material.CLOCK)
+                this.gui.setItem(i + 1, 2, PaperItemBuilder.from(Material.CLOCK)
                         .amount(year)
                         .name(Component.text(year_text))
                         .asGuiItem()
@@ -75,13 +75,13 @@ public class BOTMList {
                 String month_text = PlainTextComponentSerializer.plainText().serialize(month_component_1) + ": " + PlainTextComponentSerializer.plainText().serialize(month_component_2);
 
 
-                this.gui.setItem(i + 1, 3, ItemBuilder.from(Material.CLOCK)
+                this.gui.setItem(i + 1, 3, PaperItemBuilder.from(Material.CLOCK)
                         .amount(month)
                         .name(Component.text(month_text))
                         .asGuiItem()
                 );
 
-                this.gui.setItem(i + 1, 4, ItemBuilder.from(Material.NAME_TAG)
+                this.gui.setItem(i + 1, 4, PaperItemBuilder.from(Material.NAME_TAG)
                         .name(Component.text(name))
                         .asGuiItem()
                 );
@@ -94,7 +94,7 @@ public class BOTMList {
                 player1_meta.setOwningPlayer(offlinePlayer1);
                 player1_head.setItemMeta(player1_meta);
 
-                this.gui.setItem(i + 1, 5, ItemBuilder.from(player1_head)
+                this.gui.setItem(i + 1, 5, PaperItemBuilder.from(player1_head)
                         .name(Component.text(player1_name))
                         .lore(offlinePlayer1.getLastSeen() == 0 ? this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.offline_player_error") : null)
                         .asGuiItem()
@@ -110,13 +110,13 @@ public class BOTMList {
                     player2_meta.setOwningPlayer(offlinePlayer2);
                     player2_head.setItemMeta(player2_meta);
 
-                    this.gui.setItem(i + 1, 6, ItemBuilder.from(player2_head)
+                    this.gui.setItem(i + 1, 6, PaperItemBuilder.from(player2_head)
                             .name(Component.text(player2_name))
                             .lore(offlinePlayer2.getLastSeen() == 0 ? this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.offline_player_error") : null)
                             .asGuiItem()
                     );
                 } else {
-                    this.gui.setItem(i + 1, 6, ItemBuilder.from(Material.STRUCTURE_VOID)
+                    this.gui.setItem(i + 1, 6, PaperItemBuilder.from(Material.STRUCTURE_VOID)
                             .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.noplayer"))
                             .asGuiItem()
                     );
@@ -132,19 +132,19 @@ public class BOTMList {
                     player3_meta.setOwningPlayer(offlinePlayer3);
                     player3_head.setItemMeta(player3_meta);
 
-                    this.gui.setItem(i + 1, 7, ItemBuilder.from(player3_head)
+                    this.gui.setItem(i + 1, 7, PaperItemBuilder.from(player3_head)
                             .name(Component.text(player3_name))
                             .lore(offlinePlayer3.getLastSeen() == 0 ? this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.offline_player_error") : null)
                             .asGuiItem()
                     );
                 } else {
-                    this.gui.setItem(i + 1, 7, ItemBuilder.from(Material.STRUCTURE_VOID)
+                    this.gui.setItem(i + 1, 7, PaperItemBuilder.from(Material.STRUCTURE_VOID)
                             .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.noplayer"))
                             .asGuiItem()
                     );
                 }
 
-                this.gui.setItem(i + 1, 8, ItemBuilder.from(Material.BARRIER)
+                this.gui.setItem(i + 1, 8, PaperItemBuilder.from(Material.BARRIER)
                         .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.delete"))
                         .asGuiItem(event -> {
                             new BOTMConfirm(this.lobbyPlugin, player, currentPage, year, month);
@@ -154,7 +154,7 @@ public class BOTMList {
             }
 
             if (currentPage > 1) {
-                this.gui.setItem(1, 1, ItemBuilder.from(Material.ARROW)
+                this.gui.setItem(1, 1, PaperItemBuilder.from(Material.ARROW)
                         .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.previous"))
                         .asGuiItem(event -> {
 
@@ -167,14 +167,14 @@ public class BOTMList {
                         })
                 );
             } else {
-                this.gui.setItem(1, 1, ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE)
+                this.gui.setItem(1, 1, PaperItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE)
                         .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.unavailable"))
                         .asGuiItem()
                 );
             }
 
             if (currentPage < maxPage) {
-                this.gui.setItem(1, 9, ItemBuilder.from(Material.ARROW)
+                this.gui.setItem(1, 9, PaperItemBuilder.from(Material.ARROW)
                         .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.next"))
                         .asGuiItem(event -> {
 
@@ -187,13 +187,13 @@ public class BOTMList {
                         })
                 );
             } else {
-                this.gui.setItem(1, 9, ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE)
+                this.gui.setItem(1, 9, PaperItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE)
                         .name(this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.unavailable"))
                         .asGuiItem()
                 );
             }
 
-            this.gui.getFiller().fill(ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());
+            this.gui.getFiller().fill(PaperItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());
 
             this.gui.open(player);
 

@@ -1,7 +1,7 @@
 package dev.nachwahl.lobby.guis.botm;
 
 import dev.nachwahl.lobby.LobbyPlugin;
-import dev.triumphteam.gui.builder.item.ItemBuilder;
+import dev.triumphteam.gui.builder.item.PaperItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -30,7 +30,7 @@ public class BOTMConfirm {
                     .disableAllInteractions()
                     .create();
 
-            this.gui.setItem(2, 3, ItemBuilder.from(Material.LIME_WOOL)
+            this.gui.setItem(2, 3, PaperItemBuilder.from(Material.LIME_WOOL)
                     .name(lobbyPlugin.getLanguageAPI().getMessage(language, "botm.confirm.yes"))
                     .asGuiItem(event -> {
                         try {
@@ -47,7 +47,7 @@ public class BOTMConfirm {
                         }
                     }));
 
-            this.gui.setItem(2, 7, ItemBuilder.from(Material.RED_WOOL)
+            this.gui.setItem(2, 7, PaperItemBuilder.from(Material.RED_WOOL)
                     .name(lobbyPlugin.getLanguageAPI().getMessage(language, "botm.confirm.no"))
                     .asGuiItem(event -> {
                         try {
@@ -58,7 +58,7 @@ public class BOTMConfirm {
                         }
                     }));
 
-            this.gui.getFiller().fill(ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());
+            this.gui.getFiller().fill(PaperItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.empty()).asGuiItem());
 
             gui.open(player);
 
