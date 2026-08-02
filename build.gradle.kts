@@ -3,6 +3,7 @@ plugins {
     `maven-publish`
     alias(libs.plugins.lombok)
     alias(libs.plugins.shadow)
+    alias(libs.plugins.sonarqube)
 }
 
 repositories {
@@ -58,7 +59,7 @@ dependencies {
 }
 
 group = "dev.nachwahl"
-version = "1.0.2-SNAPSHOT"
+version = "1.0.2" // -SNAPSHOT
 description = "Lobby"
 java.sourceCompatibility = JavaVersion.VERSION_25
 
@@ -90,4 +91,14 @@ tasks.assemble {
 tasks.jar {
     archiveClassifier = "UNSHADED"
     enabled = false // Disable the default jar task since we are using shadowJar
+}
+
+sonar {
+    properties {
+        property(
+            "sonar.projectKey",
+            "BTE-Germany_Lobby-Plugin_e7798e9a-7195-4178-9d2e-6a4ad4753e24"
+        )
+        property("sonar.projectName", "Lobby-Plugin")
+    }
 }

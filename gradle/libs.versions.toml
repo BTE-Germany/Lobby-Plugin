@@ -15,6 +15,7 @@ me-clip-placeholderapi = "2.12.3"
 net-luckperms-api = "5.5"
 net-wesjd-anvilgui = "1.10.13-SNAPSHOT"
 org-json-json = "20260719"
+sonarqube = "7.3.1.8318"
 #
 # Plugins
 #
@@ -43,3 +44,4 @@ org-json-json = { module = "org.json:json", version.ref = "org-json-json" }
 [plugins]
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
 lombok = { id = "io.freefair.lombok", version.ref = "lombok-plugin" }
+sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
