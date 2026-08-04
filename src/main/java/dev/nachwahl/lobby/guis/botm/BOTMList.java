@@ -2,6 +2,7 @@ package dev.nachwahl.lobby.guis.botm;
 
 import co.aikar.idb.DbRow;
 import dev.nachwahl.lobby.LobbyPlugin;
+import dev.nachwahl.lobby.language.Language;
 import dev.triumphteam.gui.builder.item.PaperItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import lombok.Getter;
@@ -96,7 +97,7 @@ public class BOTMList {
 
                 this.gui.setItem(i + 1, 5, PaperItemBuilder.from(player1_head)
                         .name(Component.text(player1_name))
-                        .lore(offlinePlayer1.getLastSeen() == 0 ? this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.offline_player_error") : null)
+                        .lore(this.getOfflineErrorOrNoComponent(offlinePlayer1, language))
                         .asGuiItem()
                 );
 
@@ -112,7 +113,7 @@ public class BOTMList {
 
                     this.gui.setItem(i + 1, 6, PaperItemBuilder.from(player2_head)
                             .name(Component.text(player2_name))
-                            .lore(offlinePlayer2.getLastSeen() == 0 ? this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.offline_player_error") : null)
+                            .lore(this.getOfflineErrorOrNoComponent(offlinePlayer2, language))
                             .asGuiItem()
                     );
                 } else {
@@ -134,7 +135,7 @@ public class BOTMList {
 
                     this.gui.setItem(i + 1, 7, PaperItemBuilder.from(player3_head)
                             .name(Component.text(player3_name))
-                            .lore(offlinePlayer3.getLastSeen() == 0 ? this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.offline_player_error") : null)
+                            .lore(this.getOfflineErrorOrNoComponent(offlinePlayer3, language))
                             .asGuiItem()
                     );
                 } else {
@@ -199,5 +200,14 @@ public class BOTMList {
 
         });
 
+    }
+
+    private Component[] getOfflineErrorOrNoComponent(OfflinePlayer offlinePlayer, Language language) {
+        if (offlinePlayer.getLastSeen() == 0) {
+            return new Component[] {
+                    this.lobbyPlugin.getLanguageAPI().getMessage(language, "botm.list.item.offline_player_error")
+            };
+        }
+        return new Component[0];
     }
 }
