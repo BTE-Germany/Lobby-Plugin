@@ -241,11 +241,10 @@ public class AddEntryGUI {
                                     throw new RuntimeException(e);
                                 }
                                 if (!dbRows.isEmpty()) {
-                                    DbRow row = dbRows.get(0);
-                                    UUID old_winner = UUID.fromString(row.getString("player1_uuid"));
-                                    luckPerms.getUserManager().modifyUser(old_winner, user -> {
-                                        user.data().remove(InheritanceNode.builder("botm").build());
-                                    });
+                                    DbRow row = dbRows.getFirst();
+                                    this.removeWinnerLpGroup(luckPerms, row, "player1_uuid");
+                                    this.removeWinnerLpGroup(luckPerms, row, "player2_uuid");
+                                    this.removeWinnerLpGroup(luckPerms, row, "player3_uuid");
                                 }
 
                                 event.getInventory().close();
@@ -261,20 +260,14 @@ public class AddEntryGUI {
                                     if (success) {
                                         this.lobbyPlugin.getLanguageAPI().sendMessageToPlayer(player, "botm.added");
 
-                                        luckPerms.getUserManager().modifyUser(
-                                                Bukkit.getOfflinePlayer(EntryUtil.getEntry(player).getPlayer1()).getUniqueId(),
-                                                user -> {
-                                                    user.data().add(InheritanceNode.builder("botm").build());
-                                                });
+                                        this.addWinnerLpGroup(luckPerms, EntryUtil.getEntry(player).getPlayer1());
+                                        this.addWinnerLpGroup(luckPerms, EntryUtil.getEntry(player).getPlayer2());
+                                        this.addWinnerLpGroup(luckPerms, EntryUtil.getEntry(player).getPlayer3());
                                         EntryUtil.entries.remove(player);
 
                                         try {
                                             this.lobbyPlugin.getBotmScoreAPI().reload(player);
-                                        } catch (SQLException e) {
-                                            throw new RuntimeException(e);
-                                        } catch (ExecutionException e) {
-                                            throw new RuntimeException(e);
-                                        } catch (InterruptedException e) {
+                                        } catch (SQLException | ExecutionException | InterruptedException e) {
                                             throw new RuntimeException(e);
                                         }
                                     } else {
@@ -290,5 +283,27 @@ public class AddEntryGUI {
 
                     this.gui.open(player);
                 }));
+    }
+
+    private void removeWinnerLpGroup(LuckPerms luckPerms, DbRow row, String uuidColumn) {
+        String uuidRaw = row.getString(uuidColumn);
+        if (uuidRaw == null) {
+            return;
+        }
+        UUID oldWinnerUuid = UUID.fromString(uuidRaw);
+        luckPerms.getUserManager().modifyUser(oldWinnerUuid, user -> {
+            user.data().remove(InheritanceNode.builder("botm").build());
+        });
+    }
+
+    private void addWinnerLpGroup(LuckPerms luckPerms, String playerName) {
+        if (playerName == null) {
+            return;
+        }
+        luckPerms.getUserManager().modifyUser(
+                Bukkit.getOfflinePlayer(playerName).getUniqueId(),
+                user -> {
+                    user.data().add(InheritanceNode.builder("botm").build());
+                });
     }
 }
