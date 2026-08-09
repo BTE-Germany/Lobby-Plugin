@@ -46,6 +46,7 @@ public class LobbyPlaceholderExpansion extends PlaceholderExpansion {
         if (params.equalsIgnoreCase("own-jnr-score")) {
             DbRow dbRow;
             try {
+                if (player == null) return "";
                 dbRow = this.database.getFirstRow("SELECT score, player, pos FROM (SELECT player, Row_Number() OVER(ORDER BY score DESC) AS pos, score FROM parkour_scores WHERE area = \"JnR\") AS filtered WHERE player = ?", player.getUniqueId().toString());
             } catch (SQLException e) {
                 this.lobbyPlugin.getLogger().warning(e.toString());
