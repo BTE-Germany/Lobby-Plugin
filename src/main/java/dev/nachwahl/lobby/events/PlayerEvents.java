@@ -5,6 +5,7 @@ import dev.nachwahl.lobby.LobbyPlugin;
 import dev.nachwahl.lobby.guis.PrivacyGUI;
 import dev.nachwahl.lobby.language.Language;
 import dev.nachwahl.lobby.utils.Actions;
+import dev.nachwahl.lobby.utils.HotbarItems;
 import dev.triumphteam.gui.builder.item.PaperItemBuilder;
 import eu.decentsoftware.holograms.api.DHAPI;
 import lombok.SneakyThrows;
@@ -103,6 +104,7 @@ public class PlayerEvents implements Listener {
         event.quitMessage(Component.empty());
         this.lobbyPlugin.getVanish().remove(event.getPlayer());
         this.lobbyPlugin.getScoreboard().removeScoreboard(event.getPlayer());
+        this.lobbyPlugin.getElytraPlayers().remove(event.getPlayer().getUniqueId());
     }
 
     @EventHandler
@@ -139,18 +141,30 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onMove(@NonNull PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        if (player.getInventory().getChestplate() == null) return;
-        if (player.getLocation().getY() > 150) { // Parkour Plugin removes Elytra and put it's back so it's the only case where we have no elytra but are in the elytra players
-            if (!player.getInventory().getChestplate().getType().equals(Material.ELYTRA) && !this.lobbyPlugin.getElytraPlayers().containsKey(player.getUniqueId())) {
-                this.lobbyPlugin.getElytraPlayers().put(player.getUniqueId(), player.getInventory().getChestplate());
-                player.getInventory().setChestplate(PaperItemBuilder.from(Material.ELYTRA).enchant(Enchantment.MENDING).build());
+
+        double spawnY = 177.0;
+        try {
+            Location spawnLocation = this.lobbyPlugin.getLocationAPI().getLocation("spawn");
+            if (spawnLocation != null && spawnLocation.getY() > 0) {
+                spawnY = spawnLocation.getY();
             }
-            return;
+        } catch (Exception ignored) {
         }
 
-        if (player.getLocation().add(0, -1, 0).getBlock().getType() == Material.AIR) return;
-        if (!this.lobbyPlugin.getElytraPlayers().containsKey(player.getUniqueId())) return;
-        ItemStack item = this.lobbyPlugin.getElytraPlayers().remove(player.getUniqueId());
-        player.getInventory().setChestplate(item);
+        if (player.getLocation().getY() <= (spawnY - 1.0)) {
+            if (player.getLocation().add(0, -1, 0).getBlock().getType() == Material.AIR) {
+                if (!this.lobbyPlugin.getElytraPlayers().containsKey(player.getUniqueId())
+                        && (player.getInventory().getChestplate() == null || !player.getInventory().getChestplate().getType().equals(Material.ELYTRA))) {
+                    HotbarItems.setElytra(player, this.lobbyPlugin);
+                }
+            }
+        }
+
+        if (player.getLocation().add(0, -1, 0).getBlock().getType() != Material.AIR) {
+            if (this.lobbyPlugin.getElytraPlayers().containsKey(player.getUniqueId())) {
+                ItemStack item = this.lobbyPlugin.getElytraPlayers().remove(player.getUniqueId());
+                player.getInventory().setChestplate(item);
+            }
+        }
     }
 }

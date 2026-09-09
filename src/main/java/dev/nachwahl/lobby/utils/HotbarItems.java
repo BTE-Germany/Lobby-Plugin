@@ -35,8 +35,6 @@ public class HotbarItems {
             player.getInventory().setItem(4, navigator);
             player.getInventory().setItem(6, account);
 
-            setElytra(player, lobbyPlugin);
-
             if (player.hasPermission("lobby.manage.edit")) {
                 ItemStack buildMode = PaperItemBuilder.from(Material.GOLDEN_AXE).name(this.languageAPI.getMessage(language, "manage.editMode")).build();
                 player.getInventory().setItem(8, buildMode);

@@ -1,6 +1,7 @@
 package dev.nachwahl.lobby.events;
 
 import dev.nachwahl.lobby.LobbyPlugin;
+import dev.nachwahl.lobby.utils.HotbarItems;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -36,7 +37,8 @@ public class DoubleJumpEvent implements Listener {
             Vector v = player.getLocation().getDirection().multiply(2D).setY(2D);
             player.setVelocity(v);
             player.setAllowFlight(false);
-
+            HotbarItems.setElytra(player, this.lobbyPlugin);
+            player.setGliding(true);
         }
     }
 
