@@ -8,7 +8,7 @@ plugins {
 
 repositories {
     mavenCentral()
-    mavenLocal() // Only use that for testing / no commits
+    //mavenLocal() // Only use that for testing / no commits
 
     maven {
         url = uri("https://repo.papermc.io/repository/maven-public/")
